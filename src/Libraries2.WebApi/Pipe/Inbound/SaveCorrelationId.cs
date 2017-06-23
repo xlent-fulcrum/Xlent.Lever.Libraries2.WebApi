@@ -14,6 +14,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Pipe.Inbound
     /// </summary>
     public class SaveCorrelationId : DelegatingHandler
     {
+        private static readonly string Namespace = typeof(SaveCorrelationId).Namespace;
         private readonly ICorrelationIdValueProvider _correlationIdValueProvider;
 
         /// <summary>
@@ -49,7 +50,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Pipe.Inbound
         {
             InternalContract.RequireNotNull(request, nameof(request));
             var correlationId = ExtractCorrelationIdFromHeader(request);
-            FulcrumAssert.IsNotNull(_correlationIdValueProvider);
+            FulcrumAssert.IsNotNull(_correlationIdValueProvider, $"{Namespace}: 917BF2A8-1C68-45DB-BABB-C4331244C579");
             _correlationIdValueProvider.CorrelationId = correlationId ?? Guid.NewGuid().ToString();
         }
 
