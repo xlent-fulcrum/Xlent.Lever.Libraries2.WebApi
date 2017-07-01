@@ -18,10 +18,13 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
     {
         private static readonly HttpClient HttpClient = HttpClientFactory.Create(Factory.CreateDelegatingHandlers());
 
-        public RestClient(Uri baseUri, ServiceClientCredentials credentials)
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="baseUri">The base URL that all HTTP calls methods will refer to.</param>
+        public RestClient(Uri baseUri)
         {
             BaseUri = baseUri;
-            Credentials = credentials;
 
             #region Settings
             // These settings are the same as in AutoRest
@@ -51,6 +54,17 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
                 }
             };
             #endregion
+        }
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="baseUri">The base URL that all HTTP calls methods will refer to.</param>
+        /// <param name="credentials">The credentials used when making the HTTP calls.</param>
+        public RestClient(Uri baseUri, ServiceClientCredentials credentials)
+            : this(baseUri)
+        {
+            Credentials = credentials;
         }
 
         public Uri BaseUri { get; set; }
@@ -204,10 +218,10 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
             CancellationToken cancellationToken, TBody instance) where TBody : class
         {
             InternalContract.RequireNotNullOrWhitespace(relativeUrl, nameof(relativeUrl));
-            var baseUrl = BaseUri.AbsoluteUri;
-            if (!baseUrl.EndsWith("/")) baseUrl += "/";
+            var baseUri = BaseUri.AbsoluteUri;
+            if (!baseUri.EndsWith("/")) baseUri += "/";
             if (relativeUrl.StartsWith("/")) relativeUrl = relativeUrl.Substring(1);
-            var url = new Uri(new Uri(baseUrl), relativeUrl).ToString();
+            var url = new Uri(new Uri(baseUri), relativeUrl).ToString();
 
             var request = CreateRequest(method, url, customHeaders);
 
