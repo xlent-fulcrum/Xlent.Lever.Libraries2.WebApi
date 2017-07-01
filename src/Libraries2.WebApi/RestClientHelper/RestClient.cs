@@ -60,6 +60,16 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
         /// Constructor
         /// </summary>
         /// <param name="baseUri">The base URL that all HTTP calls methods will refer to.</param>
+        public RestClient(string baseUri)
+            : this(new Uri(baseUri))
+        {
+            InternalContract.RequireNotNullOrWhitespace(baseUri, nameof(baseUri));
+        }
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="baseUri">The base URL that all HTTP calls methods will refer to.</param>
         /// <param name="credentials">The credentials used when making the HTTP calls.</param>
         public RestClient(Uri baseUri, ServiceClientCredentials credentials)
             : this(baseUri)
