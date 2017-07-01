@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.12
+VisualStudioVersion = 15.0.26430.14
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Libraries2.WebApi", "src\Libraries2.WebApi\Libraries2.WebApi.csproj", "{DE7D5045-82D9-46E0-B2B3-F7C50A2A159B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Libraries2.WebApi.Test", "test\WebApi.Test\Libraries2.WebApi.Test.csproj", "{C7AAB95B-611C-4EEE-B535-F0138F1416C2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{DE7D5045-82D9-46E0-B2B3-F7C50A2A159B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DE7D5045-82D9-46E0-B2B3-F7C50A2A159B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DE7D5045-82D9-46E0-B2B3-F7C50A2A159B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C7AAB95B-611C-4EEE-B535-F0138F1416C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C7AAB95B-611C-4EEE-B535-F0138F1416C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C7AAB95B-611C-4EEE-B535-F0138F1416C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C7AAB95B-611C-4EEE-B535-F0138F1416C2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

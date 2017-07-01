@@ -129,6 +129,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Error\Logic\Converter.cs" />
+    <Compile Include="Pipe\Outbound\OutboundPipeFactory.cs" />
     <Compile Include="Platform\Authentication\ITokenRefresherWithServiceClient.cs" />
     <Compile Include="Pipe\Constants.cs" />
     <Compile Include="Pipe\Inbound\Constants.cs" />
@@ -160,6 +161,7 @@
 
 
 mkdir $(ProjectDir)\lib\$(ProjectName)
+
 copy Xlent.Lever.Libraries2.WebApi.* $(ProjectDir)\lib\$(ProjectName)
 </PostBuildEvent>
   </PropertyGroup>

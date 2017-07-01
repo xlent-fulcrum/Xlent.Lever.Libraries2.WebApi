@@ -1,11 +1,11 @@
-﻿using System;
-using System.Net.Http;
-#pragma warning disable 1591
+﻿using System.Net.Http;
 
 namespace Xlent.Lever.Libraries2.WebApi.Pipe.Outbound
 {
-    [Obsolete("Renamed. Please use OutboundPipeFactory.")]
-    public static class Factory
+    /// <summary>
+    /// A factory class to create delegating handlers for outgoing HTTP requests.
+    /// </summary>
+    public static class OutboundPipeFactory
     {
         /// <summary>
         /// Creates handlers to deal with Fulcrum specifics around making HTTP requests.

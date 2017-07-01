@@ -16,8 +16,12 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
 {
     public class RestClient : IRestClient
     {
-        private static readonly HttpClient HttpClient = HttpClientFactory.Create(Factory.CreateDelegatingHandlers());
+        private static readonly HttpClient HttpClient;
 
+        static RestClient()
+        {
+            HttpClient = HttpClientFactory.Create(OutboundPipeFactory.CreateDelegatingHandlers());
+        }
         /// <summary>
         /// Constructor
         /// </summary>
