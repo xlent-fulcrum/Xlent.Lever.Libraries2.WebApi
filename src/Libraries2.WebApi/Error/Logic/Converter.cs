@@ -6,9 +6,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Xlent.Lever.Libraries2.Standard.Assert;
-using Xlent.Lever.Libraries2.Standard.Error.Logic;
-using Xlent.Lever.Libraries2.Standard.Error.Model;
+using Xlent.Lever.Libraries2.Core.Assert;
+using Xlent.Lever.Libraries2.Core.Error.Logic;
+using Xlent.Lever.Libraries2.Core.Error.Model;
 
 namespace Xlent.Lever.Libraries2.WebApi.Error.Logic
 {

@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0"?>
 <package >
   <metadata>
-    <id>Xlent.Lever.Libraries2.WebApi</id>
-    <version>1.0.7</version>
+    <id>Alfa.Xlent.Lever.Libraries2.WebApi</id>
+    <version>1.1.1</version>
     <authors>XLENT Fulcrum</authors>
     <projectUrl>https://github.com/xlent-fulcrum/Xlent.Lever.Libraries2.WebApi</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
@@ -11,6 +11,7 @@
     <summary>Fulcrum library based on .NET WebApi.</summary>
     <copyright>Copyright ©2017 Xlent Business Integration AB</copyright>
     <releaseNotes>
+      1.1.1 Alfa
       1.0.7 Wrong version of NuGets, missing dependencies.
       1.0.3 Missing constructor.
       1.0.1 Dependency on Standard 1.1.0
@@ -23,10 +24,10 @@
     <tags>fulcrum lever</tags>
     <dependencies>
       <group targetFramework="net462">
-        <dependency id="Xlent.Lever.Libraries2.Standard" version="1.1.0" />
+        <dependency id="Xlent.Lever.Libraries2.Core.NetFramework" version="0.1.1" />
         <dependency id="Newtonsoft.Json" version="9.0.1" />
-        <dependency id="System.Net.Http" version="4.3.2" />
-        <dependency id="Microsoft.Rest.ClientRuntime" version="2.0.0" />
+        <dependency id="Microsoft.Rest.ClientRuntime" version="2.3.8" />
+        <dependency id="Microsoft.AspNet.WebApi.Client" version="5.2.3" />
       </group>
     </dependencies>
   </metadata>

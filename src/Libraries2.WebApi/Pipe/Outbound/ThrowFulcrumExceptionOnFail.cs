@@ -1,7 +1,7 @@
 ﻿using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using Xlent.Lever.Libraries2.Standard.Error.Logic;
+using Xlent.Lever.Libraries2.Core.Error.Logic;
 using Xlent.Lever.Libraries2.WebApi.Error.Logic;
 
 namespace Xlent.Lever.Libraries2.WebApi.Pipe.Outbound

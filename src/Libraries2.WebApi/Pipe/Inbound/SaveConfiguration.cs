@@ -2,9 +2,9 @@
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using Xlent.Lever.Libraries2.Standard.MultiTenant.Context;
-using Xlent.Lever.Libraries2.Standard.MultiTenant.Model;
-using Xlent.Lever.Libraries2.Standard.Platform.Configurations;
+using Xlent.Lever.Libraries2.Core.MultiTenant.Context;
+using Xlent.Lever.Libraries2.Core.MultiTenant.Model;
+using Xlent.Lever.Libraries2.Core.Platform.Configurations;
 
 namespace Xlent.Lever.Libraries2.WebApi.Pipe.Inbound
 {

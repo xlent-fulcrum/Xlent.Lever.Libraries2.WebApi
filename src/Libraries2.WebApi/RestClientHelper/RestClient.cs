@@ -6,7 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Rest;
 using Newtonsoft.Json;
-using Xlent.Lever.Libraries2.Standard.Assert;
+using Xlent.Lever.Libraries2.Core.Assert;
 using Xlent.Lever.Libraries2.WebApi.Error.Logic;
 using Xlent.Lever.Libraries2.WebApi.Pipe.Outbound;
 

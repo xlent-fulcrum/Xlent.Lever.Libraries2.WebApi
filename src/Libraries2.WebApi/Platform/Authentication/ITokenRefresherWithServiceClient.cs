@@ -1,5 +1,5 @@
 ﻿using Microsoft.Rest;
-using Xlent.Lever.Libraries2.Standard.Platform.Authentication;
+using Xlent.Lever.Libraries2.Core.Platform.Authentication;
 
 namespace Xlent.Lever.Libraries2.WebApi.Platform.Authentication
 {
