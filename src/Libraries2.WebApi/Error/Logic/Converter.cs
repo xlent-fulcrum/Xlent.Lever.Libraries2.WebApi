@@ -76,18 +76,11 @@ namespace Xlent.Lever.Libraries2.WebApi.Error.Logic
             InternalContract.RequireNotNull(response, nameof(response));
             if (response.IsSuccessStatusCode) return null;
             if (response.Content == null) return null;
+            await response.Content?.LoadIntoBufferAsync();
             var contentAsString = await response.Content?.ReadAsStringAsync();
-            if (string.IsNullOrWhiteSpace(contentAsString))
-            {
-                throw new FulcrumAssertionFailedException(
-                    $"Received an HTTP response with status code {response.StatusCode}. Expected a JSON formatted error as content, but the content was empty.");
-            }
+            if (string.IsNullOrWhiteSpace(contentAsString)) return null;
             var error = Parse<FulcrumError>(contentAsString);
-            if (error == null)
-            {
-                throw new FulcrumAssertionFailedException(
-                    $"Received an HTTP response with status code {response.StatusCode}. Expected a JSON formatted error as content, but the content was \"{contentAsString}\".");
-            }
+            if (error?.Type == null) return null;
             ValidateStatusCode(response.StatusCode, error);
             var fulcrumException = ToFulcrumException(error);
             if (fulcrumException != null) return fulcrumException;

@@ -202,12 +202,14 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
         private async Task<HttpOperationResponse<TResponse>> HandleResponse<TResponse, TBody>(HttpMethod method, HttpResponseMessage response,
             HttpRequestMessage request) where TBody : class
         {
-            await Converter.ToFulcrumExceptionAsync(response);
             var result = new HttpOperationResponse<TResponse>
             {
                 Request = request,
                 Response = response
             };
+
+            if (!response.IsSuccessStatusCode) return result;
+
             if ((method == HttpMethod.Get && response.StatusCode != HttpStatusCode.NoContent) || method == HttpMethod.Put ||
                 method == HttpMethod.Post)
             {
