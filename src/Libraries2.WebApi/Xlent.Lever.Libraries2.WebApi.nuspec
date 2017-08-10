@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>Xlent.Lever.Libraries2.WebApi</id>
-    <version>1.2.1</version>
+    <version>1.2.2</version>
     <authors>XLENT Fulcrum</authors>
     <projectUrl>https://github.com/xlent-fulcrum/Xlent.Lever.Libraries2.WebApi</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
@@ -11,7 +11,8 @@
     <summary>Fulcrum library based on .NET WebApi.</summary>
     <copyright>Copyright ©2017 Xlent Business Integration AB</copyright>
     <releaseNotes>
-      1.2.1 Better conversion from HttpContent to FulcrumException.
+      1.2.2 Better conversion from HttpContent to FulcrumException.
+      1.2.1 Depend on Xlent.Lever.Libraries2.Core.NetFramework version 0.5.0
       1.2.0 Moving from alfa to production
       1.1.6 Alfa
       1.0.7 Wrong version of NuGets, missing dependencies.
@@ -30,7 +31,7 @@
         <dependency id="Microsoft.CodeDom.Providers.DotNetCompilerPlatform" version="1.0.5" />
         <dependency id="Microsoft.Rest.ClientRuntime" version="2.3.8" />
         <dependency id="Newtonsoft.Json" version="9.0.1" />
-        <dependency id="Xlent.Lever.Libraries2.Core.NetFramework" version="0.3.1" />
+        <dependency id="Xlent.Lever.Libraries2.Core.NetFramework" version="0.5.0" />
       </group>
     </dependencies>
   </metadata>
