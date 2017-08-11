@@ -40,7 +40,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Test
             PrepareMockPost(person);
             var client = new RestClient("http://example.se");
             Assert.IsNotNull(client);
-            var result = await client.PostAsync("Persons", person);
+            var result = await client.PostAndReturnCreatedObjectAsync("Persons", person);
             Assert.IsNotNull(result);
             AssertAreEqual(person, result);
             _httpClientMock.VerifyAll();
@@ -57,7 +57,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Test
             Assert.IsNotNull(client);
             try
             {
-                await client.PostAsync("Persons", person);
+                await client.PostAndReturnCreatedObjectAsync("Persons", person);
                 Assert.Fail("Expected an exception.");
             }
             catch (HttpOperationException e)
@@ -134,7 +134,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Test
             PrepareMockPut(person);
             var client = new RestClient("http://example.se");
             Assert.IsNotNull(client);
-            var result = await client.PutAsync<Person>("Persons/23", person);
+            var result = await client.PutAndReturnUpdatedObjectAsync("Persons/23", person);
             Assert.IsNotNull(result);
             AssertAreEqual(person, result);
             _httpClientMock.VerifyAll();
@@ -151,7 +151,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Test
             Assert.IsNotNull(client);
             try
             {
-                await client.PutAsync<Person>("Persons/23", person);
+                await client.PutAndReturnUpdatedObjectAsync("Persons/23", person);
                 Assert.Fail("Expected an exception.");
             }
             catch (HttpOperationException e)
