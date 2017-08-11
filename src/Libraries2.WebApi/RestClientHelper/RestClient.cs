@@ -10,12 +10,13 @@ using Xlent.Lever.Libraries2.Core.Assert;
 using Xlent.Lever.Libraries2.WebApi.Error.Logic;
 using Xlent.Lever.Libraries2.WebApi.Pipe.Outbound;
 
-#pragma warning disable 1591
-
 namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
 {
     public class RestClient : IRestClient
     {
+        private readonly JsonSerializerSettings _serializationSettings;
+        private readonly JsonSerializerSettings _deserializationSettings;
+
         /// <summary>
         /// The HttpClient that is used for all HTTP calls.
         /// </summary>
@@ -87,13 +88,186 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
             Credentials = credentials;
         }
 
+        /// <inheritdoc />
         public Uri BaseUri { get; set; }
+
+        /// <inheritdoc />
         public ServiceClientCredentials Credentials { get; }
 
-        private readonly JsonSerializerSettings _serializationSettings;
-        private readonly JsonSerializerSettings _deserializationSettings;
+        #region POST
+        /// <inheritdoc />
+        public async Task<TResponse> PostAsync<TResponse, TBody>(string relativeUrl, TBody body, Dictionary<string, List<string>> customHeaders = null,
+            CancellationToken cancellationToken = new CancellationToken()) where TBody : class
+        {
+            InternalContract.RequireNotNullOrWhitespace(relativeUrl, nameof(relativeUrl));
+            var response = await SendRequestAsync<TResponse, TBody>(HttpMethod.Post, relativeUrl, body, customHeaders, cancellationToken);
+            return response.Body;
+        }
+
+        /// <inheritdoc />
+        public async Task<TResponse> PostAsync<TResponse>(string relativeUrl, Dictionary<string, List<string>> customHeaders = null,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            InternalContract.RequireNotNullOrWhitespace(relativeUrl, nameof(relativeUrl));
+            return await PostAsync<TResponse, string>(relativeUrl, null, customHeaders, cancellationToken);
+        }
+
+        /// <inheritdoc />
+        public async Task<TBodyAndResponse> PostAndReturnCreatedObjectAsync<TBodyAndResponse>(string relativeUrl, TBodyAndResponse body,
+            Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = new CancellationToken()) where TBodyAndResponse : class
+        {
+            InternalContract.RequireNotNullOrWhitespace(relativeUrl, nameof(relativeUrl));
+            return await PostAsync<TBodyAndResponse, TBodyAndResponse>(relativeUrl, body, customHeaders, cancellationToken);
+        }
+
+        /// <inheritdoc />
+        public async Task PostNoResponseContentAsync<TBody>(string relativeUrl, TBody body, Dictionary<string, List<string>> customHeaders = null,
+            CancellationToken cancellationToken = new CancellationToken()) where TBody : class
+        {
+            InternalContract.RequireNotNullOrWhitespace(relativeUrl, nameof(relativeUrl));
+            await SendRequestAsync(HttpMethod.Post, relativeUrl, body, customHeaders, cancellationToken);
+        }
+
+        /// <inheritdoc />
+        public async Task PostNoResponseContentAsync(string relativeUrl, Dictionary<string, List<string>> customHeaders = null,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            InternalContract.RequireNotNullOrWhitespace(relativeUrl, nameof(relativeUrl));
+            await SendRequestAsync(HttpMethod.Post, relativeUrl, customHeaders, cancellationToken);
+        }
+        #endregion
+
+        #region GET
+
+        /// <inheritdoc />
+        public async Task<TResponse> GetAsync<TResponse>(string relativeUrl, Dictionary<string, List<string>> customHeaders = null,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            InternalContract.RequireNotNullOrWhitespace(relativeUrl, nameof(relativeUrl));
+            var response = await SendRequestAsync<TResponse, object>(HttpMethod.Get, relativeUrl, null, customHeaders, cancellationToken);
+            return response.Body;
+        }
+        #endregion
+
+        #region PUT
+
+        /// <inheritdoc />
+        public async Task<TResponse> PutAsync<TResponse, TBody>(string relativeUrl, TBody body, Dictionary<string, List<string>> customHeaders = null,
+            CancellationToken cancellationToken = new CancellationToken()) where TBody : class
+        {
+            InternalContract.RequireNotNullOrWhitespace(relativeUrl, nameof(relativeUrl));
+            var response = await SendRequestAsync<TResponse, TBody>(HttpMethod.Put, relativeUrl, body, customHeaders, cancellationToken);
+            return response.Body;
+        }
+
+        /// <inheritdoc />
+        public async Task<TBodyAndResponse> PutAndReturnUpdatedObjectAsync<TBodyAndResponse>(string relativeUrl, TBodyAndResponse body,
+            Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = new CancellationToken()) where TBodyAndResponse : class
+        {
+            InternalContract.RequireNotNullOrWhitespace(relativeUrl, nameof(relativeUrl));
+            return await PutAsync<TBodyAndResponse, TBodyAndResponse>(relativeUrl, body, customHeaders, cancellationToken);
+        }
+
+        /// <inheritdoc />
+        public async Task PutNoResponseContentAsync<TBody>(string relativeUrl, TBody body, Dictionary<string, List<string>> customHeaders = null,
+            CancellationToken cancellationToken = new CancellationToken()) where TBody : class
+        {
+            InternalContract.RequireNotNullOrWhitespace(relativeUrl, nameof(relativeUrl));
+            await SendRequestAsync(HttpMethod.Post, relativeUrl, body, customHeaders, cancellationToken);
+        }
+
+        #endregion
+
+        #region DELETE
+
+        /// <inheritdoc />
+        public async Task DeleteAsync(string relativeUrl, Dictionary<string, List<string>> customHeaders = null,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            InternalContract.RequireNotNullOrWhitespace(relativeUrl, nameof(relativeUrl));
+            await SendRequestAsync(HttpMethod.Delete, relativeUrl, customHeaders, cancellationToken);
+        }
+
+        #endregion
+
+        #region Send
+        /// <inheritdoc />
+        public async Task<HttpOperationResponse<TResponse>> SendRequestAsync<TResponse, TBody>(HttpMethod method, string relativeUrl,
+            TBody body = null, Dictionary<string, List<string>> customHeaders = null,
+            CancellationToken cancellationToken = default(CancellationToken))
+            where TBody : class
+        {
+            HttpResponseMessage response = null;
+            try
+            {
+                response = await SendRequestAsync(method, relativeUrl, body, customHeaders, cancellationToken).ConfigureAwait(false);
+                var request = response.RequestMessage;
+                if (response.StatusCode == HttpStatusCode.OK)
+                {
+                    return await HandleResponse<TResponse>(method, response, request);
+                }
+                var exception = await CreateException(method, request, response);
+                throw exception;
+            }
+            finally
+            {
+                response?.Dispose();
+            }
+        }
+
+        /// <inheritdoc />
+        public async Task<HttpResponseMessage> SendRequestAsync<TBody>(HttpMethod method, string relativeUrl,
+            TBody body = null, Dictionary<string, List<string>> customHeaders = null,
+            CancellationToken cancellationToken = default(CancellationToken))
+            where TBody : class
+        {
+            HttpRequestMessage request = null;
+            try
+            {
+                request = await CreateRequest(method, relativeUrl, body, customHeaders, cancellationToken);
+                cancellationToken.ThrowIfCancellationRequested();
+                var response = await HttpClient.SendAsync(request, cancellationToken).ConfigureAwait(false);
+                if (response.IsSuccessStatusCode) return response;
+                try
+                {
+                    var exception = await CreateException(method, request, response);
+                    throw exception;
+                }
+                finally
+                {
+                    response.Dispose();
+                }
+            }
+            finally
+            {
+                request?.Dispose();
+            }
+        }
+
+        /// <inheritdoc />
+        public async Task<HttpResponseMessage> SendRequestAsync(HttpMethod method, string relativeUrl,
+            Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return await SendRequestAsync<string>(method, relativeUrl, null, customHeaders, cancellationToken);
+        }
+        #endregion
 
         #region Helpers
+
+        private static async Task<HttpOperationException> CreateException(HttpMethod method, HttpRequestMessage request,
+            HttpResponseMessage response)
+        {
+            var requestContentAsString = request.Content == null ? null : await request.Content?.ReadAsStringAsync();
+            var responseContentAsString = response.Content == null ? null : await response.Content?.ReadAsStringAsync();
+            var exception =
+                new HttpOperationException(
+                    $"Request {method} {request.RequestUri.AbsoluteUri}: Failed with status code {response.StatusCode}.")
+                {
+                    Request = new HttpRequestMessageWrapper(request, requestContentAsString),
+                    Response = new HttpResponseMessageWrapper(response, responseContentAsString)
+                };
+            return exception;
+        }
 
         private static HttpRequestMessage CreateRequest(HttpMethod method, string url, Dictionary<string, List<string>> customHeaders)
         {
@@ -110,111 +284,6 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
                 }
             }
             return request;
-        }
-        #endregion
-
-        public async Task<TResponse> GetAsync<TResponse>(string relativeUrl)
-        {
-            InternalContract.RequireNotNullOrWhitespace(relativeUrl, nameof(relativeUrl));
-            var response = await SendRequestAsync<TResponse, object>(HttpMethod.Get, relativeUrl);
-            return response.Body;
-        }
-
-        public async Task PostNoResponseContentAsync<TBody>(string relativeUrl, TBody instance)
-            where TBody : class
-        {
-            InternalContract.RequireNotNullOrWhitespace(relativeUrl, nameof(relativeUrl));
-            await SendRequestAsync<object, TBody>(HttpMethod.Post, relativeUrl, null, default(CancellationToken), instance);
-        }
-
-        public async Task<TResponse> PostAsync<TResponse, TBody>(string relativeUrl, TBody instance)
-            where TBody : class
-        {
-            InternalContract.RequireNotNullOrWhitespace(relativeUrl, nameof(relativeUrl));
-            var response = await SendRequestAsync<TResponse, TBody>(HttpMethod.Post, relativeUrl, null, default(CancellationToken), instance);
-            return response.Body;
-        }
-
-        public async Task PostNoResponseContentAsync(string relativeUrl)
-        {
-            InternalContract.RequireNotNullOrWhitespace(relativeUrl, nameof(relativeUrl));
-            await SendRequestAsync<object, object>(HttpMethod.Post, relativeUrl);
-        }
-
-        public async Task<T> PostAsync<T>(string relativeUrl, T instance)
-            where T : class
-        {
-            InternalContract.RequireNotNullOrWhitespace(relativeUrl, nameof(relativeUrl));
-            return await PostAsync<T, T>(relativeUrl, instance);
-        }
-
-        public async Task<TResponse> PostAsync<TResponse>(string relativeUrl) where TResponse : class
-        {
-            InternalContract.RequireNotNullOrWhitespace(relativeUrl, nameof(relativeUrl));
-            var response = await SendRequestAsync<TResponse, object>(HttpMethod.Post, relativeUrl);
-            return response.Body;
-        }
-
-        public async Task PutNoResponseContentAsync<TBody>(string relativeUrl, TBody instance)
-            where TBody : class
-        {
-            InternalContract.RequireNotNullOrWhitespace(relativeUrl, nameof(relativeUrl));
-            await SendRequestAsync<object, TBody>(HttpMethod.Put, relativeUrl, null, default(CancellationToken), instance);
-        }
-
-        public async Task<TResponse> PutAsync<TResponse, TBody>(string relativeUrl, TBody instance)
-            where TBody : class
-        {
-            InternalContract.RequireNotNullOrWhitespace(relativeUrl, nameof(relativeUrl));
-            var response = await SendRequestAsync<TResponse, TBody>(HttpMethod.Put, relativeUrl, null, default(CancellationToken), instance);
-            return response.Body;
-        }
-
-        public async Task<T> PutAsync<T>(string relativeUrl, T instance)
-            where T : class
-        {
-            InternalContract.RequireNotNullOrWhitespace(relativeUrl, nameof(relativeUrl));
-            return await PutAsync<T, T>(relativeUrl, instance);
-        }
-
-        public async Task DeleteAsync(string relativeUrl)
-        {
-            InternalContract.RequireNotNullOrWhitespace(relativeUrl, nameof(relativeUrl));
-            await SendRequestAsync<object, object>(HttpMethod.Delete, relativeUrl);
-        }
-
-        public async Task<HttpOperationResponse<TResponse>> SendRequestAsync<TResponse, TBody>(HttpMethod method, string relativeUrl,
-            Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken),
-            TBody instance = null)
-            where TBody : class
-        {
-            HttpRequestMessage request = null;
-            HttpResponseMessage response = null;
-            try
-            {
-                request = await CreateRequest<TResponse, TBody>(method, relativeUrl, customHeaders, cancellationToken, instance);
-                cancellationToken.ThrowIfCancellationRequested();
-                response = await HttpClient.SendAsync(request, cancellationToken).ConfigureAwait(false);
-                // TODO: The request has returned. A cancellation at this time neither cancels the operation or saves any time. Should we really throw?
-                cancellationToken.ThrowIfCancellationRequested();
-                if (response.StatusCode == HttpStatusCode.OK)
-                {
-                    return await HandleResponse<TResponse>(method, response, request);
-                }
-                var requestContentAsString = request.Content == null ? null : await request.Content?.ReadAsStringAsync();
-                var responseContentAsString = response.Content == null ? null : await response.Content?.ReadAsStringAsync();
-                var exception = new HttpOperationException($"Request {method} {request.RequestUri.AbsoluteUri}: Failed with status code {response.StatusCode}.")
-                {
-                    Request = new HttpRequestMessageWrapper(request, requestContentAsString),
-                    Response = new HttpResponseMessageWrapper(response, responseContentAsString)
-                };
-                throw exception;
-            }
-            finally
-            {
-                request?.Dispose();
-                response?.Dispose();
-            }
         }
 
         private async Task<HttpOperationResponse<TResponse>> HandleResponse<TResponse>(HttpMethod method, HttpResponseMessage response,
@@ -246,8 +315,8 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
             return result;
         }
 
-        private async Task<HttpRequestMessage> CreateRequest<TResponse, TBody>(HttpMethod method, string relativeUrl, Dictionary<string, List<string>> customHeaders,
-            CancellationToken cancellationToken, TBody instance) where TBody : class
+        private async Task<HttpRequestMessage> CreateRequest<TBody>(HttpMethod method, string relativeUrl, TBody instance, Dictionary<string, List<string>> customHeaders,
+            CancellationToken cancellationToken) where TBody : class
         {
             InternalContract.RequireNotNullOrWhitespace(relativeUrl, nameof(relativeUrl));
             var baseUri = BaseUri.AbsoluteUri;
@@ -266,12 +335,12 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
                     System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json; charset=utf-8");
             }
 
-            if (Credentials != null)
-            {
-                cancellationToken.ThrowIfCancellationRequested();
-                await Credentials.ProcessHttpRequestAsync(request, cancellationToken).ConfigureAwait(false);
-            }
+            if (Credentials == null) return request;
+
+            cancellationToken.ThrowIfCancellationRequested();
+            await Credentials.ProcessHttpRequestAsync(request, cancellationToken).ConfigureAwait(false);
             return request;
         }
+        #endregion
     }
 }
