@@ -16,12 +16,18 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
 {
     public class RestClient : IRestClient
     {
-        private static readonly HttpClient HttpClient;
+        /// <summary>
+        /// The HttpClient that is used for all HTTP calls.
+        /// </summary>
+        /// <remarks>Is set to <see cref="HttpClient"/> by default. Typically only set to other values for unit test purposes.</remarks>
+        public static IHttpClient HttpClient { get; set; }
 
         static RestClient()
         {
-            HttpClient = HttpClientFactory.Create(OutboundPipeFactory.CreateDelegatingHandlers());
+            var httpClient = HttpClientFactory.Create(OutboundPipeFactory.CreateDelegatingHandlers());
+            HttpClient = new HttpClientWrapper(httpClient);
         }
+
         /// <summary>
         /// Constructor
         /// </summary>
@@ -153,14 +159,14 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
             where TBody : class
         {
             InternalContract.RequireNotNullOrWhitespace(relativeUrl, nameof(relativeUrl));
-            await SendRequestAsync<object, TBody>(HttpMethod.Post, relativeUrl, null, default(CancellationToken), instance);
+            await SendRequestAsync<object, TBody>(HttpMethod.Put, relativeUrl, null, default(CancellationToken), instance);
         }
 
         public async Task<TResponse> PutAsync<TResponse, TBody>(string relativeUrl, TBody instance)
             where TBody : class
         {
             InternalContract.RequireNotNullOrWhitespace(relativeUrl, nameof(relativeUrl));
-            var response = await SendRequestAsync<TResponse, TBody>(HttpMethod.Post, relativeUrl, null, default(CancellationToken), instance);
+            var response = await SendRequestAsync<TResponse, TBody>(HttpMethod.Put, relativeUrl, null, default(CancellationToken), instance);
             return response.Body;
         }
 
@@ -189,8 +195,20 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
                 request = await CreateRequest<TResponse, TBody>(method, relativeUrl, customHeaders, cancellationToken, instance);
                 cancellationToken.ThrowIfCancellationRequested();
                 response = await HttpClient.SendAsync(request, cancellationToken).ConfigureAwait(false);
+                // TODO: The request has returned. A cancellation at this time neither cancels the operation or saves any time. Should we really throw?
                 cancellationToken.ThrowIfCancellationRequested();
-                return await HandleResponse<TResponse, TBody>(method, response, request);
+                if (response.StatusCode == HttpStatusCode.OK)
+                {
+                    return await HandleResponse<TResponse>(method, response, request);
+                }
+                var requestContentAsString = request.Content == null ? null : await request.Content?.ReadAsStringAsync();
+                var responseContentAsString = response.Content == null ? null : await response.Content?.ReadAsStringAsync();
+                var exception = new HttpOperationException($"Request {method} {request.RequestUri.AbsoluteUri}: Failed with status code {response.StatusCode}.")
+                {
+                    Request = new HttpRequestMessageWrapper(request, requestContentAsString),
+                    Response = new HttpResponseMessageWrapper(response, responseContentAsString)
+                };
+                throw exception;
             }
             finally
             {
@@ -199,16 +217,16 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
             }
         }
 
-        private async Task<HttpOperationResponse<TResponse>> HandleResponse<TResponse, TBody>(HttpMethod method, HttpResponseMessage response,
-            HttpRequestMessage request) where TBody : class
+        private async Task<HttpOperationResponse<TResponse>> HandleResponse<TResponse>(HttpMethod method, HttpResponseMessage response,
+            HttpRequestMessage request)
         {
             var result = new HttpOperationResponse<TResponse>
             {
                 Request = request,
-                Response = response
+                Response = response,
+                Body = default(TResponse)
             };
-
-            if (!response.IsSuccessStatusCode) return result;
+            if (response.Content == null) return result;
 
             if ((method == HttpMethod.Get && response.StatusCode != HttpStatusCode.NoContent) || method == HttpMethod.Put ||
                 method == HttpMethod.Post)
@@ -222,8 +240,6 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
                 }
                 catch (JsonException ex)
                 {
-                    request.Dispose();
-                    response.Dispose();
                     throw new SerializationException("Unable to deserialize the response.", responseContent, ex);
                 }
             }

@@ -75,6 +75,8 @@
     <Compile Include="Pipe\Outbound\Factory.cs" />
     <Compile Include="Pipe\Outbound\ThrowFulcrumExceptionOnFail.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RestClientHelper\HttpClientWrapper.cs" />
+    <Compile Include="RestClientHelper\IHttpClient.cs" />
     <Compile Include="RestClientHelper\IRestClient.cs" />
     <Compile Include="RestClientHelper\RestClient.cs" />
   </ItemGroup>
