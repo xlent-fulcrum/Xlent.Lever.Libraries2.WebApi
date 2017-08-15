@@ -46,8 +46,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Pipe.Inbound
         /// <param name="cancellationToken">The token to monitor for cancellation requests.</param>
         public override async Task HandleAsync(ExceptionHandlerContext context, CancellationToken cancellationToken)
         {
-            // TODO: Logging
-            // await _logHandler?.LogAsync(context.Exception);
+            if (_logHandler != null) await _logHandler.LogAsync(context.Exception);
 
             var response = Converter.ToHttpResponseMessage(context.Exception);
 
