@@ -7,11 +7,13 @@ using System.Threading.Tasks;
 using Microsoft.Rest;
 using Newtonsoft.Json;
 using Xlent.Lever.Libraries2.Core.Assert;
-using Xlent.Lever.Libraries2.WebApi.Error.Logic;
 using Xlent.Lever.Libraries2.WebApi.Pipe.Outbound;
 
 namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
 {
+    /// <summary>
+    /// Convenience client for making REST calls
+    /// </summary>
     public class RestClient : IRestClient
     {
         private readonly JsonSerializerSettings _serializationSettings;
@@ -254,11 +256,27 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
 
         #region Helpers
 
-        private static async Task<HttpOperationException> CreateException(HttpMethod method, HttpRequestMessage request,
-            HttpResponseMessage response)
+        private static async Task<HttpOperationException> CreateException(HttpMethod method, HttpRequestMessage request, HttpResponseMessage response)
         {
-            var requestContentAsString = request.Content == null ? null : await request.Content?.ReadAsStringAsync();
-            var responseContentAsString = response.Content == null ? null : await response.Content?.ReadAsStringAsync();
+            string requestContentAsString = "(could not read request content)", responseContentAsString = "(could not read response content)";
+            try
+            {
+                requestContentAsString = await request.Content.ReadAsStringAsync();
+            }
+            catch
+            {
+                // Could end up with System.ObjectDisposedException when reading content
+            }
+            try
+            {
+                responseContentAsString = await response.Content.ReadAsStringAsync();
+            }
+            catch
+            {
+                // Could end up with System.ObjectDisposedException when reading content
+            }
+            //var requestContentAsString = request.Content == null ? null : await request.Content?.ReadAsStringAsync();
+            //var responseContentAsString = response.Content == null ? null : await response.Content?.ReadAsStringAsync();
             var exception =
                 new HttpOperationException(
                     $"Request {method} {request.RequestUri.AbsoluteUri}: Failed with status code {response.StatusCode}.")
