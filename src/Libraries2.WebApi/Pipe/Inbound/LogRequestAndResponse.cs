@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Net.Http;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Xlent.Lever.Libraries2.Core.Logging.Model;
@@ -54,17 +55,24 @@ namespace Xlent.Lever.Libraries2.WebApi.Pipe.Inbound
 
         private async Task LogRequest(HttpRequestMessage request)
         {
-            var message = $"REQUEST: {request?.Method?.Method} {request?.RequestUri}";
+            var message = $"REQUEST: {request?.Method?.Method} {FilteredRequestUri(request?.RequestUri.AbsoluteUri)}";
             await _logHandler.LogAsync(LogSeverityLevel.Information, message);
         }
 
      
         private async Task LogResponse(HttpResponseMessage response, TimeSpan timerElapsed)
         {
-            var message = $"RESPONSE: Url: {response?.RequestMessage?.RequestUri}" +
+            var message = $"RESPONSE: Url: {FilteredRequestUri(response?.RequestMessage?.RequestUri.AbsoluteUri)}" +
                           $" | StatusCode: {response?.StatusCode}" +
                           $" | ElapsedTime: {timerElapsed}";
             await _logHandler.LogAsync(LogSeverityLevel.Information, message);
+        }
+
+        private static string FilteredRequestUri(string uri)
+        {
+            if (string.IsNullOrWhiteSpace(uri)) return uri;
+            var result = Regex.Replace(uri, "(api_key=)[^&]+", match => match.Groups[1].Value + "hidden");
+            return result;
         }
     }
 }
