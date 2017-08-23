@@ -59,10 +59,12 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
     <Reference Include="Xlent.Lever.Libraries2.Core.NetFramework, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Xlent.Lever.Libraries2.Core.NetFramework.0.8.1\lib\net462\Xlent.Lever.Libraries2.Core.NetFramework.dll</HintPath>
+      <HintPath>..\..\packages\Xlent.Lever.Libraries2.Core.NetFramework.0.8.2\lib\net462\Xlent.Lever.Libraries2.Core.NetFramework.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Context\HttpContextValueProvider.cs" />
+    <Compile Include="Context\SaveValuesProvider.cs" />
     <Compile Include="Error\Logic\Converter.cs" />
     <Compile Include="Pipe\Inbound\LogRequestAndResponse.cs" />
     <Compile Include="Pipe\Outbound\OutboundPipeFactory.cs" />
