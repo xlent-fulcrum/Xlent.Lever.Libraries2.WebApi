@@ -1,7 +1,9 @@
-﻿using System.Net.Http;
+﻿using System;
+using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using Xlent.Lever.Libraries2.Core.Context;
 using Xlent.Lever.Libraries2.Core.MultiTenant.Context;
 using Xlent.Lever.Libraries2.Core.MultiTenant.Model;
 using Xlent.Lever.Libraries2.Core.Platform.Configurations;
@@ -18,14 +20,16 @@ namespace Xlent.Lever.Libraries2.WebApi.Pipe.Inbound
 
         private static ILeverServiceConfiguration _serviceConfiguration;
 
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        /// <param name="tenantConfigurationProvider"></param>
-        /// <param name="serviceConfiguration"></param>
-        public SaveConfiguration(ITenantConfigurationValueProvider tenantConfigurationProvider, ILeverServiceConfiguration serviceConfiguration)
+        /// <summary></summary>
+        [Obsolete("Use constructor with ValueProvider", true)]
+        public SaveConfiguration(ITenantConfigurationValueProvider configurationValueProvider, ILeverServiceConfiguration serviceConfiguration) : this(configurationValueProvider.ValueProvider, serviceConfiguration)
         {
-            _tenantConfigurationProvider = tenantConfigurationProvider;
+        }
+
+        /// <summary></summary>
+        public SaveConfiguration(IValueProvider valueProvider, ILeverServiceConfiguration serviceConfiguration)
+        {
+            _tenantConfigurationProvider = new TenantConfigurationValueProvider(valueProvider);
             _serviceConfiguration = serviceConfiguration;
         }
 
@@ -43,7 +47,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Pipe.Inbound
                 _tenantConfigurationProvider.Tenant = tenant;
                 try
                 {
-                    var configuration = await GetConfigurationForAsync(tenant);
+                    var configuration = await _serviceConfiguration.GetConfigurationForAsync(tenant);
                     _tenantConfigurationProvider.LeverConfiguration = configuration;
                 }
                 catch
@@ -54,11 +58,6 @@ namespace Xlent.Lever.Libraries2.WebApi.Pipe.Inbound
 
             var result = await base.SendAsync(request, cancellationToken);
             return result;
-        }
-
-        private static async Task<ILeverConfiguration> GetConfigurationForAsync(ITenant tenant)
-        {
-            return await _serviceConfiguration.GetConfigurationForAsync(tenant);
         }
 
     }

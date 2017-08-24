@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -21,22 +22,16 @@ namespace Xlent.Lever.Libraries2.WebApi.Pipe.Inbound
         private readonly ICorrelationIdValueProvider _correlationIdProvider;
         private readonly IFulcrumLogger _logHandler;
 
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        /// <param name="correlationIdProvider">A value provider that knows how to get the correlation id from the execution context.</param>
-        public ConvertExceptionToFulcrumResponse(ICorrelationIdValueProvider correlationIdProvider) : this(correlationIdProvider, null)
+        /// <summary></summary>
+        [Obsolete("Use constructor with Logger instead")]
+        public ConvertExceptionToFulcrumResponse(IValueProvider valueProvider) : this(valueProvider, null)
         {
         }
 
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        /// <param name="correlationIdProvider">A value provider that knows how to get the correlation id from the execution context.</param>
-        /// <param name="logHandler">A log handler that knows how to log exceptions</param>
-        public ConvertExceptionToFulcrumResponse(ICorrelationIdValueProvider correlationIdProvider, IFulcrumLogger logHandler)
+        /// <summary></summary>
+        public ConvertExceptionToFulcrumResponse(IValueProvider valueProvider, IFulcrumLogger logHandler)
         {
-            _correlationIdProvider = correlationIdProvider;
+            _correlationIdProvider = new CorrelationIdValueProvider(valueProvider);
             _logHandler = logHandler;
         }
 

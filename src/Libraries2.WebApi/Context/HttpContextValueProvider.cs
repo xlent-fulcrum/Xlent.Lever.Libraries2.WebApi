@@ -14,7 +14,8 @@ namespace Xlent.Lever.Libraries2.WebApi.Context
         public T GetValue<T>(string key)
         {
             InternalContract.RequireNotNullOrWhitespace(key, nameof(key));
-            if (HttpContext.Current.Items.Contains(key) != true) return default(T);
+            FulcrumAssert.IsNotNull(HttpContext.Current?.Items, null, "HttpContext.Current?.Items was unexpectedly null");
+            if (HttpContext.Current?.Items.Contains(key) != true) return default(T);
             var value = HttpContext.Current.Items[key];
             return (T)value;
         }
@@ -23,8 +24,8 @@ namespace Xlent.Lever.Libraries2.WebApi.Context
         public void SetValue<T>(string key, T value)
         {
             InternalContract.RequireNotNullOrWhitespace(key, nameof(key));
-            InternalContract.RequireNotNull(value, nameof(value));
-            HttpContext.Current.Items.Add(key, value);
+            FulcrumAssert.IsNotNull(HttpContext.Current?.Items, null, "HttpContext.Current?.Items was unexpectedly null");
+            HttpContext.Current?.Items.Add(key, value);
         }
     }
 }

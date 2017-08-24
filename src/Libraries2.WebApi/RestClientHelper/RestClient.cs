@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using System.Net.Http;
 using System.Threading;
@@ -7,6 +8,8 @@ using System.Threading.Tasks;
 using Microsoft.Rest;
 using Newtonsoft.Json;
 using Xlent.Lever.Libraries2.Core.Assert;
+using Xlent.Lever.Libraries2.Core.Context;
+using Xlent.Lever.Libraries2.Core.Error.Logic;
 using Xlent.Lever.Libraries2.WebApi.Pipe.Outbound;
 
 namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
@@ -19,25 +22,39 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
         private readonly JsonSerializerSettings _serializationSettings;
         private readonly JsonSerializerSettings _deserializationSettings;
 
+        private static readonly object LockClass = new object();
+
         /// <summary>
         /// The HttpClient that is used for all HTTP calls.
         /// </summary>
         /// <remarks>Is set to <see cref="HttpClient"/> by default. Typically only set to other values for unit test purposes.</remarks>
         public static IHttpClient HttpClient { get; set; }
 
-        static RestClient()
+        /// <summary></summary>
+        [Obsolete("Use (string, value provider) overload", true)]
+        // ReSharper disable once UnusedParameter.Local
+        public RestClient(Uri baseUri)
         {
-            var httpClient = HttpClientFactory.Create(OutboundPipeFactory.CreateDelegatingHandlers());
-            HttpClient = new HttpClientWrapper(httpClient);
+            throw new FulcrumNotImplementedException("This constructor is deprecated. Recompile");
         }
 
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="baseUri">The base URL that all HTTP calls methods will refer to.</param>
-        public RestClient(Uri baseUri)
+        /// <param name="valueProvider"></param>
+        [Obsolete("Use (string, value provider) overload")]
+        public RestClient(Uri baseUri, IValueProvider valueProvider)
         {
             BaseUri = baseUri;
+            lock (LockClass)
+            {
+                if (HttpClient == null)
+                {
+                    var httpClient = HttpClientFactory.Create(OutboundPipeFactory.CreateDelegatingHandlers(valueProvider));
+                    HttpClient = new HttpClientWrapper(httpClient);
+                }
+            }
 
             #region Settings
             // These settings are the same as in AutoRest
@@ -69,23 +86,41 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
             #endregion
         }
 
-        /// <summary>
-        /// Constructor
-        /// </summary>
+        /// <summary></summary>
         /// <param name="baseUri">The base URL that all HTTP calls methods will refer to.</param>
+        [Obsolete("Use (string, value provider) overload", true)]
+        // ReSharper disable once UnusedParameter.Local
         public RestClient(string baseUri)
-            : this(new Uri(baseUri))
         {
-            InternalContract.RequireNotNullOrWhitespace(baseUri, nameof(baseUri));
+            throw new FulcrumNotImplementedException("This constructor is deprecated. Recompile");
         }
 
-        /// <summary>
-        /// Constructor
-        /// </summary>
+        /// <summary></summary>
+        /// <param name="baseUri">The base URL that all HTTP calls methods will refer to.</param>
+        /// <param name="valueProvider"></param>
+#pragma warning disable 618
+        public RestClient(string baseUri, IValueProvider valueProvider) : this(new Uri(baseUri), valueProvider)
+#pragma warning restore 618
+        {
+        }
+
+        /// <summary></summary>
         /// <param name="baseUri">The base URL that all HTTP calls methods will refer to.</param>
         /// <param name="credentials">The credentials used when making the HTTP calls.</param>
+        [Obsolete("Use (string, value provider, credentials) overload", true)]
+        [SuppressMessage("ReSharper", "UnusedParameter.Local")]
         public RestClient(Uri baseUri, ServiceClientCredentials credentials)
-            : this(baseUri)
+        {
+            throw new FulcrumNotImplementedException("This constructor is deprecated. Recompile");
+        }
+
+        /// <summary></summary>
+        /// <param name="baseUri">The base URL that all HTTP calls methods will refer to.</param>
+        /// <param name="valueProvider"></param>
+        /// <param name="credentials">The credentials used when making the HTTP calls.</param>
+#pragma warning disable 618
+        public RestClient(Uri baseUri, IValueProvider valueProvider, ServiceClientCredentials credentials) : this(baseUri, valueProvider)
+#pragma warning restore 618
         {
             Credentials = credentials;
         }

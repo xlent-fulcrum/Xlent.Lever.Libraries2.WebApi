@@ -17,14 +17,15 @@ namespace Xlent.Lever.Libraries2.WebApi.Pipe.Inbound
         private static readonly string Namespace = typeof(SaveCorrelationId).Namespace;
         private readonly ICorrelationIdValueProvider _correlationIdValueProvider;
 
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        /// <param name="correlationIdValueProvider">A provider that knows how to save correlations id on the execution context.</param>
-        public SaveCorrelationId(ICorrelationIdValueProvider correlationIdValueProvider)
+        /// <summary></summary>
+        [Obsolete("Use constructor with ValueProvider", true)]
+        public SaveCorrelationId(ICorrelationIdValueProvider correlationIdValueProvider) : this(correlationIdValueProvider.ValueProvider) { }
+
+        /// <summary></summary>
+        public SaveCorrelationId(IValueProvider valueProvider)
         {
-            InternalContract.RequireNotNull(correlationIdValueProvider, nameof(correlationIdValueProvider));
-            _correlationIdValueProvider = correlationIdValueProvider;
+            InternalContract.RequireNotNull(valueProvider, nameof(valueProvider));
+            _correlationIdValueProvider = new CorrelationIdValueProvider(valueProvider);
         }
 
         /// <summary>Read the correlation id header from the <paramref name="request"/> and save it to the execution context.

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -11,6 +12,18 @@ namespace Xlent.Lever.Libraries2.WebApi.Pipe.Outbound
     /// </summary>
     public class AddCorrelationId : DelegatingHandler
     {
+        private readonly ICorrelationIdValueProvider _correlationIdValueProvider;
+
+        /// <summary></summary>
+        [Obsolete("Use constructor with ValueProvider", true)]
+        public AddCorrelationId() : this(new AsyncLocalValueProvider()) { }
+
+        /// <summary></summary>
+        public AddCorrelationId(IValueProvider valueProvider)
+        {
+            _correlationIdValueProvider = new CorrelationIdValueProvider(valueProvider);
+        }
+
         /// <summary>
         /// Adds a Fulcrum CorrelationId to the requests before sending it.
         /// </summary>
@@ -22,8 +35,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Pipe.Outbound
             IEnumerable<string> correlationIds;
             if (!request.Headers.TryGetValues(Constants.FulcrumCorrelationIdHeaderName, out correlationIds))
             {
-                request.Headers.Add(Constants.FulcrumCorrelationIdHeaderName,
-                    CorrelationIdValueProvider.AsyncLocalInstance.CorrelationId);
+                request.Headers.Add(Constants.FulcrumCorrelationIdHeaderName, _correlationIdValueProvider.CorrelationId);
             }
             return await base.SendAsync(request, cancellationToken);
         }
