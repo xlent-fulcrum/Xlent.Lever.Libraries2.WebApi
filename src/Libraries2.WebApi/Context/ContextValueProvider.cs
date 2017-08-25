@@ -5,13 +5,8 @@ namespace Xlent.Lever.Libraries2.WebApi.Context
     /// <summary>
     /// Convenience for choosing the right <see cref="IValueProvider"/>.
     /// </summary>
-    public class ContextValueProvider : Core.Context.ContextValueProvider
+    public class ContextValueProvider 
     {
-        static ContextValueProvider()
-        {
-            Chosen = RecommendedForWebApi;
-        }
-
         /// <summary>
         /// Default <see cref="IValueProvider"/> for .Net Framework Web Api.
         /// </summary>
