@@ -10,22 +10,42 @@ namespace Xlent.Lever.Libraries2.WebApi.Context
     /// <remarks>Updating values in a thread will not affect the value in parent/sibling threads</remarks>
     public class HttpContextValueProvider : IValueProvider
     {
+        // When in Application_Start, HttpContext.Current is not available, so use a fallback
+        private readonly IValueProvider _fallbackValueProvider = new AsyncLocalValueProvider();
+
         /// <inheritdoc />
         public T GetValue<T>(string key)
         {
             InternalContract.RequireNotNullOrWhitespace(key, nameof(key));
-            FulcrumAssert.IsNotNull(HttpContext.Current?.Items, null, "HttpContext.Current?.Items was unexpectedly null");
+            if (HttpContext.Current?.Items == null) return GetValueFallback<T>(key);
             if (HttpContext.Current?.Items.Contains(key) != true) return default(T);
             var value = HttpContext.Current.Items[key];
             return (T)value;
+        }
+
+        private T GetValueFallback<T>(string key)
+        {
+            var value = _fallbackValueProvider.GetValue<T>(key);
+            return value;
         }
 
         /// <inheritdoc />
         public void SetValue<T>(string key, T value)
         {
             InternalContract.RequireNotNullOrWhitespace(key, nameof(key));
-            FulcrumAssert.IsNotNull(HttpContext.Current?.Items, null, "HttpContext.Current?.Items was unexpectedly null");
-            HttpContext.Current?.Items.Add(key, value);
+            if (HttpContext.Current?.Items == null)
+            {
+                SetValueFallback(key, value);
+            }
+            else
+            {
+                HttpContext.Current.Items.Add(key, value);
+            }
+        }
+
+        private void SetValueFallback<T>(string key, T value)
+        {
+            _fallbackValueProvider.SetValue(key, value);
         }
     }
 }
