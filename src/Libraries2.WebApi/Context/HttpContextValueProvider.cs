@@ -39,6 +39,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Context
             }
             else
             {
+                if (HttpContext.Current.Items.Contains(key)) HttpContext.Current.Items.Remove(key);
                 HttpContext.Current.Items.Add(key, value);
             }
         }
