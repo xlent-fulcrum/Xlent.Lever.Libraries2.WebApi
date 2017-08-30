@@ -249,10 +249,9 @@ namespace Xlent.Lever.Libraries2.WebApi.Error.Logic
             if (jsonObject == null) return null;
             try
             {
-                var json = JObject.Parse(jsonObject);
-                return json.ToObject<T>();
+                return JsonConvert.DeserializeObject<T>(jsonObject);
             }
-            catch (Exception)
+            catch (JsonReaderException)
             {
                 return null;
             }
