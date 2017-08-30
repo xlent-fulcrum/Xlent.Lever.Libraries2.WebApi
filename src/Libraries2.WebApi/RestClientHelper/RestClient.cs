@@ -293,25 +293,24 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
 
         private static async Task<HttpOperationException> CreateException(HttpMethod method, HttpRequestMessage request, HttpResponseMessage response)
         {
-            string requestContentAsString = "(could not read request content)", responseContentAsString = "(could not read response content)";
+            var requestContentAsString = "(could not read request content)";
+            var responseContentAsString = "(could not read response content)";
             try
             {
-                requestContentAsString = await request.Content.ReadAsStringAsync();
+                requestContentAsString = request.Content == null ? null : await request.Content.ReadAsStringAsync();
             }
-            catch
+            catch (ObjectDisposedException)
             {
                 // Could end up with System.ObjectDisposedException when reading content
             }
             try
             {
-                responseContentAsString = await response.Content.ReadAsStringAsync();
+                responseContentAsString = response.Content == null ? null : await response.Content.ReadAsStringAsync();
             }
-            catch
+            catch (ObjectDisposedException)
             {
                 // Could end up with System.ObjectDisposedException when reading content
             }
-            //var requestContentAsString = request.Content == null ? null : await request.Content?.ReadAsStringAsync();
-            //var responseContentAsString = response.Content == null ? null : await response.Content?.ReadAsStringAsync();
             var exception =
                 new HttpOperationException(
                     $"Request {method} {request.RequestUri.AbsoluteUri}: Failed with status code {response.StatusCode}.")
