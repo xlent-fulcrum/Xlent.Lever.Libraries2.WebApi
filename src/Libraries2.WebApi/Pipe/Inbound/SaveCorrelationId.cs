@@ -20,10 +20,12 @@ namespace Xlent.Lever.Libraries2.WebApi.Pipe.Inbound
 
         /// <summary></summary>
         [Obsolete("Use empty constructor", true)]
+        // ReSharper disable once UnusedParameter.Local
         public SaveCorrelationId(ICorrelationIdValueProvider correlationIdValueProvider) : this() { }
 
         /// <summary></summary>
         [Obsolete("Use empty constructor", true)]
+        // ReSharper disable once UnusedParameter.Local
         public SaveCorrelationId(IValueProvider valueProvider) : this()
         {
         }

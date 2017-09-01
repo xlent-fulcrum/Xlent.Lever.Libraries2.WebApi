@@ -4,6 +4,7 @@ using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using Xlent.Lever.Libraries2.Core.Application;
 using Xlent.Lever.Libraries2.Core.Logging.Model;
 
 namespace Xlent.Lever.Libraries2.WebApi.Pipe.Inbound
@@ -19,9 +20,16 @@ namespace Xlent.Lever.Libraries2.WebApi.Pipe.Inbound
         /// Creates the handler based on a <see cref="IFulcrumLogger"/>.
         /// </summary>
         /// <param name="logHandler"></param>
+        [Obsolete("Use the empty constructor.", true)]
         public LogRequestAndResponse(IFulcrumLogger logHandler)
         {
             _logHandler = logHandler;
+        }
+
+        /// <summary></summary>
+        public LogRequestAndResponse()
+        {
+            _logHandler = ApplicationSetup.Logger;
         }
 
         /// <inheritdoc />

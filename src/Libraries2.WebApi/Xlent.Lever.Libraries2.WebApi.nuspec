@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>Xlent.Lever.Libraries2.WebApi</id>
-    <version>3.2.3</version>
+    <version>3.2.4</version>
     <authors>XLENT Fulcrum</authors>
     <projectUrl>https://github.com/xlent-fulcrum/Xlent.Lever.Libraries2.WebApi</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
@@ -11,7 +11,7 @@
     <summary>Fulcrum library based on .NET WebApi.</summary>
     <copyright>Copyright ©2017 Xlent Business Integration AB</copyright>
     <releaseNotes>
-      3.2.3 Bump
+      3.2.4 Bump
       3.2.2 Now uses the ApplicationSetup.ContextValueProvider.
       3.2.0 Updated Core library.
       3.1.0 New: ThreadHelper class.
