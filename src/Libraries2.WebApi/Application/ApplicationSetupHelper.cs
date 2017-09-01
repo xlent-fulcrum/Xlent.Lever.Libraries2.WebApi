@@ -1,6 +1,5 @@
 ﻿using Xlent.Lever.Libraries2.Core.Application;
 using Xlent.Lever.Libraries2.Core.Logging.Logic;
-using Xlent.Lever.Libraries2.Core.Threads;
 using Xlent.Lever.Libraries2.WebApi.Context;
 using Xlent.Lever.Libraries2.WebApi.Threads;
 

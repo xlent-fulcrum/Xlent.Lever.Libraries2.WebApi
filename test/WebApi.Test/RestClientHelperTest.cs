@@ -18,7 +18,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Test
     public class RestClientHelperTest
     {
         private static Mock<IHttpClient> _httpClientMock;
-        private static readonly Core.Context.IValueProvider ValueProvider = new SingleThreadValueProvider();
+        private static readonly IValueProvider ValueProvider = new SingleThreadValueProvider();
 
 
         [TestInitialize]
@@ -209,6 +209,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Test
                 throw;
             }
         }
+        // ReSharper disable once UnusedParameter.Local
         private static void PrepareMockDelete<T>(T content)
         {
             var mockResponse = new HttpResponseMessage(HttpStatusCode.OK);
