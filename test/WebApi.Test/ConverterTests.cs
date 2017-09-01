@@ -1,5 +1,4 @@
-﻿using System;
-using System.Net;
+﻿using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,7 +8,6 @@ using Newtonsoft.Json.Linq;
 using Xlent.Lever.Libraries2.Core.Error.Logic;
 using Xlent.Lever.Libraries2.Core.Error.Model;
 using Xlent.Lever.Libraries2.WebApi.Error.Logic;
-using Xlent.Lever.Libraries2.WebApi.RestClientHelper;
 
 namespace Xlent.Lever.Libraries2.WebApi.Test
 {

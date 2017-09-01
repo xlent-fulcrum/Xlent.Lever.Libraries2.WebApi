@@ -5,8 +5,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.ExceptionHandling;
+using Xlent.Lever.Libraries2.Core.Application;
 using Xlent.Lever.Libraries2.Core.Context;
 using Xlent.Lever.Libraries2.Core.Error.Model;
+using Xlent.Lever.Libraries2.Core.Logging.Logic;
 using Xlent.Lever.Libraries2.Core.Logging.Model;
 using Xlent.Lever.Libraries2.WebApi.Error.Logic;
 
@@ -20,19 +22,26 @@ namespace Xlent.Lever.Libraries2.WebApi.Pipe.Inbound
     public class ConvertExceptionToFulcrumResponse : ExceptionHandler
     {
         private readonly ICorrelationIdValueProvider _correlationIdProvider;
-        private readonly IFulcrumLogger _logHandler;
 
         /// <summary></summary>
-        [Obsolete("Use constructor with Logger instead")]
-        public ConvertExceptionToFulcrumResponse(IValueProvider valueProvider) : this(valueProvider, null)
+        public ConvertExceptionToFulcrumResponse()
+        {
+            _correlationIdProvider = new CorrelationIdValueProvider(ApplicationSetup.ContextValueProvider);
+        }
+
+        /// <summary></summary>
+        [Obsolete("No need for the valueProvider argument any longer. Use ConvertExceptionToFulcrumResponse().")]
+        public ConvertExceptionToFulcrumResponse(IValueProvider valueProvider) 
+            : this()
         {
         }
 
         /// <summary></summary>
+        [Obsolete("No need for these arguments any longer. Use ConvertExceptionToFulcrumResponse().")]
         public ConvertExceptionToFulcrumResponse(IValueProvider valueProvider, IFulcrumLogger logHandler)
+            :this()
         {
             _correlationIdProvider = new CorrelationIdValueProvider(valueProvider);
-            _logHandler = logHandler;
         }
 
         /// <summary>Converts the exception into a response with the corresponding <see cref="FulcrumError"/>.</summary>
@@ -41,11 +50,15 @@ namespace Xlent.Lever.Libraries2.WebApi.Pipe.Inbound
         /// <param name="cancellationToken">The token to monitor for cancellation requests.</param>
         public override async Task HandleAsync(ExceptionHandlerContext context, CancellationToken cancellationToken)
         {
-            if (_logHandler != null) await _logHandler.LogAsync(context.Exception);
+            if (context?.Exception != null)
+            {
+                Log.LogError($"The web service had an internal exception ({context.Exception.Message})", context.Exception);
 
-            var response = Converter.ToHttpResponseMessage(context.Exception);
+                var response = Converter.ToHttpResponseMessage(context.Exception);
+                Log.LogInformation($"Exception ({context.Exception.Message}) was converted to an HTTP response ({response.StatusCode}).");
 
-            context.Result = new ErrorResult(context.Request, response, _correlationIdProvider.CorrelationId);
+                context.Result = new ErrorResult(context.Request, response, _correlationIdProvider.CorrelationId);
+            }
 
             await base.HandleAsync(context, cancellationToken);
         }
