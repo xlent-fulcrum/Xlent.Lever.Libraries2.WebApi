@@ -31,7 +31,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Pipe.Inbound
         /// <summary></summary>
         public SaveCorrelationId()
         {
-            _correlationIdValueProvider = new CorrelationIdValueProvider(ApplicationSetup.ContextValueProvider);
+            _correlationIdValueProvider = new CorrelationIdValueProvider();
         }
 
         /// <summary>Read the correlation id header from the <paramref name="request"/> and save it to the execution context.

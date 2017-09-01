@@ -26,7 +26,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Pipe.Inbound
         /// <summary></summary>
         public ConvertExceptionToFulcrumResponse()
         {
-            _correlationIdProvider = new CorrelationIdValueProvider(ApplicationSetup.ContextValueProvider);
+            _correlationIdProvider = new CorrelationIdValueProvider();
         }
 
         /// <summary></summary>

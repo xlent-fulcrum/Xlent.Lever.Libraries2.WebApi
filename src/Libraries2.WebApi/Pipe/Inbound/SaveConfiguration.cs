@@ -29,6 +29,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Pipe.Inbound
 
         /// <summary></summary>
         [Obsolete("Use constructor with only an ILeverServiceConfiguration", true)]
+        // ReSharper disable once UnusedParameter.Local
         public SaveConfiguration(IValueProvider valueProvider, ILeverServiceConfiguration serviceConfiguration) : this(serviceConfiguration)
         {
         }
@@ -36,7 +37,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Pipe.Inbound
         /// <summary></summary>
         public SaveConfiguration(ILeverServiceConfiguration serviceConfiguration)
         {
-            _tenantConfigurationProvider = new TenantConfigurationValueProvider(ApplicationSetup.ContextValueProvider);
+            _tenantConfigurationProvider = new TenantConfigurationValueProvider();
             _serviceConfiguration = serviceConfiguration;
         }
 

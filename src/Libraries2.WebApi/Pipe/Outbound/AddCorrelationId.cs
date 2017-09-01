@@ -18,7 +18,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Pipe.Outbound
         /// <summary></summary>
         public AddCorrelationId()
         {
-            _correlationIdValueProvider = new CorrelationIdValueProvider(ApplicationSetup.ContextValueProvider);
+            _correlationIdValueProvider = new CorrelationIdValueProvider();
         }
 
         /// <summary></summary>
