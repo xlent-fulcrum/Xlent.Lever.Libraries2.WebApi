@@ -3,6 +3,7 @@ using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using Xlent.Lever.Libraries2.Core.Application;
 using Xlent.Lever.Libraries2.Core.Context;
 using Xlent.Lever.Libraries2.Core.MultiTenant.Context;
 using Xlent.Lever.Libraries2.Core.MultiTenant.Model;
@@ -27,9 +28,15 @@ namespace Xlent.Lever.Libraries2.WebApi.Pipe.Inbound
         }
 
         /// <summary></summary>
-        public SaveConfiguration(IValueProvider valueProvider, ILeverServiceConfiguration serviceConfiguration)
+        [Obsolete("Use constructor with only an ILeverServiceConfiguration", true)]
+        public SaveConfiguration(IValueProvider valueProvider, ILeverServiceConfiguration serviceConfiguration) : this(serviceConfiguration)
         {
-            _tenantConfigurationProvider = new TenantConfigurationValueProvider(valueProvider);
+        }
+
+        /// <summary></summary>
+        public SaveConfiguration(ILeverServiceConfiguration serviceConfiguration)
+        {
+            _tenantConfigurationProvider = new TenantConfigurationValueProvider(ApplicationSetup.ContextValueProvider);
             _serviceConfiguration = serviceConfiguration;
         }
 

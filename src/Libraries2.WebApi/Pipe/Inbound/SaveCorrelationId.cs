@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using Xlent.Lever.Libraries2.Core.Application;
 using Xlent.Lever.Libraries2.Core.Assert;
 using Xlent.Lever.Libraries2.Core.Context;
 
@@ -18,14 +19,19 @@ namespace Xlent.Lever.Libraries2.WebApi.Pipe.Inbound
         private readonly ICorrelationIdValueProvider _correlationIdValueProvider;
 
         /// <summary></summary>
-        [Obsolete("Use constructor with ValueProvider", true)]
-        public SaveCorrelationId(ICorrelationIdValueProvider correlationIdValueProvider) : this(correlationIdValueProvider.ValueProvider) { }
+        [Obsolete("Use empty constructor", true)]
+        public SaveCorrelationId(ICorrelationIdValueProvider correlationIdValueProvider) : this() { }
 
         /// <summary></summary>
-        public SaveCorrelationId(IValueProvider valueProvider)
+        [Obsolete("Use empty constructor", true)]
+        public SaveCorrelationId(IValueProvider valueProvider) : this()
         {
-            InternalContract.RequireNotNull(valueProvider, nameof(valueProvider));
-            _correlationIdValueProvider = new CorrelationIdValueProvider(valueProvider);
+        }
+
+        /// <summary></summary>
+        public SaveCorrelationId()
+        {
+            _correlationIdValueProvider = new CorrelationIdValueProvider(ApplicationSetup.ContextValueProvider);
         }
 
         /// <summary>Read the correlation id header from the <paramref name="request"/> and save it to the execution context.

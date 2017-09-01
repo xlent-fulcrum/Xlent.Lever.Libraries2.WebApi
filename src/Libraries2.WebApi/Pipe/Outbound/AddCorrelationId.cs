@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using Xlent.Lever.Libraries2.Core.Application;
 using Xlent.Lever.Libraries2.Core.Context;
 
 namespace Xlent.Lever.Libraries2.WebApi.Pipe.Outbound
@@ -15,13 +16,17 @@ namespace Xlent.Lever.Libraries2.WebApi.Pipe.Outbound
         private readonly ICorrelationIdValueProvider _correlationIdValueProvider;
 
         /// <summary></summary>
-        [Obsolete("Use constructor with ValueProvider", true)]
-        public AddCorrelationId() : this(new AsyncLocalValueProvider()) { }
+        public AddCorrelationId()
+        {
+            _correlationIdValueProvider = new CorrelationIdValueProvider(ApplicationSetup.ContextValueProvider);
+        }
 
         /// <summary></summary>
+        [Obsolete("Use empty constructor", true)]
+        // ReSharper disable once UnusedParameter.Local
         public AddCorrelationId(IValueProvider valueProvider)
+            :this()
         {
-            _correlationIdValueProvider = new CorrelationIdValueProvider(valueProvider);
         }
 
         /// <summary>

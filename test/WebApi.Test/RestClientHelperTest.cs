@@ -8,6 +8,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Xlent.Lever.Libraries2.Core.Application;
 using Xlent.Lever.Libraries2.Core.Context;
 using Xlent.Lever.Libraries2.WebApi.RestClientHelper;
 using Xlent.Lever.Libraries2.WebApi.Test.Support.Models;
@@ -18,12 +19,12 @@ namespace Xlent.Lever.Libraries2.WebApi.Test
     public class RestClientHelperTest
     {
         private static Mock<IHttpClient> _httpClientMock;
-        private static readonly IValueProvider ValueProvider = new SingleThreadValueProvider();
 
 
         [TestInitialize]
         public void Initialize()
         {
+            ApplicationSetup.ContextValueProvider = new SingleThreadValueProvider();
             _httpClientMock = new Mock<IHttpClient>();
             RestClient.HttpClient = _httpClientMock.Object;
         }
@@ -31,7 +32,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Test
         [TestMethod]
         public void StringConstructor()
         {
-            var client = new RestClient("http://example.se", ValueProvider);
+            var client = new RestClient("http://example.se");
             Assert.IsNotNull(client);
         }
 
@@ -41,7 +42,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Test
         {
             var person = new Person { GivenName = "GivenName", Surname = "Surname" };
             PrepareMockPost(person);
-            var client = new RestClient("http://example.se", ValueProvider);
+            var client = new RestClient("http://example.se");
             Assert.IsNotNull(client);
             var result = await client.PostAndReturnCreatedObjectAsync("Persons", person);
             Assert.IsNotNull(result);
@@ -56,7 +57,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Test
             var person = new Person { GivenName = "GivenName", Surname = "Surname" };
             var content = "Resource could not be found, 307EEC28-22DE-4BE3-8803-0AB5BE9DEBD8";
             PrepareMockNotFound(HttpMethod.Post, content);
-            var client = new RestClient("http://example.se", ValueProvider);
+            var client = new RestClient("http://example.se");
             Assert.IsNotNull(client);
             try
             {
@@ -89,7 +90,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Test
         {
             var person = new Person { GivenName = "GivenName", Surname = "Surname" };
             PrepareMockGet(person);
-            var client = new RestClient("http://example.se", ValueProvider);
+            var client = new RestClient("http://example.se");
             Assert.IsNotNull(client);
             var result = await client.GetAsync<Person>("Persons/23");
             Assert.IsNotNull(result);
@@ -103,7 +104,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Test
         {
             var content = "Resource could not be found, 307EEC28-22DE-4BE3-8803-0AB5BE9DEBD8";
             PrepareMockNotFound(HttpMethod.Get, content);
-            var client = new RestClient("http://example.se", ValueProvider);
+            var client = new RestClient("http://example.se");
             Assert.IsNotNull(client);
             try
             {
@@ -135,7 +136,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Test
         {
             var person = new Person { GivenName = "GivenName", Surname = "Surname" };
             PrepareMockPut(person);
-            var client = new RestClient("http://example.se", ValueProvider);
+            var client = new RestClient("http://example.se");
             Assert.IsNotNull(client);
             var result = await client.PutAndReturnUpdatedObjectAsync("Persons/23", person);
             Assert.IsNotNull(result);
@@ -150,7 +151,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Test
             var person = new Person { GivenName = "GivenName", Surname = "Surname" };
             var content = "Resource could not be found, 307EEC28-22DE-4BE3-8803-0AB5BE9DEBD8";
             PrepareMockNotFound(HttpMethod.Put, content);
-            var client = new RestClient("http://example.se", ValueProvider);
+            var client = new RestClient("http://example.se");
             Assert.IsNotNull(client);
             try
             {
@@ -182,7 +183,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Test
         {
             var person = new Person { GivenName = "GivenName", Surname = "Surname" };
             PrepareMockDelete(person);
-            var client = new RestClient("http://example.se", ValueProvider);
+            var client = new RestClient("http://example.se");
             Assert.IsNotNull(client);
             await client.DeleteAsync("Persons/23");
             _httpClientMock.VerifyAll();
@@ -194,7 +195,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Test
         {
             var content = "Resource could not be found, 307EEC28-22DE-4BE3-8803-0AB5BE9DEBD8";
             PrepareMockNotFound(HttpMethod.Delete, content);
-            var client = new RestClient("http://example.se", ValueProvider);
+            var client = new RestClient("http://example.se");
             Assert.IsNotNull(client);
             try
             {

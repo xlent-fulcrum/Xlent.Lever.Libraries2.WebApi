@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Net.Http;
 using Xlent.Lever.Libraries2.Core.Context;
-using Xlent.Lever.Libraries2.Core.Error.Logic;
 
 namespace Xlent.Lever.Libraries2.WebApi.Pipe.Outbound
 {
@@ -10,13 +9,6 @@ namespace Xlent.Lever.Libraries2.WebApi.Pipe.Outbound
     /// </summary>
     public static class OutboundPipeFactory
     {
-        /// <summary></summary>
-        /// <returns></returns>
-        [Obsolete("Use value provider overload", true)]
-        public static DelegatingHandler[] CreateDelegatingHandlers()
-        {
-            throw new FulcrumNotImplementedException("This method is deprecated. Recompile.");
-        }
 
         /// <summary>
         /// Creates handlers to deal with Fulcrum specifics around making HTTP requests.
@@ -24,13 +16,21 @@ namespace Xlent.Lever.Libraries2.WebApi.Pipe.Outbound
         /// <seealso cref="ThrowFulcrumExceptionOnFail"/>
         /// <seealso cref="AddCorrelationId"/>
         /// <returns>A list of recommended handlers.</returns>
-        public static DelegatingHandler[] CreateDelegatingHandlers(IValueProvider valueProvider)
+        public static DelegatingHandler[] CreateDelegatingHandlers()
         {
             return new DelegatingHandler[]
             {
                 new ThrowFulcrumExceptionOnFail(),
-                new AddCorrelationId(valueProvider)
+                new AddCorrelationId()
             };
+        }
+
+        [Obsolete("Use overload with no parameters", true)]
+#pragma warning disable 1591
+        public static DelegatingHandler[] CreateDelegatingHandlers(IValueProvider valueProvider)
+#pragma warning restore 1591
+        {
+            return CreateDelegatingHandlers();
         }
     }
 }
