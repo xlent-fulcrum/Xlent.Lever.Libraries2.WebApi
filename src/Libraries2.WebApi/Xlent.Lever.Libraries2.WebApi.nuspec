@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>Xlent.Lever.Libraries2.WebApi</id>
-    <version>4.1.3</version>
+    <version>4.1.4</version>
     <authors>XLENT Fulcrum</authors>
     <projectUrl>https://github.com/xlent-fulcrum/Xlent.Lever.Libraries2.WebApi</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
@@ -11,6 +11,7 @@
     <summary>Fulcrum library based on .NET WebApi.</summary>
     <copyright>Copyright ©2017 Xlent Business Integration AB</copyright>
     <releaseNotes>
+      4.1.4 Better AppSettings.
       4.1.3 Minor signature change.
       4.1.2 Core nuget was updated.
       4.1.1 Introduced app settings support.
@@ -56,7 +57,7 @@
         <dependency id="Microsoft.CodeDom.Providers.DotNetCompilerPlatform" version="1.0.5" />
         <dependency id="Microsoft.Rest.ClientRuntime" version="2.3.8" />
         <dependency id="Newtonsoft.Json" version="9.0.1" />
-        <dependency id="Xlent.Lever.Libraries2.Core.NetFramework" version="1.2.0" />
+        <dependency id="Xlent.Lever.Libraries2.Core.NetFramework" version="1.3.0" />
       </group>
     </dependencies>
   </metadata>
