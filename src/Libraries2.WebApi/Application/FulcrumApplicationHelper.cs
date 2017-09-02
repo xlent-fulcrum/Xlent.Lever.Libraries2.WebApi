@@ -1,7 +1,7 @@
 ﻿using System.Configuration;
 using Xlent.Lever.Libraries2.Core.Application;
 using Xlent.Lever.Libraries2.Core.Assert;
-using Xlent.Lever.Libraries2.Core.Logging.Logic;
+using Xlent.Lever.Libraries2.Core.Logging;
 using Xlent.Lever.Libraries2.Core.MultiTenant.Model;
 using Xlent.Lever.Libraries2.WebApi.Context;
 using Xlent.Lever.Libraries2.WebApi.Threads;

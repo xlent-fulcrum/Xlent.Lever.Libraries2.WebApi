@@ -5,11 +5,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.ExceptionHandling;
-using Xlent.Lever.Libraries2.Core.Application;
 using Xlent.Lever.Libraries2.Core.Context;
 using Xlent.Lever.Libraries2.Core.Error.Model;
-using Xlent.Lever.Libraries2.Core.Logging.Logic;
-using Xlent.Lever.Libraries2.Core.Logging.Model;
+using Xlent.Lever.Libraries2.Core.Logging;
 using Xlent.Lever.Libraries2.WebApi.Error.Logic;
 
 namespace Xlent.Lever.Libraries2.WebApi.Pipe.Inbound

@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Xlent.Lever.Libraries2.Core.Application;
-using Xlent.Lever.Libraries2.Core.Logging.Model;
+using Xlent.Lever.Libraries2.Core.Logging;
 
 namespace Xlent.Lever.Libraries2.WebApi.Pipe.Inbound
 {
@@ -35,45 +35,46 @@ namespace Xlent.Lever.Libraries2.WebApi.Pipe.Inbound
         /// <inheritdoc />
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
-            try
-            {
-                await LogRequest(request);
-            }
-            catch (Exception)
-            {
-                // Ignore, don't interrupt request if logging fails
-            }
+            LogRequest(request);
 
             var timer = new Stopwatch();
             timer.Start();
             var response = await base.SendAsync(request, cancellationToken);
             timer.Stop();
 
-            try
-            {
-                await LogResponse(response, timer.Elapsed);
-            }
-            catch (Exception)
-            {
-                // Ignore, don't interrupt request if logging fails
-            }
-
+            LogResponse(response, timer.Elapsed);
             return response;
         }
 
-        private async Task LogRequest(HttpRequestMessage request)
+        private static void LogRequest(HttpRequestMessage request)
         {
-            var message = $"REQUEST: {request?.Method?.Method} {FilteredRequestUri(request?.RequestUri.AbsoluteUri)}";
-            await _logHandler.LogAsync(LogSeverityLevel.Information, message);
+            try
+            {
+                var message =
+                    $"REQUEST: {request?.Method?.Method} {FilteredRequestUri(request?.RequestUri.AbsoluteUri)}";
+                Log.LogInformation(message);
+            }
+            catch (Exception e)
+            {
+                Log.LogError("Exception was ignored", e);
+            }
         }
 
-     
-        private async Task LogResponse(HttpResponseMessage response, TimeSpan timerElapsed)
+
+        private void LogResponse(HttpResponseMessage response, TimeSpan timerElapsed)
         {
-            var message = $"RESPONSE: Url: {FilteredRequestUri(response?.RequestMessage?.RequestUri.AbsoluteUri)}" +
+            try
+            {
+                var message = $"REQUEST: {response?.RequestMessage?.Method?.Method} {FilteredRequestUri(response?.RequestMessage?.RequestUri.AbsoluteUri)}" +
+                          $"RESPONSE: Url: {FilteredRequestUri(response?.RequestMessage?.RequestUri.AbsoluteUri)}" +
                           $" | StatusCode: {response?.StatusCode}" +
                           $" | ElapsedTime: {timerElapsed}";
-            await _logHandler.LogAsync(LogSeverityLevel.Information, message);
+                Log.LogInformation(message);
+            }
+            catch (Exception e)
+            {
+                Log.LogError("Exception was ignored", e);
+            }
         }
 
         private static string FilteredRequestUri(string uri)
