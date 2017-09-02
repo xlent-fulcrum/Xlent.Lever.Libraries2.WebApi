@@ -21,15 +21,15 @@ namespace Xlent.Lever.Libraries2.WebApi.Pipe.Inbound
         /// </summary>
         /// <param name="logHandler"></param>
         [Obsolete("Use the empty constructor.", true)]
-        public LogRequestAndResponse(IFulcrumLogger logHandler)
+        public LogRequestAndResponse(IFulcrumLogger logHandler) : this()
         {
-            _logHandler = logHandler;
         }
 
         /// <summary></summary>
         public LogRequestAndResponse()
         {
-            _logHandler = ApplicationSetup.Logger;
+            FulcrumApplication.Validate();
+            _logHandler = FulcrumApplication.Setup.Logger;
         }
 
         /// <inheritdoc />

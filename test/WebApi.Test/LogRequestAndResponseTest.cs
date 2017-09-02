@@ -3,6 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Xlent.Lever.Libraries2.Core.Application;
 using Xlent.Lever.Libraries2.Core.Logging.Model;
+using Xlent.Lever.Libraries2.Core.MultiTenant.Model;
 using Xlent.Lever.Libraries2.WebApi.Pipe.Inbound;
 
 namespace Xlent.Lever.Libraries2.WebApi.Test
@@ -16,7 +17,8 @@ namespace Xlent.Lever.Libraries2.WebApi.Test
         public void TestMethod1()
         {
             var logger = new Mock<IFulcrumLogger>();
-            ApplicationSetup.Logger = logger.Object;
+            FulcrumApplicationHelper.UnitTestSetup(typeof(LogRequestAndResponseTest).FullName);
+            FulcrumApplication.Setup.Logger = logger.Object;
             logger.Setup(x => x.LogAsync(It.IsAny<LogSeverityLevel>(), It.IsAny<string>()))
                 .Returns(Task.CompletedTask)
                 .Callback<LogSeverityLevel, string>(
