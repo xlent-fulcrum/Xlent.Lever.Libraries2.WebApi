@@ -1,38 +1,26 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using Xlent.Lever.Libraries2.Core.Application;
+using Xlent.Lever.Libraries2.Core.Context;
 using Xlent.Lever.Libraries2.Core.Logging;
 
-namespace Xlent.Lever.Libraries2.WebApi.Pipe.Inbound
+namespace Xlent.Lever.Libraries2.WebApi.Pipe.Outbound
 {
     /// <summary>
-    /// Logs requests and responses in the pipe
+    /// Adds a Fulcrum CorrelationId header to all outgoing requests.
     /// </summary>
     public class LogRequestAndResponse : DelegatingHandler
     {
-        private readonly IFulcrumLogger _logHandler;
-
         /// <summary>
-        /// Creates the handler based on a <see cref="IFulcrumLogger"/>.
+        /// Logs the request and the response
         /// </summary>
-        /// <param name="logHandler"></param>
-        [Obsolete("Use the empty constructor.", true)]
-        public LogRequestAndResponse(IFulcrumLogger logHandler) : this()
-        {
-        }
-
-        /// <summary></summary>
-        public LogRequestAndResponse()
-        {
-            FulcrumApplication.Validate();
-            _logHandler = FulcrumApplication.Setup.Logger;
-        }
-
-        /// <inheritdoc />
+        /// <param name="request"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
             LogRequest(request);
@@ -51,7 +39,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Pipe.Inbound
             try
             {
                 var message =
-                    $"IN REQUEST: {request?.Method?.Method} {FilteredRequestUri(request?.RequestUri.AbsoluteUri)}";
+                    $"OUT REQUEST: {request?.Method?.Method} {FilteredRequestUri(request?.RequestUri.AbsoluteUri)}";
                 Log.LogInformation(message);
             }
             catch (Exception e)
@@ -65,9 +53,9 @@ namespace Xlent.Lever.Libraries2.WebApi.Pipe.Inbound
         {
             try
             {
-                var message = $"OUT RESPONSE: StatusCode: {response?.StatusCode}" +
-                    $" | REQUEST {response?.RequestMessage?.Method?.Method} {FilteredRequestUri(response?.RequestMessage?.RequestUri.AbsoluteUri)}" +
-                          $" | ElapsedTime: {timerElapsed}";
+                var message = $"IN RESPONSE: StatusCode: {response?.StatusCode}" +
+                              $" | {response?.RequestMessage?.Method?.Method} {FilteredRequestUri(response?.RequestMessage?.RequestUri.AbsoluteUri)}" +
+                              $" | ElapsedTime: {timerElapsed}";
                 Log.LogInformation(message);
             }
             catch (Exception e)

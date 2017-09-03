@@ -21,7 +21,8 @@ namespace Xlent.Lever.Libraries2.WebApi.Pipe.Outbound
             return new DelegatingHandler[]
             {
                 new ThrowFulcrumExceptionOnFail(),
-                new AddCorrelationId()
+                new AddCorrelationId(),
+                new LogRequestAndResponse()
             };
         }
 

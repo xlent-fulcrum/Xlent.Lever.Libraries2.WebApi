@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Xlent.Lever.Libraries2.Core.Assert;
 using Xlent.Lever.Libraries2.Core.Context;
+using Xlent.Lever.Libraries2.Core.Logging;
 
 namespace Xlent.Lever.Libraries2.WebApi.Pipe.Inbound
 {
@@ -74,7 +75,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Pipe.Inbound
                 // ReSharper disable once UnusedVariable
                 var message =
                     $"There was more than one correlation id in the header: {string.Join(", ", correlationsArray)}. The first one was picked as the Fulcrum correlation id from here on.";
-                // TODO: Log the message as a Warning.
+                Log.LogWarning(message);
             }
             return correlationsArray[0];
         }
