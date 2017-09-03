@@ -4,9 +4,11 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Xlent.Lever.Libraries2.Core.Context;
+using Xlent.Lever.Libraries2.Core.Logging;
 using Xlent.Lever.Libraries2.Core.MultiTenant.Context;
 using Xlent.Lever.Libraries2.Core.MultiTenant.Model;
 using Xlent.Lever.Libraries2.Core.Platform.Configurations;
+using Xlent.Lever.Libraries2.WebApi.Misc;
 
 namespace Xlent.Lever.Libraries2.WebApi.Pipe.Inbound
 {
@@ -51,6 +53,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Pipe.Inbound
                 var organization = match.Groups[1].Value;
                 var environment = match.Groups[2].Value;
                 var tenant = new Tenant(organization, environment);
+                Log.LogVerbose($"Found tenant {tenant} in request {RequestResponseHelper.ToStringForLogging(request)}");
                 _tenantConfigurationProvider.Tenant = tenant;
                 try
                 {

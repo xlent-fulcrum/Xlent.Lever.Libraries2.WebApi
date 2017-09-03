@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Xlent.Lever.Libraries2.Core.Assert;
 using Xlent.Lever.Libraries2.Core.Context;
 using Xlent.Lever.Libraries2.Core.Logging;
+using Xlent.Lever.Libraries2.WebApi.Misc;
 
 namespace Xlent.Lever.Libraries2.WebApi.Pipe.Inbound
 {
@@ -60,7 +61,13 @@ namespace Xlent.Lever.Libraries2.WebApi.Pipe.Inbound
             InternalContract.RequireNotNull(request, nameof(request));
             var correlationId = ExtractCorrelationIdFromHeader(request);
             FulcrumAssert.IsNotNull(_correlationIdValueProvider, $"{Namespace}: 917BF2A8-1C68-45DB-BABB-C4331244C579");
-            _correlationIdValueProvider.CorrelationId = correlationId ?? Guid.NewGuid().ToString();
+            var createCorrelationId = String.IsNullOrWhiteSpace(correlationId);
+            if (createCorrelationId) correlationId = Guid.NewGuid().ToString();
+            _correlationIdValueProvider.CorrelationId = correlationId;
+            if (createCorrelationId)
+            {
+                Log.LogInformation($"Created correlation id {correlationId}, as incoming request did not have it. ({RequestResponseHelper.ToStringForLogging(request)})");
+            }
         }
 
         private static string ExtractCorrelationIdFromHeader(HttpRequestMessage request)

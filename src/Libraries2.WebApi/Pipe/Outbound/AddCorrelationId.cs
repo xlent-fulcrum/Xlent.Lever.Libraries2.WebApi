@@ -4,6 +4,8 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Xlent.Lever.Libraries2.Core.Context;
+using Xlent.Lever.Libraries2.Core.Logging;
+using Xlent.Lever.Libraries2.WebApi.Misc;
 
 namespace Xlent.Lever.Libraries2.WebApi.Pipe.Outbound
 {
@@ -36,10 +38,19 @@ namespace Xlent.Lever.Libraries2.WebApi.Pipe.Outbound
         /// <returns></returns>
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
-            IEnumerable<string> correlationIds;
-            if (!request.Headers.TryGetValues(Constants.FulcrumCorrelationIdHeaderName, out correlationIds))
+            if (string.IsNullOrWhiteSpace(_correlationIdValueProvider.CorrelationId))
             {
-                request.Headers.Add(Constants.FulcrumCorrelationIdHeaderName, _correlationIdValueProvider.CorrelationId);
+                Log.LogWarning(
+                    $"Correlation id is missing for outgoing request {RequestResponseHelper.ToStringForLogging(request)}");
+            }
+            else
+            {
+                IEnumerable<string> correlationIds;
+                if (!request.Headers.TryGetValues(Constants.FulcrumCorrelationIdHeaderName, out correlationIds))
+                {
+                    request.Headers.Add(Constants.FulcrumCorrelationIdHeaderName,
+                        _correlationIdValueProvider.CorrelationId);
+                }
             }
             return await base.SendAsync(request, cancellationToken);
         }

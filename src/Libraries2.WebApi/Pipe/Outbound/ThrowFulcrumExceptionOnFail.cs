@@ -2,7 +2,9 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Xlent.Lever.Libraries2.Core.Error.Logic;
+using Xlent.Lever.Libraries2.Core.Logging;
 using Xlent.Lever.Libraries2.WebApi.Error.Logic;
+using Xlent.Lever.Libraries2.WebApi.Misc;
 
 namespace Xlent.Lever.Libraries2.WebApi.Pipe.Outbound
 {
@@ -16,8 +18,9 @@ namespace Xlent.Lever.Libraries2.WebApi.Pipe.Outbound
         {
            var response = await base.SendAsync(request, cancellationToken);
             var fulcrumException = await Converter.ToFulcrumExceptionAsync(response);
-            if (fulcrumException != null) throw fulcrumException;
-            return response;
+            if (fulcrumException == null) return response;
+            Log.LogWarning($"Fulcrum exception {fulcrumException} after request {RequestResponseHelper.ToStringForLogging(request)}");
+            throw fulcrumException;
         }
     }
 }
