@@ -66,7 +66,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Pipe.Inbound
             _correlationIdValueProvider.CorrelationId = correlationId;
             if (createCorrelationId)
             {
-                Log.LogInformation($"Created correlation id {correlationId}, as incoming request did not have it. ({RequestResponseHelper.ToStringForLogging(request)})");
+                Log.LogInformation($"Created correlation id {correlationId}, as incoming request did not have it. ({HttpHelper.ToStringForLogging(request)})");
             }
         }
 

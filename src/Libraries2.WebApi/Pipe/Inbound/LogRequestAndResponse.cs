@@ -49,14 +49,14 @@ namespace Xlent.Lever.Libraries2.WebApi.Pipe.Inbound
 
         private static void LogRequest(HttpRequestMessage request)
         {
-            var message = RequestResponseHelper.ToStringForLogging(request);
+            var message = HttpHelper.ToStringForLogging(request);
             Log.LogInformation($"IN request {message}");
         }
 
 
         private void LogResponse(HttpResponseMessage response, TimeSpan elapsedTime)
         {
-            var message = RequestResponseHelper.ToStringForLogging(response, elapsedTime);
+            var message = HttpHelper.ToStringForLogging(response, elapsedTime);
             Log.LogInformation($"OUT response {message}");
         }
     }

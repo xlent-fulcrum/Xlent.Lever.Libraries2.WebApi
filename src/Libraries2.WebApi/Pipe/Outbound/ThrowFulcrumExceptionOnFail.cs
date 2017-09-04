@@ -19,7 +19,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Pipe.Outbound
            var response = await base.SendAsync(request, cancellationToken);
             var fulcrumException = await Converter.ToFulcrumExceptionAsync(response);
             if (fulcrumException == null) return response;
-            Log.LogWarning($"Fulcrum exception {fulcrumException} after request {RequestResponseHelper.ToStringForLogging(request)}");
+            Log.LogWarning($"Fulcrum exception {fulcrumException} after request {HttpHelper.ToStringForLogging(request)}");
             throw fulcrumException;
         }
     }

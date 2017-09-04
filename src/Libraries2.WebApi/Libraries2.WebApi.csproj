@@ -68,6 +68,7 @@
     <Compile Include="Context\ContextValueProvider.cs" />
     <Compile Include="Context\HttpContextValueProvider.cs" />
     <Compile Include="Error\Logic\Converter.cs" />
+    <Compile Include="Misc\HttpHelper.cs" />
     <Compile Include="Misc\RequestResponseHelper.cs" />
     <Compile Include="Pipe\Outbound\LogRequestAndResponse.cs" />
     <Compile Include="Threads\HostingThreads.cs" />

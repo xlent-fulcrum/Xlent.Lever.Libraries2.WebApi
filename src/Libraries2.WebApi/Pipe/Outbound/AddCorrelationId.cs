@@ -41,7 +41,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Pipe.Outbound
             if (string.IsNullOrWhiteSpace(_correlationIdValueProvider.CorrelationId))
             {
                 Log.LogWarning(
-                    $"Correlation id is missing for outgoing request {RequestResponseHelper.ToStringForLogging(request)}");
+                    $"Correlation id is missing for outgoing request {HttpHelper.ToStringForLogging(request)}");
             }
             else
             {

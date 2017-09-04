@@ -53,7 +53,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Pipe.Inbound
                 var organization = match.Groups[1].Value;
                 var environment = match.Groups[2].Value;
                 var tenant = new Tenant(organization, environment);
-                Log.LogVerbose($"Found tenant {tenant} in request {RequestResponseHelper.ToStringForLogging(request)}");
+                Log.LogVerbose($"Found tenant {tenant} in request {HttpHelper.ToStringForLogging(request)}");
                 _tenantConfigurationProvider.Tenant = tenant;
                 try
                 {
