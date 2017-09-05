@@ -18,8 +18,8 @@ namespace Xlent.Lever.Libraries2.WebApi.Test
             FulcrumApplicationHelper.UnitTestSetup(typeof(LogRequestAndResponseTest).FullName);
             FulcrumApplication.Setup.Logger = logger.Object;
             logger.Setup(x => x.LogAsync(It.IsAny<LogInstanceInformation>()))
-                .Callback<LogSeverityLevel, string>(
-                    (level, message) =>
+                .Callback<LogInstanceInformation>(
+                    (information) =>
                     {
                         
                     }
