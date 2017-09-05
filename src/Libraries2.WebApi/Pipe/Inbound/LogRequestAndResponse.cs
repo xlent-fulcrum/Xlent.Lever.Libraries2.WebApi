@@ -15,13 +15,12 @@ namespace Xlent.Lever.Libraries2.WebApi.Pipe.Inbound
     /// </summary>
     public class LogRequestAndResponse : DelegatingHandler
     {
-        private readonly IFulcrumLogger _logHandler;
-
         /// <summary>
         /// Creates the handler based on a <see cref="IFulcrumLogger"/>.
         /// </summary>
         /// <param name="logHandler"></param>
         [Obsolete("Use the empty constructor.", true)]
+        // ReSharper disable once UnusedParameter.Local
         public LogRequestAndResponse(IFulcrumLogger logHandler) : this()
         {
         }
@@ -30,7 +29,6 @@ namespace Xlent.Lever.Libraries2.WebApi.Pipe.Inbound
         public LogRequestAndResponse()
         {
             FulcrumApplication.Validate();
-            _logHandler = FulcrumApplication.Setup.Logger;
         }
 
         /// <inheritdoc />

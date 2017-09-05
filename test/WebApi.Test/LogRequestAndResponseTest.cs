@@ -14,10 +14,10 @@ namespace Xlent.Lever.Libraries2.WebApi.Test
         [TestMethod]
         public void TestMethod1()
         {
-            var logger = new Mock<IFulcrumLogger>();
+            var logger = new Mock<IFulcrumFullLogger>();
             FulcrumApplicationHelper.UnitTestSetup(typeof(LogRequestAndResponseTest).FullName);
             FulcrumApplication.Setup.Logger = logger.Object;
-            logger.Setup(x => x.Log(It.IsAny<LogSeverityLevel>(), It.IsAny<string>()))
+            logger.Setup(x => x.LogAsync(It.IsAny<LogInstanceInformation>()))
                 .Callback<LogSeverityLevel, string>(
                     (level, message) =>
                     {
