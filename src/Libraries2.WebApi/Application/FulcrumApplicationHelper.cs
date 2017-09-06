@@ -23,7 +23,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Application
         {
             FulcrumApplication.Initialize(name, tenant, level);
             FulcrumApplication.Setup.ThreadHandler = new HostingThreads();
-            FulcrumApplication.Setup.Logger = Log.RecommendedForNetFramework;
+            FulcrumApplication.Setup.FullLogger = Log.RecommendedForNetFramework;
             FulcrumApplication.Setup.ContextValueProvider = ContextValueProvider.RecommendedForWebApi;
             FulcrumApplication.AppSettings = new AppSettings(new ConfigurationManagerAppSettings());
         }

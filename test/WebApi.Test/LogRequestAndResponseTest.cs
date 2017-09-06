@@ -16,7 +16,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Test
         {
             var logger = new Mock<IFulcrumFullLogger>();
             FulcrumApplicationHelper.UnitTestSetup(typeof(LogRequestAndResponseTest).FullName);
-            FulcrumApplication.Setup.Logger = logger.Object;
+            FulcrumApplication.Setup.FullLogger = logger.Object;
             logger.Setup(x => x.LogAsync(It.IsAny<LogInstanceInformation>()))
                 .Callback<LogInstanceInformation>(
                     (information) =>
