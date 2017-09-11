@@ -135,9 +135,15 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
         /// <summary></summary>
         /// <param name="baseUri">The base URL that all HTTP calls methods will refer to.</param>
         /// <param name="credentials">The credentials used when making the HTTP calls.</param>
-#pragma warning disable 618
-        public RestClient(string baseUri, ServiceClientCredentials credentials) : this(baseUri)
-#pragma warning restore 618
+        public RestClient(string baseUri, ServiceClientCredentials credentials) : this(baseUri, credentials, true)
+        {
+        }
+
+        /// <summary></summary>
+        /// <param name="baseUri">The base URL that all HTTP calls methods will refer to.</param>
+        /// <param name="credentials">The credentials used when making the HTTP calls.</param>
+        /// <param name="withLogging">Should logging handlers be used in outbound pipe?</param>
+        public RestClient(string baseUri, ServiceClientCredentials credentials, bool withLogging) : this(baseUri, withLogging)
         {
             Credentials = credentials;
         }
