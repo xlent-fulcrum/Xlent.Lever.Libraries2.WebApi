@@ -51,14 +51,22 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
         /// <summary></summary>
         /// <param name="baseUri">The base URL that all HTTP calls methods will refer to.</param>
         // ReSharper disable once UnusedParameter.Local
-        public RestClient(string baseUri)
+        public RestClient(string baseUri) : this(baseUri, true)
+        {
+        }
+
+        /// <summary></summary>
+        /// <param name="baseUri">The base URL that all HTTP calls methods will refer to.</param>
+        /// <param name="withLogging">Should logging handlers be used in outbound pipe?</param>
+        public RestClient(string baseUri, bool withLogging)
         {
             BaseUri = new Uri(baseUri);
             lock (LockClass)
             {
                 if (HttpClient == null)
                 {
-                    var httpClient = HttpClientFactory.Create(OutboundPipeFactory.CreateDelegatingHandlers());
+                    var handlers = withLogging ? OutboundPipeFactory.CreateDelegatingHandlers() : OutboundPipeFactory.CreateDelegatingHandlersWithoutLogging();
+                    var httpClient = HttpClientFactory.Create(handlers);
                     HttpClient = new HttpClientWrapper(httpClient);
                 }
             }
@@ -92,6 +100,7 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
             };
             #endregion
         }
+
 
         /// <summary></summary>
         /// <param name="baseUri">The base URL that all HTTP calls methods will refer to.</param>
