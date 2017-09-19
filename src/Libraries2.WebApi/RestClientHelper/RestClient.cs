@@ -44,7 +44,7 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
         /// <param name="valueProvider"></param>
         [Obsolete("Use (string, value provider) overload")]
         public RestClient(Uri baseUri, IValueProvider valueProvider)
-            :this(baseUri.AbsoluteUri)
+            : this(baseUri.AbsoluteUri)
         {
         }
 
@@ -262,12 +262,7 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
             {
                 response = await SendRequestAsync(method, relativeUrl, body, customHeaders, cancellationToken).ConfigureAwait(false);
                 var request = response.RequestMessage;
-                if (response.StatusCode == HttpStatusCode.OK)
-                {
-                    return await HandleResponse<TResponse>(method, response, request);
-                }
-                var exception = await CreateException(method, request, response);
-                throw exception;
+                return await HandleResponse<TResponse>(method, response, request);
             }
             finally
             {
@@ -287,16 +282,7 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
                 request = await CreateRequest(method, relativeUrl, body, customHeaders, cancellationToken);
                 cancellationToken.ThrowIfCancellationRequested();
                 var response = await HttpClient.SendAsync(request, cancellationToken).ConfigureAwait(false);
-                if (response.IsSuccessStatusCode) return response;
-                try
-                {
-                    var exception = await CreateException(method, request, response);
-                    throw exception;
-                }
-                finally
-                {
-                    response.Dispose();
-                }
+                return response;
             }
             finally
             {
@@ -313,36 +299,6 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
         #endregion
 
         #region Helpers
-
-        private static async Task<HttpOperationException> CreateException(HttpMethod method, HttpRequestMessage request, HttpResponseMessage response)
-        {
-            var requestContentAsString = "(could not read request content)";
-            var responseContentAsString = "(could not read response content)";
-            try
-            {
-                requestContentAsString = request.Content == null ? null : await request.Content.ReadAsStringAsync();
-            }
-            catch (ObjectDisposedException)
-            {
-                // Could end up with System.ObjectDisposedException when reading content
-            }
-            try
-            {
-                responseContentAsString = response.Content == null ? null : await response.Content.ReadAsStringAsync();
-            }
-            catch (ObjectDisposedException)
-            {
-                // Could end up with System.ObjectDisposedException when reading content
-            }
-            var exception =
-                new HttpOperationException(
-                    $"Request {method} {request.RequestUri.AbsoluteUri}: Failed with status code {response.StatusCode}.")
-                {
-                    Request = new HttpRequestMessageWrapper(request, requestContentAsString),
-                    Response = new HttpResponseMessageWrapper(response, responseContentAsString)
-                };
-            return exception;
-        }
 
         private static HttpRequestMessage CreateRequest(HttpMethod method, string url, Dictionary<string, List<string>> customHeaders)
         {
