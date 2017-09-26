@@ -9,6 +9,8 @@ using Microsoft.Rest;
 using Newtonsoft.Json;
 using Xlent.Lever.Libraries2.Core.Assert;
 using Xlent.Lever.Libraries2.Core.Context;
+using Xlent.Lever.Libraries2.Core.Error.Logic;
+using Xlent.Lever.Libraries2.WebApi.Logging;
 using Xlent.Lever.Libraries2.WebApi.Pipe.Outbound;
 
 namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
@@ -245,7 +247,8 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
             CancellationToken cancellationToken = new CancellationToken())
         {
             InternalContract.RequireNotNullOrWhitespace(relativeUrl, nameof(relativeUrl));
-            await SendRequestAsync(HttpMethod.Delete, relativeUrl, customHeaders, cancellationToken);
+            var response = await SendRequestAsync(HttpMethod.Delete, relativeUrl, customHeaders, cancellationToken);
+            await VerifySuccess(response);
         }
 
         #endregion
@@ -320,30 +323,66 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
         private async Task<HttpOperationResponse<TResponse>> HandleResponse<TResponse>(HttpMethod method, HttpResponseMessage response,
             HttpRequestMessage request)
         {
+            await VerifySuccess(response);
             var result = new HttpOperationResponse<TResponse>
             {
                 Request = request,
                 Response = response,
                 Body = default(TResponse)
             };
-            if (response.Content == null) return result;
 
-            if ((method == HttpMethod.Get && response.StatusCode != HttpStatusCode.NoContent) || method == HttpMethod.Put ||
-                method == HttpMethod.Post)
+            if (method == HttpMethod.Get || method == HttpMethod.Put || method == HttpMethod.Post)
             {
-                var responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                if (response.StatusCode != HttpStatusCode.OK)
+                {
+                    throw new FulcrumAssertionFailedException($"The response to request {request.ToLogString()} was expected to have HttpStatusCode {HttpStatusCode.OK}, but had {response.StatusCode.ToLogString()}.");
+                }
+                var responseContent = await TryGetContentAsString(response.Content, false);
+                if (responseContent == null) return result;
                 try
                 {
                     result.Body =
                         Microsoft.Rest.Serialization.SafeJsonConvert.DeserializeObject<TResponse>(responseContent,
                             _deserializationSettings);
                 }
-                catch (JsonException ex)
+                catch (Exception e)
                 {
-                    throw new SerializationException("Unable to deserialize the response.", responseContent, ex);
+                    throw new FulcrumAssertionFailedException($"The response to request {request.ToLogString()} could not be deserialized to the type {typeof(TResponse).FullName}. The content was:\r{responseContent}.", e);
                 }
             }
             return result;
+        }
+
+        private async Task VerifySuccess(HttpResponseMessage response)
+        {
+            InternalContract.RequireNotNull(response, nameof(response));
+            InternalContract.RequireNotNull(response.RequestMessage, $"{nameof(response)}.{nameof(response.RequestMessage)}");
+            if (!response.IsSuccessStatusCode)
+            {
+                var requestContent = await TryGetContentAsString(response.RequestMessage?.Content, true);
+                var responseContent = await TryGetContentAsString(response.Content, true);
+                var message = $"{response.StatusCode} {responseContent}";
+                var exception = new HttpOperationException(message)
+                {
+                    Response = new HttpResponseMessageWrapper(response, responseContent),
+                    Request = new HttpRequestMessageWrapper(response.RequestMessage, requestContent)
+                };
+                throw exception;
+            }
+        }
+
+        private async Task<string> TryGetContentAsString(HttpContent content, bool silentlyIgnoreExceptions)
+        {
+            if (content == null) return null;
+            try
+            {
+                return await content.ReadAsStringAsync().ConfigureAwait(false);
+            }
+            catch (Exception e)
+            {
+                if (!silentlyIgnoreExceptions) throw new FulcrumAssertionFailedException($"Expected to be able to read an HttpContent.", e);
+            }
+            return null;
         }
 
         private async Task<HttpRequestMessage> CreateRequest<TBody>(HttpMethod method, string relativeUrl, TBody instance, Dictionary<string, List<string>> customHeaders,

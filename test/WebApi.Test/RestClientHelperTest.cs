@@ -80,9 +80,9 @@ namespace Xlent.Lever.Libraries2.WebApi.Test
             {
                 Content = new StringContent(JObject.FromObject(content).ToString(Formatting.Indented), Encoding.UTF8)
             };
-            _httpClientMock.Setup(mock => mock.SendAsync(It.Is<HttpRequestMessage>(m => m.Method == HttpMethod.Post),
-                It.IsAny<CancellationToken>())).ReturnsAsync(mockResponse);
+            PrepareMockOk<T>(mockResponse, HttpMethod.Post);
         }
+
         #endregion
 
         #region GET
@@ -126,8 +126,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Test
             {
                 Content = new StringContent(JObject.FromObject(content).ToString(Formatting.Indented), Encoding.UTF8)
             };
-            _httpClientMock.Setup(mock => mock.SendAsync(It.Is<HttpRequestMessage>(m => m.Method == HttpMethod.Get),
-                It.IsAny<CancellationToken>())).ReturnsAsync(mockResponse);
+            PrepareMockOk<T>(mockResponse, HttpMethod.Get);
         }
         #endregion
 
@@ -173,8 +172,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Test
             {
                 Content = new StringContent(JObject.FromObject(content).ToString(Formatting.Indented), Encoding.UTF8)
             };
-            _httpClientMock.Setup(mock => mock.SendAsync(It.Is<HttpRequestMessage>(m => m.Method == HttpMethod.Put),
-                It.IsAny<CancellationToken>())).ReturnsAsync(mockResponse);
+            PrepareMockOk<T>(mockResponse, HttpMethod.Put);
         }
         #endregion
 
@@ -215,8 +213,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Test
         private static void PrepareMockDelete<T>(T content)
         {
             var mockResponse = new HttpResponseMessage(HttpStatusCode.OK);
-            _httpClientMock.Setup(mock => mock.SendAsync(It.Is<HttpRequestMessage>(m => m.Method == HttpMethod.Delete),
-                It.IsAny<CancellationToken>())).ReturnsAsync(mockResponse);
+            PrepareMockOk<T>(mockResponse, HttpMethod.Delete);
         }
         #endregion
 
@@ -226,6 +223,16 @@ namespace Xlent.Lever.Libraries2.WebApi.Test
             Assert.AreEqual(expected.Surname, actual.Surname);
         }
 
+        private static void PrepareMockOk<T>(HttpResponseMessage mockResponse, HttpMethod method)
+        {
+            _httpClientMock.Setup(mock => mock.SendAsync(It.Is<HttpRequestMessage>(m => m.Method == method),
+                It.IsAny<CancellationToken>())).ReturnsAsync((HttpRequestMessage request, CancellationToken token) =>
+            {
+                mockResponse.RequestMessage = request;
+                return mockResponse;
+            });
+        }
+
         private static void PrepareMockNotFound(HttpMethod method, string errorMessage)
         {
             var mockResponse = new HttpResponseMessage(HttpStatusCode.NotFound)
@@ -233,7 +240,11 @@ namespace Xlent.Lever.Libraries2.WebApi.Test
                 Content = new StringContent(errorMessage, Encoding.UTF8)
             };
             _httpClientMock.Setup(mock => mock.SendAsync(It.Is<HttpRequestMessage>(m => m.Method == method),
-                It.IsAny<CancellationToken>())).ReturnsAsync(mockResponse);
+                It.IsAny<CancellationToken>())).ReturnsAsync((HttpRequestMessage request, CancellationToken token) =>
+            {
+                mockResponse.RequestMessage = request;
+                return mockResponse;
+            });
         }
     }
 }
