@@ -335,7 +335,7 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
             {
                 if (response.StatusCode != HttpStatusCode.OK)
                 {
-                    throw new FulcrumAssertionFailedException($"The response to request {request.ToLogString()} was expected to have HttpStatusCode {HttpStatusCode.OK}, but had {response.StatusCode.ToLogString()}.");
+                    throw new FulcrumResourceContractException($"The response to request {request.ToLogString()} was expected to have HttpStatusCode {HttpStatusCode.OK}, but had {response.StatusCode.ToLogString()}.");
                 }
                 var responseContent = await TryGetContentAsString(response.Content, false);
                 if (responseContent == null) return result;
@@ -347,7 +347,7 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
                 }
                 catch (Exception e)
                 {
-                    throw new FulcrumAssertionFailedException($"The response to request {request.ToLogString()} could not be deserialized to the type {typeof(TResponse).FullName}. The content was:\r{responseContent}.", e);
+                    throw new FulcrumResourceContractException($"The response to request {request.ToLogString()} could not be deserialized to the type {typeof(TResponse).FullName}. The content was:\r{responseContent}.", e);
                 }
             }
             return result;

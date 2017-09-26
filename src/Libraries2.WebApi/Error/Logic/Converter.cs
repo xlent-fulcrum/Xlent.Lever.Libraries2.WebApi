@@ -55,12 +55,13 @@ namespace Xlent.Lever.Libraries2.WebApi.Error.Logic
         {
             // Core
             AddFulcrumException(typeof(FulcrumAssertionFailedException), HttpStatusCode.InternalServerError);
-            AddFulcrumException(typeof(FulcrumBusinessRuleException), HttpStatusCode.BadRequest);
-            AddFulcrumException(typeof(FulcrumConflictException), HttpStatusCode.BadRequest);
-            AddFulcrumException(typeof(FulcrumContractException));
-            AddFulcrumException(typeof(FulcrumNotFoundException), HttpStatusCode.BadRequest);
+            AddFulcrumException(typeof(FulcrumResourceContractException), HttpStatusCode.InternalServerError);
+            AddFulcrumException(typeof(FulcrumContractException), HttpStatusCode.InternalServerError);
             AddFulcrumException(typeof(FulcrumNotImplementedException), HttpStatusCode.InternalServerError);
             AddFulcrumException(typeof(FulcrumTryAgainException), HttpStatusCode.InternalServerError);
+            AddFulcrumException(typeof(FulcrumBusinessRuleException), HttpStatusCode.BadRequest);
+            AddFulcrumException(typeof(FulcrumConflictException), HttpStatusCode.BadRequest);
+            AddFulcrumException(typeof(FulcrumNotFoundException), HttpStatusCode.BadRequest);
 
             // WebApi
             AddFulcrumException(typeof(FulcrumServiceContractException), HttpStatusCode.BadRequest);
