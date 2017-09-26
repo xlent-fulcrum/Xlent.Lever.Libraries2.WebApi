@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Xlent.Lever.Libraries2.Core.Error.Logic;
 using Xlent.Lever.Libraries2.Core.Logging;
 using Xlent.Lever.Libraries2.WebApi.Error.Logic;
-using Xlent.Lever.Libraries2.WebApi.Misc;
+using Xlent.Lever.Libraries2.WebApi.Logging;
 
 namespace Xlent.Lever.Libraries2.WebApi.Pipe.Outbound
 {
@@ -16,10 +16,10 @@ namespace Xlent.Lever.Libraries2.WebApi.Pipe.Outbound
         /// <inheritdoc />
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
-           var response = await base.SendAsync(request, cancellationToken);
+            var response = await base.SendAsync(request, cancellationToken);
             var fulcrumException = await Converter.ToFulcrumExceptionAsync(response);
             if (fulcrumException == null) return response;
-            Log.LogWarning($"Fulcrum exception {fulcrumException} after request {HttpHelper.ToStringForLogging(request)}");
+            Log.LogInformation($"OUT request-response {response.ToLogString()} threw a FulcrumException:\r{fulcrumException.ToLogString()}");
             throw fulcrumException;
         }
     }

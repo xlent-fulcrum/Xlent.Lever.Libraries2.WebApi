@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using Xlent.Lever.Libraries2.Core.Application;
 using Xlent.Lever.Libraries2.Core.Context;
 using Xlent.Lever.Libraries2.Core.Logging;
 using Xlent.Lever.Libraries2.Core.MultiTenant.Context;
+using Xlent.Lever.Libraries2.WebApi.Logging;
 using Xlent.Lever.Libraries2.WebApi.Misc;
 
 namespace Xlent.Lever.Libraries2.WebApi.Pipe.Outbound
@@ -47,7 +47,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Pipe.Outbound
                 {
                     // We should have a gotten a correlation id from the calling client.
                     Log.LogWarning(
-                        $"We have a calling client ({tenantProvider.CallingClientName}), but we are missing a correlation id for an outbound request ({HttpHelper.ToStringForLogging(request)}).");
+                        $"We have a calling client ({tenantProvider.CallingClientName}), but we are missing a correlation id for an outbound request ({request.ToLogString()}).");
                 }
             }
             else

@@ -24,6 +24,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Test
         [TestInitialize]
         public void Initialize()
         {
+            FulcrumApplicationHelper.UnitTestSetup(typeof(RestClientHelperTest).FullName);
             FulcrumApplication.Setup.ContextValueProvider = new SingleThreadValueProvider();
             _httpClientMock = new Mock<IHttpClient>();
             RestClient.HttpClient = _httpClientMock.Object;
