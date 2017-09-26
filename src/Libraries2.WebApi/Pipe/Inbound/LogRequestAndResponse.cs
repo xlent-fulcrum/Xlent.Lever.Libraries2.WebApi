@@ -6,56 +6,18 @@ using System.Threading;
 using System.Threading.Tasks;
 using Xlent.Lever.Libraries2.Core.Application;
 using Xlent.Lever.Libraries2.Core.Logging;
+using Xlent.Lever.Libraries2.WebApi.Logging;
 using Xlent.Lever.Libraries2.WebApi.Misc;
 
 namespace Xlent.Lever.Libraries2.WebApi.Pipe.Inbound
 {
-    /// <summary>
-    /// Logs requests and responses in the pipe
-    /// </summary>
-    public class LogRequestAndResponse : DelegatingHandler
+    /// <inheritdoc />
+    public class LogRequestAndResponse : Pipe.LogRequestAndResponse
     {
-        /// <summary>
-        /// Creates the handler based on a <see cref="IFulcrumLogger"/>.
-        /// </summary>
-        /// <param name="logHandler"></param>
-        [Obsolete("Use the empty constructor.", true)]
-        // ReSharper disable once UnusedParameter.Local
-        public LogRequestAndResponse(IFulcrumLogger logHandler) : this()
-        {
-        }
-
-        /// <summary></summary>
-        public LogRequestAndResponse()
-        {
-            FulcrumApplication.Validate();
-        }
-
         /// <inheritdoc />
-        protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+        public LogRequestAndResponse()
+            : base(false)
         {
-            LogRequest(request);
-
-            var timer = new Stopwatch();
-            timer.Start();
-            var response = await base.SendAsync(request, cancellationToken);
-            timer.Stop();
-
-            LogResponse(response, timer.Elapsed);
-            return response;
-        }
-
-        private static void LogRequest(HttpRequestMessage request)
-        {
-            var message = HttpHelper.ToStringForLogging(request);
-            Log.LogInformation($"IN request {message}");
-        }
-
-
-        private void LogResponse(HttpResponseMessage response, TimeSpan elapsedTime)
-        {
-            var message = HttpHelper.ToStringForLogging(response, elapsedTime);
-            Log.LogInformation($"OUT response {message}");
         }
     }
 }

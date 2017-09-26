@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Xlent.Lever.Libraries2.Core.Assert;
 using Xlent.Lever.Libraries2.Core.Context;
 using Xlent.Lever.Libraries2.Core.Logging;
+using Xlent.Lever.Libraries2.WebApi.Logging;
 using Xlent.Lever.Libraries2.WebApi.Misc;
 
 namespace Xlent.Lever.Libraries2.WebApi.Pipe.Inbound
@@ -66,7 +67,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Pipe.Inbound
             _correlationIdValueProvider.CorrelationId = correlationId;
             if (createCorrelationId)
             {
-                Log.LogInformation($"Created correlation id {correlationId}, as incoming request did not have it. ({HttpHelper.ToStringForLogging(request)})");
+                Log.LogInformation($"Created correlation id {correlationId}, as incoming request did not have it. ({request.ToLogString()})");
             }
         }
 
