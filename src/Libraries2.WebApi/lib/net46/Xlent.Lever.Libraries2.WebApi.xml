@@ -1,0 +1,636 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Xlent.Lever.Libraries2.WebApi</name>
+    </assembly>
+    <members>
+        <member name="T:Xlent.Lever.Libraries2.WebApi.Application.FulcrumApplicationHelper">
+            <summary>
+            Help class to setup your application
+            </summary>
+        </member>
+        <member name="M:Xlent.Lever.Libraries2.WebApi.Application.FulcrumApplicationHelper.WebApiBasicSetup(System.String,Xlent.Lever.Libraries2.Core.MultiTenant.Model.ITenant,Xlent.Lever.Libraries2.Core.Application.RunTimeLevelEnum)">
+            <summary>
+            Sets the recommended application setup for a Web Api.
+            </summary>
+            <param name="name">The name of the application.</param>
+            <param name="tenant">The tenant that the application itself runs in.</param>
+            <param name="level">The run time level for the application itself.</param>
+        </member>
+        <member name="M:Xlent.Lever.Libraries2.WebApi.Application.FulcrumApplicationHelper.WebApiBasicSetup(Xlent.Lever.Libraries2.Core.Application.IAppSettingGetter)">
+            <summary>
+            Sets the recommended application setup for a Web Api.
+            </summary>
+            <param name="appSettingGetter">How to get app settings for <see cref="P:Xlent.Lever.Libraries2.Core.Application.ApplicationSetup.Name"/>, <see cref="P:Xlent.Lever.Libraries2.Core.Application.ApplicationSetup.Tenant"/>, <see cref="P:Xlent.Lever.Libraries2.Core.Application.ApplicationSetup.RunTimeLevel"/></param>
+            <remarks>If you want to use <see cref="T:System.Configuration.ConfigurationManager"/> for retreiving app settings, you can use <see cref="T:Xlent.Lever.Libraries2.Core.Application.ConfigurationManagerAppSettings"/> as the <paramref name="appSettingGetter"/>.</remarks>
+        </member>
+        <member name="T:Xlent.Lever.Libraries2.WebApi.Context.ContextValueProvider">
+            <summary>
+            Convenience for choosing the right <see cref="T:Xlent.Lever.Libraries2.Core.Context.IValueProvider"/>.
+            </summary>
+        </member>
+        <member name="P:Xlent.Lever.Libraries2.WebApi.Context.ContextValueProvider.RecommendedForWebApi">
+            <summary>
+            Default <see cref="T:Xlent.Lever.Libraries2.Core.Context.IValueProvider"/> for .Net Framework Web Api.
+            </summary>
+        </member>
+        <member name="T:Xlent.Lever.Libraries2.WebApi.Context.HttpContextValueProvider">
+            <summary>
+            Stores values in the execution context which is unaffected by asynchronous code that switches threads or context. 
+            </summary>
+            <remarks>Updating values in a thread will not affect the value in parent/sibling threads</remarks>
+        </member>
+        <member name="M:Xlent.Lever.Libraries2.WebApi.Context.HttpContextValueProvider.GetValue``1(System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:Xlent.Lever.Libraries2.WebApi.Context.HttpContextValueProvider.SetValue``1(System.String,``0)">
+            <inheritdoc />
+        </member>
+        <member name="T:Xlent.Lever.Libraries2.WebApi.Error.Logic.Converter">
+            <summary>
+            This class has conversion methods for converting between unsuccessful HTTP responses and Fulcrum exceptions.
+            Fulcrum is only using three HTTP status codes for errors; 400, 500 and 503.
+            This was based on the following blog article http://blog.restcase.com/rest-api-error-codes-101/
+            </summary>
+        </member>
+        <member name="M:Xlent.Lever.Libraries2.WebApi.Error.Logic.Converter.AddFulcrumException(System.Type,System.Nullable{System.Net.HttpStatusCode})">
+            <summary>
+            Use this method to add a new <see cref="T:Xlent.Lever.Libraries2.Core.Error.Logic.FulcrumException"/>. This means that it will be included in converting.
+            </summary>
+            <param name="fulcrumExceptionType">The type of the exception.</param>
+            <param name="statusCode">The status code that it should be converted to if we convert it to an HTTP response.</param>
+        </member>
+        <member name="M:Xlent.Lever.Libraries2.WebApi.Error.Logic.Converter.ToFulcrumExceptionAsync(System.Net.Http.HttpResponseMessage)">
+            <summary>
+            Convert an HTTP response (<paramref name="response"/>) into a <see cref="T:Xlent.Lever.Libraries2.Core.Error.Logic.FulcrumException"/>.
+            </summary>
+        </member>
+        <member name="M:Xlent.Lever.Libraries2.WebApi.Error.Logic.Converter.ToFulcrumException(Xlent.Lever.Libraries2.Core.Error.Model.FulcrumError)">
+            <summary>
+            Convert a <see cref="T:Xlent.Lever.Libraries2.Core.Error.Model.FulcrumError"/> (<paramref name="error"/>) into a <see cref="T:Xlent.Lever.Libraries2.Core.Error.Logic.FulcrumException"/>.
+            </summary>
+        </member>
+        <member name="M:Xlent.Lever.Libraries2.WebApi.Error.Logic.Converter.ToHttpResponseMessage(System.Exception)">
+            <summary>
+            Convert an exception (<paramref name="e"/>) into an HTTP response message.
+            </summary>
+        </member>
+        <member name="M:Xlent.Lever.Libraries2.WebApi.Error.Logic.Converter.ToFulcrumError(System.Exception)">
+            <summary>
+            Convert an exception (<paramref name="e"/>) into a <see cref="T:Xlent.Lever.Libraries2.Core.Error.Model.FulcrumError"/>.
+            </summary>
+        </member>
+        <member name="M:Xlent.Lever.Libraries2.WebApi.Error.Logic.Converter.FromServiceToBll(Xlent.Lever.Libraries2.Core.Error.Logic.FulcrumException,System.String)">
+            <summary>
+            Transform a <see cref="T:Xlent.Lever.Libraries2.Core.Error.Logic.FulcrumException"/> (<paramref name="source"/>) into a new <see cref="T:Xlent.Lever.Libraries2.Core.Error.Logic.FulcrumException"/>.
+            </summary>
+            <param name="source">The exception to transform.</param>
+            <param name="serverTechnicalName">The server that the </param>
+            <returns>The same <paramref name="source"/> unless it was an exception that needs to be transformed; then a new exception is returned.</returns>
+            <remarks>If <paramref name="source"/> had a null ServerTechnicalName it will be set to <paramref name="serverTechnicalName"/> as a side effect.</remarks>
+        </member>
+        <member name="M:Xlent.Lever.Libraries2.WebApi.Error.Logic.Converter.ToHttpStatusCode(Xlent.Lever.Libraries2.Core.Error.Logic.FulcrumException)">
+            <summary>
+            Checks a dictionary for the proper <see cref="T:System.Net.HttpStatusCode"/> for <paramref name="fulcrumException"/>.
+            </summary>
+        </member>
+        <member name="M:Xlent.Lever.Libraries2.WebApi.Error.Logic.Converter.ToHttpStatusCode(Xlent.Lever.Libraries2.Core.Error.Model.FulcrumError)">
+            <summary>
+            Checks a dictionary for the proper <see cref="T:System.Net.HttpStatusCode"/> for <paramref name="error"/>.
+            </summary>
+        </member>
+        <member name="M:Xlent.Lever.Libraries2.WebApi.Error.Logic.Converter.ToJsonString(Xlent.Lever.Libraries2.Core.Error.Model.IFulcrumError,Newtonsoft.Json.Formatting)">
+            <summary>
+            Converts <paramref name="fulcrumError"/> into a JSON string.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xlent.Lever.Libraries2.WebApi.Error.Logic.Converter.Parse``1(System.String)">
+            <summary>
+            Parse a JSON string and converts it into an object.
+            </summary>
+            <param name="jsonObject"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Xlent.Lever.Libraries2.WebApi.Logging.LoggableWebApiExtensions">
+            <summary>
+            Extensions to some non-fulcrum classes to make them implement the methods in ILoggable.
+            </summary>
+        </member>
+        <member name="M:Xlent.Lever.Libraries2.WebApi.Logging.LoggableWebApiExtensions.ToLogString(System.Net.Http.HttpRequestMessage)">
+            <summary>
+            Create a string based on the <paramref name="request"/> that is adequate for logging.
+            </summary>
+        </member>
+        <member name="M:Xlent.Lever.Libraries2.WebApi.Logging.LoggableWebApiExtensions.ToLogString(System.Net.Http.HttpRequestMessage,System.TimeSpan)">
+            <summary>
+            Create a string based on the <paramref name="request"/> and <paramref name="elapsedTime"/> that is adequate for logging.
+            </summary>
+        </member>
+        <member name="M:Xlent.Lever.Libraries2.WebApi.Logging.LoggableWebApiExtensions.ToLogString(System.Net.Http.HttpResponseMessage,System.TimeSpan)">
+            <summary>
+            Create a string based on the <paramref name="response"/> that is adequate for logging.
+            </summary>
+        </member>
+        <member name="M:Xlent.Lever.Libraries2.WebApi.Logging.LoggableWebApiExtensions.ToLogString(System.Net.HttpStatusCode)">
+            <summary>
+            Create a string based on the <paramref name="statusCode"/> that is adequate for logging.
+            </summary>
+        </member>
+        <member name="T:Xlent.Lever.Libraries2.WebApi.Misc.HttpHelper">
+            <summary>
+            Methods for handling requests and responses
+            </summary>
+        </member>
+        <member name="M:Xlent.Lever.Libraries2.WebApi.Misc.HttpHelper.ToStringForLogging(System.Net.Http.HttpRequestMessage)">
+            <summary>
+            Create a string based on the <paramref name="request"/> that is adequate for logging.
+            </summary>
+        </member>
+        <member name="M:Xlent.Lever.Libraries2.WebApi.Misc.HttpHelper.ToStringForLogging(System.Net.Http.HttpResponseMessage,System.TimeSpan)">
+            <summary>
+            Create a string based on the <paramref name="response"/> that is adequate for logging.
+            </summary>
+        </member>
+        <member name="M:Xlent.Lever.Libraries2.WebApi.Misc.HttpHelper.ToStringForLogging(System.Net.HttpStatusCode)">
+            <summary>
+            Create a string based on the <paramref name="statusCode"/> that is adequate for logging.
+            </summary>
+        </member>
+        <member name="T:Xlent.Lever.Libraries2.WebApi.Misc.RequestResponseHelper">
+            <summary>
+            Methods for handling requests and responses
+            </summary>
+        </member>
+        <member name="M:Xlent.Lever.Libraries2.WebApi.Misc.RequestResponseHelper.ToStringForLogging(System.Net.Http.HttpRequestMessage)">
+            <summary>
+            Create a string based on the <paramref name="request"/> that is adequate for logging.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xlent.Lever.Libraries2.WebApi.Misc.RequestResponseHelper.ToStringForLogging(System.Net.Http.HttpResponseMessage,System.TimeSpan)">
+            <summary>
+            Create a string based on the <paramref name="response"/> that is adequate for logging.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xlent.Lever.Libraries2.WebApi.Misc.RequestResponseHelper.ToStringForLogging(System.Net.HttpStatusCode)">
+            <summary>
+            Create a string based on the <paramref name="statusCode"/> that is adequate for logging.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:Xlent.Lever.Libraries2.WebApi.Pipe.LogRequestAndResponse">
+            <summary>
+            Logs requests and responses in the pipe
+            </summary>
+        </member>
+        <member name="T:Xlent.Lever.Libraries2.WebApi.Pipe.LogRequestAndResponse.SendAsyncDelegate">
+            <summary>
+            A delegate for testing purposes
+            </summary>
+            <param name="request"></param>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
+        <member name="P:Xlent.Lever.Libraries2.WebApi.Pipe.LogRequestAndResponse.UnitTest_SendAsyncDependencyInjection">
+            <summary>
+            Use this in unit tests to inject code that will be called to simulate SendAsync().
+            </summary>
+        </member>
+        <member name="M:Xlent.Lever.Libraries2.WebApi.Pipe.LogRequestAndResponse.#ctor(System.Boolean)">
+            <summary></summary>
+            <param name="isInboundPipe">Expected to be true for inbound pipes and false for outbound pipes</param>
+        </member>
+        <member name="M:Xlent.Lever.Libraries2.WebApi.Pipe.LogRequestAndResponse.SendAsync(System.Net.Http.HttpRequestMessage,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="T:Xlent.Lever.Libraries2.WebApi.Pipe.Outbound.LogRequestAndResponse">
+            <inheritdoc />
+        </member>
+        <member name="M:Xlent.Lever.Libraries2.WebApi.Pipe.Outbound.LogRequestAndResponse.#ctor">
+            <inheritdoc />
+            <summary></summary>
+        </member>
+        <member name="T:Xlent.Lever.Libraries2.WebApi.Pipe.Outbound.OutboundPipeFactory">
+            <summary>
+            A factory class to create delegating handlers for outgoing HTTP requests.
+            </summary>
+        </member>
+        <member name="M:Xlent.Lever.Libraries2.WebApi.Pipe.Outbound.OutboundPipeFactory.CreateDelegatingHandlers">
+            <summary>
+            Creates handlers to deal with Fulcrum specifics around making HTTP requests.
+            </summary>
+            <seealso cref="T:Xlent.Lever.Libraries2.WebApi.Pipe.Outbound.ThrowFulcrumExceptionOnFail"/>
+            <seealso cref="T:Xlent.Lever.Libraries2.WebApi.Pipe.Outbound.AddCorrelationId"/>
+            <seealso cref="T:Xlent.Lever.Libraries2.WebApi.Pipe.Outbound.LogRequestAndResponse"/>
+            <returns>A list of recommended handlers.</returns>
+        </member>
+        <member name="M:Xlent.Lever.Libraries2.WebApi.Pipe.Outbound.OutboundPipeFactory.CreateDelegatingHandlersWithoutLogging">
+            <summary>
+            Creates handlers to deal with Fulcrum specifics around making HTTP requests, but without any logging
+            </summary>
+            <seealso cref="T:Xlent.Lever.Libraries2.WebApi.Pipe.Outbound.ThrowFulcrumExceptionOnFail"/>
+            <seealso cref="T:Xlent.Lever.Libraries2.WebApi.Pipe.Outbound.AddCorrelationId"/>
+            <returns>A list of recommended handlers.</returns>
+        </member>
+        <member name="T:Xlent.Lever.Libraries2.WebApi.Pipe.Outbound.AddCorrelationId">
+            <summary>
+            Adds a Fulcrum CorrelationId header to all outgoing requests.
+            </summary>
+        </member>
+        <member name="M:Xlent.Lever.Libraries2.WebApi.Pipe.Outbound.AddCorrelationId.#ctor">
+            <summary></summary>
+        </member>
+        <member name="M:Xlent.Lever.Libraries2.WebApi.Pipe.Outbound.AddCorrelationId.#ctor(Xlent.Lever.Libraries2.Core.Context.IValueProvider)">
+            <summary></summary>
+        </member>
+        <member name="M:Xlent.Lever.Libraries2.WebApi.Pipe.Outbound.AddCorrelationId.SendAsync(System.Net.Http.HttpRequestMessage,System.Threading.CancellationToken)">
+            <summary>
+            Adds a Fulcrum CorrelationId to the requests before sending it.
+            </summary>
+            <param name="request"></param>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xlent.Lever.Libraries2.WebApi.Pipe.Outbound.Factory.CreateDelegatingHandlers">
+            <summary>
+            Creates handlers to deal with Fulcrum specifics around making HTTP requests.
+            </summary>
+            <seealso cref="T:Xlent.Lever.Libraries2.WebApi.Pipe.Outbound.ThrowFulcrumExceptionOnFail"/>
+            <seealso cref="T:Xlent.Lever.Libraries2.WebApi.Pipe.Outbound.AddCorrelationId"/>
+            <returns>A list of recommended handlers.</returns>
+        </member>
+        <member name="T:Xlent.Lever.Libraries2.WebApi.Pipe.Outbound.ThrowFulcrumExceptionOnFail">
+            <summary>
+            Any non-successful response will be thrown as a <see cref="T:Xlent.Lever.Libraries2.Core.Error.Logic.FulcrumException"/>.
+            </summary>
+        </member>
+        <member name="M:Xlent.Lever.Libraries2.WebApi.Pipe.Outbound.ThrowFulcrumExceptionOnFail.SendAsync(System.Net.Http.HttpRequestMessage,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="T:Xlent.Lever.Libraries2.WebApi.Pipe.Inbound.LogRequestAndResponse">
+            <inheritdoc />
+        </member>
+        <member name="M:Xlent.Lever.Libraries2.WebApi.Pipe.Inbound.LogRequestAndResponse.#ctor">
+            <inheritdoc />
+        </member>
+        <member name="T:Xlent.Lever.Libraries2.WebApi.Pipe.Inbound.ConvertExceptionToFulcrumResponse">
+            <summary>
+            If the call results in an exception, this handler converts the exception into a response with the corresponding <see cref="T:Xlent.Lever.Libraries2.Core.Error.Model.FulcrumError"/>.
+            </summary>
+            <remarks>
+            </remarks>
+        </member>
+        <member name="M:Xlent.Lever.Libraries2.WebApi.Pipe.Inbound.ConvertExceptionToFulcrumResponse.#ctor">
+            <summary></summary>
+        </member>
+        <member name="M:Xlent.Lever.Libraries2.WebApi.Pipe.Inbound.ConvertExceptionToFulcrumResponse.#ctor(Xlent.Lever.Libraries2.Core.Context.IValueProvider)">
+            <summary></summary>
+        </member>
+        <member name="M:Xlent.Lever.Libraries2.WebApi.Pipe.Inbound.ConvertExceptionToFulcrumResponse.#ctor(Xlent.Lever.Libraries2.Core.Context.IValueProvider,Xlent.Lever.Libraries2.Core.Logging.IFulcrumLogger)">
+            <summary></summary>
+        </member>
+        <member name="M:Xlent.Lever.Libraries2.WebApi.Pipe.Inbound.ConvertExceptionToFulcrumResponse.HandleAsync(System.Web.Http.ExceptionHandling.ExceptionHandlerContext,System.Threading.CancellationToken)">
+            <summary>Converts the exception into a response with the corresponding <see cref="T:Xlent.Lever.Libraries2.Core.Error.Model.FulcrumError"/>.</summary>
+            <returns>A task representing the asynchronous exception handling operation.</returns>
+            <param name="context">The exception handler context.</param>
+            <param name="cancellationToken">The token to monitor for cancellation requests.</param>
+        </member>
+        <member name="T:Xlent.Lever.Libraries2.WebApi.Pipe.Inbound.ModelValidation">
+            <summary>
+            Filter used to do modelvalidation based on data annotations.
+            For a more in depth explanation <see href="http://stackoverflow.com">Model Validation in ASP.NET Web API</see>
+            </summary>
+        </member>
+        <member name="M:Xlent.Lever.Libraries2.WebApi.Pipe.Inbound.ModelValidation.OnActionExecuting(System.Web.Http.Controllers.HttpActionContext)">
+            <summary>Create a bad request response if the model is not valid.</summary>
+            <param name="actionContext">The action context.</param>
+        </member>
+        <member name="T:Xlent.Lever.Libraries2.WebApi.Pipe.Inbound.SaveConfiguration">
+            <summary>
+            Extracts organization and environment values from request uri and adds these values to an executioncontext. 
+            These values are later used to get organization and environment specific configurations for logging and request handling. 
+            </summary>
+        </member>
+        <member name="M:Xlent.Lever.Libraries2.WebApi.Pipe.Inbound.SaveConfiguration.#ctor(Xlent.Lever.Libraries2.Core.MultiTenant.Context.ITenantConfigurationValueProvider,Xlent.Lever.Libraries2.Core.Platform.Configurations.ILeverServiceConfiguration)">
+            <summary></summary>
+        </member>
+        <member name="M:Xlent.Lever.Libraries2.WebApi.Pipe.Inbound.SaveConfiguration.#ctor(Xlent.Lever.Libraries2.Core.Context.IValueProvider,Xlent.Lever.Libraries2.Core.Platform.Configurations.ILeverServiceConfiguration)">
+            <summary></summary>
+        </member>
+        <member name="M:Xlent.Lever.Libraries2.WebApi.Pipe.Inbound.SaveConfiguration.#ctor(Xlent.Lever.Libraries2.Core.Platform.Configurations.ILeverServiceConfiguration)">
+            <summary></summary>
+        </member>
+        <member name="M:Xlent.Lever.Libraries2.WebApi.Pipe.Inbound.SaveConfiguration.SendAsync(System.Net.Http.HttpRequestMessage,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="T:Xlent.Lever.Libraries2.WebApi.Pipe.Inbound.SaveCorrelationId">
+            <summary>
+            Handle correlation id on inbound requests.
+            </summary>
+        </member>
+        <member name="M:Xlent.Lever.Libraries2.WebApi.Pipe.Inbound.SaveCorrelationId.#ctor(Xlent.Lever.Libraries2.Core.Context.ICorrelationIdValueProvider)">
+            <summary></summary>
+        </member>
+        <member name="M:Xlent.Lever.Libraries2.WebApi.Pipe.Inbound.SaveCorrelationId.#ctor(Xlent.Lever.Libraries2.Core.Context.IValueProvider)">
+            <summary></summary>
+        </member>
+        <member name="M:Xlent.Lever.Libraries2.WebApi.Pipe.Inbound.SaveCorrelationId.#ctor">
+            <summary></summary>
+        </member>
+        <member name="M:Xlent.Lever.Libraries2.WebApi.Pipe.Inbound.SaveCorrelationId.SendAsync(System.Net.Http.HttpRequestMessage,System.Threading.CancellationToken)">
+            <summary>Read the correlation id header from the <paramref name="request"/> and save it to the execution context.
+            Then sends the HTTP request to the inner handler to send to the server as an asynchronous operation.</summary>
+            <returns>The response message.</returns>
+            <param name="request">The HTTP request message to send to the server.</param>
+            <param name="cancellationToken">A cancellation token to cancel operation.</param>
+        </member>
+        <member name="M:Xlent.Lever.Libraries2.WebApi.Pipe.Inbound.SaveCorrelationId.SaveCorrelationIdToExecutionContext(System.Net.Http.HttpRequestMessage)">
+            <summary>
+            Read the correlation id header from the <paramref name="request"/> and save it to the execution context.
+            </summary>
+            <param name="request">The request that we will read the header from.</param>
+            <returns></returns>
+            <remarks>This method is made public for testing purposes. Should normally not be called from outside this class.</remarks>
+        </member>
+        <member name="T:Xlent.Lever.Libraries2.WebApi.Threads.HostingThreads">
+            <summary>
+            Support for background processing
+            </summary>
+        </member>
+        <member name="M:Xlent.Lever.Libraries2.WebApi.Threads.HostingThreads.FireAndForget(System.Action{System.Threading.CancellationToken})">
+            <summary>
+            Execute an <paramref name="action"/> in the background.
+            </summary>
+            <param name="action">The action to run in the background.</param>
+        </member>
+        <member name="T:Xlent.Lever.Libraries2.WebApi.Platform.Authentication.ITokenRefresherWithServiceClient">
+            <summary>
+            A Service Client that can refresh tokens.
+            </summary>
+        </member>
+        <member name="M:Xlent.Lever.Libraries2.WebApi.Platform.Authentication.ITokenRefresherWithServiceClient.GetServiceClient">
+            <summary>
+            Get "this" as a ServiceClient.
+            </summary>
+        </member>
+        <member name="M:Xlent.Lever.Libraries2.WebApi.RestClientHelper.HttpClientWrapper.SendAsync(System.Net.Http.HttpRequestMessage,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="T:Xlent.Lever.Libraries2.WebApi.RestClientHelper.IRestClient">
+            <summary>
+            Support for calling a REST service.
+            </summary>
+        </member>
+        <member name="P:Xlent.Lever.Libraries2.WebApi.RestClientHelper.IRestClient.BaseUri">
+            <summary>
+            The URI for the service. Separate methods in the service are called by using URL:s relative to this path.
+            </summary>
+        </member>
+        <member name="P:Xlent.Lever.Libraries2.WebApi.RestClientHelper.IRestClient.Credentials">
+            <summary>
+            Credentials that are used when sending requests to the service.
+            </summary>
+        </member>
+        <member name="M:Xlent.Lever.Libraries2.WebApi.RestClientHelper.IRestClient.PostAsync``2(System.String,``1,System.Collections.Generic.Dictionary{System.String,System.Collections.Generic.List{System.String}},System.Threading.CancellationToken)">
+            <summary>
+            Send POST to <paramref name="relativeUrl"/> with <paramref name="body"/> and with a response of another type than the type of <paramref name="body"/>.
+            </summary>
+            <typeparam name="TResponse">The type for the response.</typeparam>
+            <typeparam name="TBody">The type for the <paramref name="body"/>.</typeparam>
+            <param name="relativeUrl">The Url relative to <see cref="P:Xlent.Lever.Libraries2.WebApi.RestClientHelper.IRestClient.BaseUri"/>, including parameters, etc.</param>
+            <param name="body">The POST body.</param>
+            <param name="customHeaders">Optional headers.</param>
+            <param name="cancellationToken">Optional cancellation token.</param>
+            <returns>An object.</returns>
+        </member>
+        <member name="M:Xlent.Lever.Libraries2.WebApi.RestClientHelper.IRestClient.PostAsync``1(System.String,System.Collections.Generic.Dictionary{System.String,System.Collections.Generic.List{System.String}},System.Threading.CancellationToken)">
+            <summary>
+            Send POST to <paramref name="relativeUrl"/> with no body, but with a returned object.
+            </summary>
+            <typeparam name="TResponse">The type for the returned result.</typeparam>
+            <param name="relativeUrl">The Url relative to <see cref="P:Xlent.Lever.Libraries2.WebApi.RestClientHelper.IRestClient.BaseUri"/>, including parameters, etc.</param>
+            <param name="customHeaders">Optional headers.</param>
+            <param name="cancellationToken">Optional cancellation token.</param>
+            <returns>An object.</returns>
+        </member>
+        <member name="M:Xlent.Lever.Libraries2.WebApi.RestClientHelper.IRestClient.PostAndReturnCreatedObjectAsync``1(System.String,``0,System.Collections.Generic.Dictionary{System.String,System.Collections.Generic.List{System.String}},System.Threading.CancellationToken)">
+            <summary>
+            Send POST to <paramref name="relativeUrl"/> with <paramref name="body"/> with the created object as the returned value.
+            </summary>
+            <typeparam name="TBodyAndResponse">The type for both the <paramref name="body"/> and the returned result.</typeparam>
+            <param name="relativeUrl">The Url relative to <see cref="P:Xlent.Lever.Libraries2.WebApi.RestClientHelper.IRestClient.BaseUri"/>, including parameters, etc.</param>
+            <param name="body">The POST body.</param>
+            <param name="customHeaders">Optional headers.</param>
+            <param name="cancellationToken">Optional cancellation token.</param>
+            <returns>The created object of the same type as the <paramref name="body"/>.</returns>
+        </member>
+        <member name="M:Xlent.Lever.Libraries2.WebApi.RestClientHelper.IRestClient.PostNoResponseContentAsync``1(System.String,``0,System.Collections.Generic.Dictionary{System.String,System.Collections.Generic.List{System.String}},System.Threading.CancellationToken)">
+            <summary>
+            Send POST to <paramref name="relativeUrl"/> with <paramref name="body"/> with no returned value.
+            </summary>
+            <typeparam name="TBody">The type for the <paramref name="body"/>.</typeparam>
+            <param name="relativeUrl">The Url relative to <see cref="P:Xlent.Lever.Libraries2.WebApi.RestClientHelper.IRestClient.BaseUri"/>, including parameters, etc.</param>
+            <param name="body">The POST body.</param>
+            <param name="customHeaders">Optional headers.</param>
+            <param name="cancellationToken">Optional cancellation token.</param>
+        </member>
+        <member name="M:Xlent.Lever.Libraries2.WebApi.RestClientHelper.IRestClient.PostNoResponseContentAsync(System.String,System.Collections.Generic.Dictionary{System.String,System.Collections.Generic.List{System.String}},System.Threading.CancellationToken)">
+            <summary>
+            Post to <paramref name="relativeUrl"/> with no body and no returned value.
+            </summary>
+            <param name="relativeUrl">The Url relative to <see cref="P:Xlent.Lever.Libraries2.WebApi.RestClientHelper.IRestClient.BaseUri"/>, including parameters, etc.</param>
+            <param name="customHeaders">Optional headers.</param>
+            <param name="cancellationToken">Optional cancellation token.</param>
+        </member>
+        <member name="M:Xlent.Lever.Libraries2.WebApi.RestClientHelper.IRestClient.GetAsync``1(System.String,System.Collections.Generic.Dictionary{System.String,System.Collections.Generic.List{System.String}},System.Threading.CancellationToken)">
+            <summary>
+            Send GET to <paramref name="relativeUrl"/>.
+            </summary>
+            <typeparam name="TResponse">The type of the returned object.</typeparam>
+            <param name="relativeUrl">The Url relative to <see cref="P:Xlent.Lever.Libraries2.WebApi.RestClientHelper.IRestClient.BaseUri"/>, including parameters, etc.</param>
+            <param name="customHeaders">Optional headers.</param>
+            <param name="cancellationToken">Optional cancellation token.</param>
+            <returns>The found object.</returns>
+        </member>
+        <member name="M:Xlent.Lever.Libraries2.WebApi.RestClientHelper.IRestClient.PutAsync``2(System.String,``1,System.Collections.Generic.Dictionary{System.String,System.Collections.Generic.List{System.String}},System.Threading.CancellationToken)">
+            <summary>
+            Send PUT to <paramref name="relativeUrl"/> with <paramref name="body"/> and with a response of another type than the type of <paramref name="body"/>.
+            </summary>
+            <typeparam name="TResponse">The type for the response.</typeparam>
+            <typeparam name="TBody">The type for the <paramref name="body"/>.</typeparam>
+            <param name="relativeUrl">The Url relative to <see cref="P:Xlent.Lever.Libraries2.WebApi.RestClientHelper.IRestClient.BaseUri"/>, including parameters, etc.</param>
+            <param name="body">The PUT body.</param>
+            <param name="customHeaders">Optional headers.</param>
+            <param name="cancellationToken">Optional cancellation token.</param>
+            <returns>An object.</returns>
+        </member>
+        <member name="M:Xlent.Lever.Libraries2.WebApi.RestClientHelper.IRestClient.PutAndReturnUpdatedObjectAsync``1(System.String,``0,System.Collections.Generic.Dictionary{System.String,System.Collections.Generic.List{System.String}},System.Threading.CancellationToken)">
+            <summary>
+            Send PUT to <paramref name="relativeUrl"/> with <paramref name="body"/> with the updated object as the returned value.
+            </summary>
+            <typeparam name="TBodyAndResponse">The type for both the <paramref name="body"/> and the returned result.</typeparam>
+            <param name="relativeUrl">The Url relative to <see cref="P:Xlent.Lever.Libraries2.WebApi.RestClientHelper.IRestClient.BaseUri"/>, including parameters, etc.</param>
+            <param name="body">The PUT body.</param>
+            <param name="customHeaders">Optional headers.</param>
+            <param name="cancellationToken">Optional cancellation token.</param>
+            <returns>The updated object with the same type as the <paramref name="body"/>.</returns>
+        </member>
+        <member name="M:Xlent.Lever.Libraries2.WebApi.RestClientHelper.IRestClient.PutNoResponseContentAsync``1(System.String,``0,System.Collections.Generic.Dictionary{System.String,System.Collections.Generic.List{System.String}},System.Threading.CancellationToken)">
+            <summary>
+            Send PUT to <paramref name="relativeUrl"/> with <paramref name="body"/> with no returned value.
+            </summary>
+            <typeparam name="TBody">The type for the <paramref name="body"/>.</typeparam>
+            <param name="relativeUrl">The Url relative to <see cref="P:Xlent.Lever.Libraries2.WebApi.RestClientHelper.IRestClient.BaseUri"/>, including parameters, etc.</param>
+            <param name="body">The PUT body.</param>
+            <param name="customHeaders">Optional headers.</param>
+            <param name="cancellationToken">Optional cancellation token.</param>
+        </member>
+        <member name="M:Xlent.Lever.Libraries2.WebApi.RestClientHelper.IRestClient.DeleteAsync(System.String,System.Collections.Generic.Dictionary{System.String,System.Collections.Generic.List{System.String}},System.Threading.CancellationToken)">
+            <summary>
+            Send DELETE to <paramref name="relativeUrl"/>.
+            </summary>
+            <param name="relativeUrl">The Url relative to <see cref="P:Xlent.Lever.Libraries2.WebApi.RestClientHelper.IRestClient.BaseUri"/>, including parameters, etc.</param>
+            <param name="customHeaders">Optional headers.</param>
+            <param name="cancellationToken">Optional cancellation token.</param>
+        </member>
+        <member name="M:Xlent.Lever.Libraries2.WebApi.RestClientHelper.IRestClient.SendRequestAsync(System.Net.Http.HttpMethod,System.String,System.Collections.Generic.Dictionary{System.String,System.Collections.Generic.List{System.String}},System.Threading.CancellationToken)">
+            <summary>
+            Send a request with method <paramref name="method"/> to <paramref name="relativeUrl"/>.
+            </summary>
+            <param name="method">POST, GET, etc.</param>
+            <param name="relativeUrl">The Url relative to <see cref="P:Xlent.Lever.Libraries2.WebApi.RestClientHelper.IRestClient.BaseUri"/>, including parameters, etc.</param>
+            <param name="customHeaders">Optional headers.</param>
+            <param name="cancellationToken">Optional cancellation token.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xlent.Lever.Libraries2.WebApi.RestClientHelper.IRestClient.SendRequestAsync``1(System.Net.Http.HttpMethod,System.String,``0,System.Collections.Generic.Dictionary{System.String,System.Collections.Generic.List{System.String}},System.Threading.CancellationToken)">
+            <summary>
+            Send a request with method <paramref name="method"/> to <paramref name="relativeUrl"/> with <paramref name="body"/>.
+            </summary>
+            <typeparam name="TBody">The type for the <paramref name="body"/>.</typeparam>
+            <param name="method">POST, GET, etc.</param>
+            <param name="relativeUrl">The Url relative to <see cref="P:Xlent.Lever.Libraries2.WebApi.RestClientHelper.IRestClient.BaseUri"/>, including parameters, etc.</param>
+            <param name="body">The body (content) for the request.</param>
+            <param name="customHeaders">Optional headers.</param>
+            <param name="cancellationToken">Optional cancellation token.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Xlent.Lever.Libraries2.WebApi.RestClientHelper.IRestClient.SendRequestAsync``2(System.Net.Http.HttpMethod,System.String,``1,System.Collections.Generic.Dictionary{System.String,System.Collections.Generic.List{System.String}},System.Threading.CancellationToken)">
+            <summary>
+            Send a request with method <paramref name="method"/> to <paramref name="relativeUrl"/> with <paramref name="body"/> and expect a result of a specific type.
+            </summary>
+            <typeparam name="TResponse">The type for the result.</typeparam>
+            <typeparam name="TBody">The type for the <paramref name="body"/>.</typeparam>
+            <param name="method">POST, GET, etc.</param>
+            <param name="relativeUrl">The Url relative to <see cref="P:Xlent.Lever.Libraries2.WebApi.RestClientHelper.IRestClient.BaseUri"/>, including parameters, etc.</param>
+            <param name="body">The body (content) for the request.</param>
+            <param name="customHeaders">Optional headers.</param>
+            <param name="cancellationToken">Optional cancellation token.</param>
+            <returns></returns>
+        </member>
+        <member name="T:Xlent.Lever.Libraries2.WebApi.RestClientHelper.RestClient">
+            <summary>
+            Convenience client for making REST calls
+            </summary>
+        </member>
+        <member name="P:Xlent.Lever.Libraries2.WebApi.RestClientHelper.RestClient.HttpClient">
+            <summary>
+            The HttpClient that is used for all HTTP calls.
+            </summary>
+            <remarks>Is set to <see cref="P:Xlent.Lever.Libraries2.WebApi.RestClientHelper.RestClient.HttpClient"/> by default. Typically only set to other values for unit test purposes.</remarks>
+        </member>
+        <member name="M:Xlent.Lever.Libraries2.WebApi.RestClientHelper.RestClient.#ctor(System.Uri)">
+            <summary></summary>
+        </member>
+        <member name="M:Xlent.Lever.Libraries2.WebApi.RestClientHelper.RestClient.#ctor(System.Uri,Xlent.Lever.Libraries2.Core.Context.IValueProvider)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="baseUri">The base URL that all HTTP calls methods will refer to.</param>
+            <param name="valueProvider"></param>
+        </member>
+        <member name="M:Xlent.Lever.Libraries2.WebApi.RestClientHelper.RestClient.#ctor(System.String)">
+            <summary></summary>
+            <param name="baseUri">The base URL that all HTTP calls methods will refer to.</param>
+        </member>
+        <member name="M:Xlent.Lever.Libraries2.WebApi.RestClientHelper.RestClient.#ctor(System.String,System.Boolean)">
+            <summary></summary>
+            <param name="baseUri">The base URL that all HTTP calls methods will refer to.</param>
+            <param name="withLogging">Should logging handlers be used in outbound pipe?</param>
+        </member>
+        <member name="M:Xlent.Lever.Libraries2.WebApi.RestClientHelper.RestClient.#ctor(System.String,Xlent.Lever.Libraries2.Core.Context.IValueProvider)">
+            <summary></summary>
+            <param name="baseUri">The base URL that all HTTP calls methods will refer to.</param>
+            <param name="valueProvider"></param>
+        </member>
+        <member name="M:Xlent.Lever.Libraries2.WebApi.RestClientHelper.RestClient.#ctor(System.Uri,Microsoft.Rest.ServiceClientCredentials)">
+            <summary></summary>
+            <param name="baseUri">The base URL that all HTTP calls methods will refer to.</param>
+            <param name="credentials">The credentials used when making the HTTP calls.</param>
+        </member>
+        <member name="M:Xlent.Lever.Libraries2.WebApi.RestClientHelper.RestClient.#ctor(System.Uri,Xlent.Lever.Libraries2.Core.Context.IValueProvider,Microsoft.Rest.ServiceClientCredentials)">
+            <summary></summary>
+            <param name="baseUri">The base URL that all HTTP calls methods will refer to.</param>
+            <param name="valueProvider"></param>
+            <param name="credentials">The credentials used when making the HTTP calls.</param>
+        </member>
+        <member name="M:Xlent.Lever.Libraries2.WebApi.RestClientHelper.RestClient.#ctor(System.String,Microsoft.Rest.ServiceClientCredentials)">
+            <summary></summary>
+            <param name="baseUri">The base URL that all HTTP calls methods will refer to.</param>
+            <param name="credentials">The credentials used when making the HTTP calls.</param>
+        </member>
+        <member name="M:Xlent.Lever.Libraries2.WebApi.RestClientHelper.RestClient.#ctor(System.String,Microsoft.Rest.ServiceClientCredentials,System.Boolean)">
+            <summary></summary>
+            <param name="baseUri">The base URL that all HTTP calls methods will refer to.</param>
+            <param name="credentials">The credentials used when making the HTTP calls.</param>
+            <param name="withLogging">Should logging handlers be used in outbound pipe?</param>
+        </member>
+        <member name="P:Xlent.Lever.Libraries2.WebApi.RestClientHelper.RestClient.BaseUri">
+            <inheritdoc />
+        </member>
+        <member name="P:Xlent.Lever.Libraries2.WebApi.RestClientHelper.RestClient.Credentials">
+            <inheritdoc />
+        </member>
+        <member name="M:Xlent.Lever.Libraries2.WebApi.RestClientHelper.RestClient.PostAsync``2(System.String,``1,System.Collections.Generic.Dictionary{System.String,System.Collections.Generic.List{System.String}},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Xlent.Lever.Libraries2.WebApi.RestClientHelper.RestClient.PostAsync``1(System.String,System.Collections.Generic.Dictionary{System.String,System.Collections.Generic.List{System.String}},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Xlent.Lever.Libraries2.WebApi.RestClientHelper.RestClient.PostAndReturnCreatedObjectAsync``1(System.String,``0,System.Collections.Generic.Dictionary{System.String,System.Collections.Generic.List{System.String}},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Xlent.Lever.Libraries2.WebApi.RestClientHelper.RestClient.PostNoResponseContentAsync``1(System.String,``0,System.Collections.Generic.Dictionary{System.String,System.Collections.Generic.List{System.String}},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Xlent.Lever.Libraries2.WebApi.RestClientHelper.RestClient.PostNoResponseContentAsync(System.String,System.Collections.Generic.Dictionary{System.String,System.Collections.Generic.List{System.String}},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Xlent.Lever.Libraries2.WebApi.RestClientHelper.RestClient.GetAsync``1(System.String,System.Collections.Generic.Dictionary{System.String,System.Collections.Generic.List{System.String}},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Xlent.Lever.Libraries2.WebApi.RestClientHelper.RestClient.PutAsync``2(System.String,``1,System.Collections.Generic.Dictionary{System.String,System.Collections.Generic.List{System.String}},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Xlent.Lever.Libraries2.WebApi.RestClientHelper.RestClient.PutAndReturnUpdatedObjectAsync``1(System.String,``0,System.Collections.Generic.Dictionary{System.String,System.Collections.Generic.List{System.String}},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Xlent.Lever.Libraries2.WebApi.RestClientHelper.RestClient.PutNoResponseContentAsync``1(System.String,``0,System.Collections.Generic.Dictionary{System.String,System.Collections.Generic.List{System.String}},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Xlent.Lever.Libraries2.WebApi.RestClientHelper.RestClient.DeleteAsync(System.String,System.Collections.Generic.Dictionary{System.String,System.Collections.Generic.List{System.String}},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Xlent.Lever.Libraries2.WebApi.RestClientHelper.RestClient.SendRequestAsync``2(System.Net.Http.HttpMethod,System.String,``1,System.Collections.Generic.Dictionary{System.String,System.Collections.Generic.List{System.String}},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Xlent.Lever.Libraries2.WebApi.RestClientHelper.RestClient.SendRequestAsync``1(System.Net.Http.HttpMethod,System.String,``0,System.Collections.Generic.Dictionary{System.String,System.Collections.Generic.List{System.String}},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Xlent.Lever.Libraries2.WebApi.RestClientHelper.RestClient.SendRequestAsync(System.Net.Http.HttpMethod,System.String,System.Collections.Generic.Dictionary{System.String,System.Collections.Generic.List{System.String}},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+    </members>
+</doc>
