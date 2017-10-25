@@ -31,8 +31,11 @@ namespace Xlent.Lever.Libraries2.WebApi.Application
         /// <summary>
         /// Sets the recommended application setup for a Web Api.
         /// </summary>
-        /// <param name="appSettingGetter">How to get app settings for <see cref="ApplicationSetup.Name"/>, <see cref="ApplicationSetup.Tenant"/>, <see cref="ApplicationSetup.RunTimeLevel"/></param>
-        /// <remarks>If you want to use <see cref="ConfigurationManager"/> for retreiving app settings, you can use <see cref="ConfigurationManagerAppSettings"/> as the <paramref name="appSettingGetter"/>.</remarks>
+        /// <param name="appSettingGetter">How to get app settings for <see cref="ApplicationSetup.Name"/>, 
+        /// <see cref="ApplicationSetup.Tenant"/>, <see cref="ApplicationSetup.RunTimeLevel"/></param>
+        /// <remarks>If you want to use <see cref="ConfigurationManager"/> for retreiving app settings, you can use <see cref="ConfigurationManagerAppSettings"/>
+        ///  as the <paramref name="appSettingGetter"/>.
+        /// The settings that must exists int the <paramref name="appSettingGetter"/> ApplicationName, Organization, Environment and RunTimeLevel.</remarks>
         public static void WebApiBasicSetup(IAppSettingGetter appSettingGetter)
         {
             InternalContract.RequireNotNull(appSettingGetter, nameof(appSettingGetter));
