@@ -187,7 +187,8 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
             CancellationToken cancellationToken = new CancellationToken()) where TBody : class
         {
             InternalContract.RequireNotNullOrWhitespace(relativeUrl, nameof(relativeUrl));
-            await SendRequestAsync(HttpMethod.Post, relativeUrl, body, customHeaders, cancellationToken);
+            var response = await SendRequestAsync(HttpMethod.Post, relativeUrl, body, customHeaders, cancellationToken);
+            await VerifySuccessAsync(response);
         }
 
         /// <inheritdoc />
@@ -195,7 +196,8 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
             CancellationToken cancellationToken = new CancellationToken())
         {
             InternalContract.RequireNotNullOrWhitespace(relativeUrl, nameof(relativeUrl));
-            await SendRequestAsync(HttpMethod.Post, relativeUrl, customHeaders, cancellationToken);
+            var response = await SendRequestAsync(HttpMethod.Post, relativeUrl, customHeaders, cancellationToken);
+            await VerifySuccessAsync(response);
         }
         #endregion
 
@@ -235,7 +237,8 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
             CancellationToken cancellationToken = new CancellationToken()) where TBody : class
         {
             InternalContract.RequireNotNullOrWhitespace(relativeUrl, nameof(relativeUrl));
-            await SendRequestAsync(HttpMethod.Put, relativeUrl, body, customHeaders, cancellationToken);
+            var response = await SendRequestAsync(HttpMethod.Put, relativeUrl, body, customHeaders, cancellationToken);
+            await VerifySuccessAsync(response);
         }
 
         #endregion
@@ -248,7 +251,7 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
         {
             InternalContract.RequireNotNullOrWhitespace(relativeUrl, nameof(relativeUrl));
             var response = await SendRequestAsync(HttpMethod.Delete, relativeUrl, customHeaders, cancellationToken);
-            await VerifySuccess(response);
+            await VerifySuccessAsync(response);
         }
 
         #endregion
@@ -265,7 +268,7 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
             {
                 response = await SendRequestAsync(method, relativeUrl, body, customHeaders, cancellationToken).ConfigureAwait(false);
                 var request = response.RequestMessage;
-                return await HandleResponse<TResponse>(method, response, request);
+                return await HandleResponseWithBody<TResponse>(method, response, request);
             }
             finally
             {
@@ -320,10 +323,10 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
             return request;
         }
 
-        private async Task<HttpOperationResponse<TResponse>> HandleResponse<TResponse>(HttpMethod method, HttpResponseMessage response,
+        private async Task<HttpOperationResponse<TResponse>> HandleResponseWithBody<TResponse>(HttpMethod method, HttpResponseMessage response,
             HttpRequestMessage request)
         {
-            await VerifySuccess(response);
+            await VerifySuccessAsync(response);
             var result = new HttpOperationResponse<TResponse>
             {
                 Request = request,
@@ -353,7 +356,7 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
             return result;
         }
 
-        private async Task VerifySuccess(HttpResponseMessage response)
+        private async Task VerifySuccessAsync(HttpResponseMessage response)
         {
             InternalContract.RequireNotNull(response, nameof(response));
             InternalContract.RequireNotNull(response.RequestMessage, $"{nameof(response)}.{nameof(response.RequestMessage)}");
