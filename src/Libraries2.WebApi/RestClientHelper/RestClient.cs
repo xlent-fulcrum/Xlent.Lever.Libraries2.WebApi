@@ -235,7 +235,7 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
             CancellationToken cancellationToken = new CancellationToken()) where TBody : class
         {
             InternalContract.RequireNotNullOrWhitespace(relativeUrl, nameof(relativeUrl));
-            await SendRequestAsync(HttpMethod.Post, relativeUrl, body, customHeaders, cancellationToken);
+            await SendRequestAsync(HttpMethod.Put, relativeUrl, body, customHeaders, cancellationToken);
         }
 
         #endregion
