@@ -9,7 +9,6 @@ using Xlent.Lever.Libraries2.Core.MultiTenant.Context;
 using Xlent.Lever.Libraries2.Core.MultiTenant.Model;
 using Xlent.Lever.Libraries2.Core.Platform.Configurations;
 using Xlent.Lever.Libraries2.WebApi.Logging;
-using Xlent.Lever.Libraries2.WebApi.Misc;
 
 namespace Xlent.Lever.Libraries2.WebApi.Pipe.Inbound
 {
@@ -54,17 +53,6 @@ namespace Xlent.Lever.Libraries2.WebApi.Pipe.Inbound
                 var organization = match.Groups[1].Value;
                 var environment = match.Groups[2].Value;
 
-                // TODO: Let all function apps use the new route for AsyncCaller Distribute
-                if (organization == "AsyncCalls")
-                {
-                    var tmpRgx = new Regex("/v[^/]+/AsyncCalls/([^/]+)/([^/]+)/");
-                    var tmpMatch = tmpRgx.Match(request.RequestUri.OriginalString);
-                    if (tmpMatch.Success && tmpMatch.Groups.Count == 3)
-                    {
-                        organization = tmpMatch.Groups[1].Value;
-                        environment = tmpMatch.Groups[2].Value;
-                    }
-                }
                 var tenant = new Tenant(organization, environment);
                 Log.LogVerbose($"Found tenant {tenant} in request {request.ToLogString()}");
                 _tenantConfigurationProvider.Tenant = tenant;
