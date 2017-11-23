@@ -34,7 +34,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Test
             var logRequestAndResponse = new LogOutboundRequestAndResponse();
             logRequestAndResponse.UnitTest_SendAsyncDependencyInjection = SendAsyncResponseOk;
             var request = new HttpRequestMessage(HttpMethod.Post, "http://example.com/okresponse");
-            SetExpectedNumberOfLogs(2);
+            SetExpectedNumberOfLogs(1);
             await logRequestAndResponse.SendAsync(request);
             var lastMessage = LastMessage(LogSeverityLevel.Information);
             Assert.IsNotNull(lastMessage);
@@ -48,7 +48,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Test
             var logRequestAndResponse = new LogOutboundRequestAndResponse();
             logRequestAndResponse.UnitTest_SendAsyncDependencyInjection = SendAsyncResponseBadRequest;
             var request = new HttpRequestMessage(HttpMethod.Post, "http://example.com/badrequest");
-            SetExpectedNumberOfLogs(2);
+            SetExpectedNumberOfLogs(1);
             await logRequestAndResponse.SendAsync(request);
             var lastMessage = LastMessage(LogSeverityLevel.Warning);
             Assert.IsNotNull(lastMessage);
@@ -61,7 +61,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Test
             var logRequestAndResponse =
                 new LogOutboundRequestAndResponse {UnitTest_SendAsyncDependencyInjection = SendAsyncResponseException};
             var request = new HttpRequestMessage(HttpMethod.Post, "http://example.com/exception");
-            SetExpectedNumberOfLogs(2);
+            SetExpectedNumberOfLogs(1);
             try
             {
                 await logRequestAndResponse.SendAsync(request);
