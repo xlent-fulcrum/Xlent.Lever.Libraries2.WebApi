@@ -42,7 +42,6 @@ namespace Xlent.Lever.Libraries2.WebApi.Pipe
         /// <inheritdoc />
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
-            LogRequest(request);
             var timer = new Stopwatch();
             timer.Start();
             try
@@ -68,11 +67,6 @@ namespace Xlent.Lever.Libraries2.WebApi.Pipe
                 LogException(request, e, timer.Elapsed);
                 throw;
             }
-        }
-
-        private void LogRequest(HttpRequestMessage request)
-        {
-            Log.LogVerbose($"{_direction} request {request.ToLogString()}");
         }
 
         private void LogResponse(HttpResponseMessage response, TimeSpan elapsedTime)
