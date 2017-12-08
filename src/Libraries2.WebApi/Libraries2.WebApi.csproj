@@ -74,6 +74,7 @@
     <Compile Include="Misc\RequestResponseHelper.cs" />
     <Compile Include="Pipe\LogRequestAndResponse.cs" />
     <Compile Include="Pipe\Outbound\LogRequestAndResponse.cs" />
+    <Compile Include="RestClientHelper\ClientCredentials.cs" />
     <Compile Include="Threads\HostingThreads.cs" />
     <Compile Include="Pipe\Inbound\LogRequestAndResponse.cs" />
     <Compile Include="Pipe\Outbound\OutboundPipeFactory.cs" />

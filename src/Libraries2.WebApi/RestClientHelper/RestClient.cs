@@ -10,6 +10,7 @@ using Newtonsoft.Json;
 using Xlent.Lever.Libraries2.Core.Assert;
 using Xlent.Lever.Libraries2.Core.Context;
 using Xlent.Lever.Libraries2.Core.Error.Logic;
+using Xlent.Lever.Libraries2.Core.Platform.Authentication;
 using Xlent.Lever.Libraries2.WebApi.Logging;
 using Xlent.Lever.Libraries2.WebApi.Pipe.Outbound;
 
@@ -148,6 +149,24 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
         public RestClient(string baseUri, ServiceClientCredentials credentials, bool withLogging) : this(baseUri, withLogging)
         {
             Credentials = credentials;
+        }
+
+        /// <summary></summary>
+        /// <param name="baseUri">The base URL that all HTTP calls methods will refer to.</param>
+        /// <param name="authenticationToken">The toekn used when making the HTTP calls.</param>
+        public RestClient(string baseUri, AuthenticationToken authenticationToken) : 
+            this(baseUri, authenticationToken, true)
+        {
+        }
+
+        /// <summary></summary>
+        /// <param name="baseUri">The base URL that all HTTP calls methods will refer to.</param>
+        /// <param name="authenticationToken">The token used when making the HTTP calls.</param>
+        /// <param name="withLogging">Should logging handlers be used in outbound pipe?</param>
+        public RestClient(string baseUri, AuthenticationToken authenticationToken, bool withLogging) :
+            this(baseUri, withLogging)
+        {
+            Credentials = new ClientCredentials(authenticationToken);
         }
 
         /// <inheritdoc />
