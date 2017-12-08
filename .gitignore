@@ -258,3 +258,4 @@ lib/Libraries2.WebApi/*.xml
 /src/Libraries2.WebApi/lib/Libraries2.WebApi/*.config
 /src/Libraries2.WebApi/lib/Libraries2.WebApi/*.xml
 /src/Libraries2.WebApi/lib/net46/*.xml
+/src/Libraries2.WebApi/lib/net46/*.config

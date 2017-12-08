@@ -18,6 +18,8 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
         /// </summary>
         public ClientCredentials(AuthenticationToken token)
         {
+            InternalContract.Require(_token.Type == JwtTokenTypeEnum.Bearer, 
+                $"Parameter {nameof(token)} must be of type Bearer.");
             _token = token;
         }
 
@@ -25,7 +27,6 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
         public override async Task ProcessHttpRequestAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
             InternalContract.RequireNotNull(request, nameof(request));
-
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _token.AccessToken);
             await base.ProcessHttpRequestAsync(request, cancellationToken);
         }
