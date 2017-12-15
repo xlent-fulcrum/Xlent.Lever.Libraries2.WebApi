@@ -4,6 +4,7 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Rest;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Xlent.Lever.Libraries2.Core.Assert;
@@ -109,7 +110,11 @@ namespace Xlent.Lever.Libraries2.WebApi.Error.Logic
             var error = ToFulcrumError(e);
             if (error == null)
             {
-                var message = $"The exception {e.GetType().FullName} was not recognized as a Fulcrum Exception. Message: {e.Message}";
+                var message = $"The exception {e.GetType().FullName} ({e.Message}) was not recognized as a Fulcrum Exception.";
+                if (e is HttpOperationException httpOperationException && httpOperationException.Request != null) 
+                {
+                    message = $"Request {httpOperationException.Request.RequestUri.AbsoluteUri} failed. {message}";
+                }
                 e = new FulcrumAssertionFailedException(message, e);
                 error = ToFulcrumError(e);
                 if (error == null) return FatalErrorAsHttpResponse(e);
