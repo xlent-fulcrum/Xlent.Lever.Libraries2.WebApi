@@ -18,8 +18,8 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
         /// </summary>
         public ClientCredentials(AuthenticationToken token)
         {
-            InternalContract.Require(_token.Type == JwtTokenTypeEnum.Bearer, 
-                $"Parameter {nameof(token)} must be of type Bearer.");
+            InternalContract.RequireNotNull(token, nameof(token));
+            InternalContract.Require(token.Type == JwtTokenTypeEnum.Bearer, $"Parameter {nameof(token)} must be of type Bearer.");
             _token = token;
         }
 
