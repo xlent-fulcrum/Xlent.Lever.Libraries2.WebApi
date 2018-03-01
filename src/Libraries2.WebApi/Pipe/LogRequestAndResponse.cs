@@ -32,10 +32,10 @@ namespace Xlent.Lever.Libraries2.WebApi.Pipe
         public SendAsyncDelegate UnitTest_SendAsyncDependencyInjection { get; set; }
 
         /// <summary></summary>
-        /// <param name="isInboundPipe">Expected to be true for inbound pipes and false for outbound pipes</param>
-        public LogRequestAndResponse(bool isInboundPipe)
+        /// <param name="direction">Typically INBOUND or OUTBUND</param>
+        public LogRequestAndResponse(string direction)
         {
-            _direction = isInboundPipe ? "IN" : "OUT";
+            _direction = direction;
             FulcrumApplication.Validate();
         }
 

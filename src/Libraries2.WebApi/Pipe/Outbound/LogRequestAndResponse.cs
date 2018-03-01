@@ -6,7 +6,7 @@
         /// <inheritdoc />
         /// <summary></summary>
         public LogRequestAndResponse()
-            :base(false)
+            :base("OUTBOUND")
         {
         }
     }

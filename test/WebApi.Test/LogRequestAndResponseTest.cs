@@ -28,35 +28,35 @@ namespace Xlent.Lever.Libraries2.WebApi.Test
         [TestMethod]
         public async Task ResponseOk()
         {
-            var logRequestAndResponse = new LogOutboundRequestAndResponse();
+            var logRequestAndResponse = new LogRequestAndResponse();
             logRequestAndResponse.UnitTest_SendAsyncDependencyInjection = SendAsyncResponseOk;
             var request = new HttpRequestMessage(HttpMethod.Post, "http://example.com/okresponse");
             SetExpectedNumberOfLogs(1);
             await logRequestAndResponse.SendAsync(request);
             var lastMessage = LastMessage(LogSeverityLevel.Information);
             Assert.IsNotNull(lastMessage);
-            Assert.IsTrue(lastMessage.Contains($"OUT request-response POST {request.RequestUri}"));
+            Assert.IsTrue(lastMessage.Contains($"TEST request-response POST {request.RequestUri}"));
             Assert.IsTrue(lastMessage.Contains(request.RequestUri.ToString()));
         }
 
         [TestMethod]
         public async Task ResponseBadRequest()
         {
-            var logRequestAndResponse = new LogOutboundRequestAndResponse();
+            var logRequestAndResponse = new LogRequestAndResponse();
             logRequestAndResponse.UnitTest_SendAsyncDependencyInjection = SendAsyncResponseBadRequest;
             var request = new HttpRequestMessage(HttpMethod.Post, "http://example.com/badrequest");
             SetExpectedNumberOfLogs(1);
             await logRequestAndResponse.SendAsync(request);
             var lastMessage = LastMessage(LogSeverityLevel.Warning);
             Assert.IsNotNull(lastMessage);
-            Assert.IsTrue(lastMessage.Contains($"OUT request-response POST {request.RequestUri}"));
+            Assert.IsTrue(lastMessage.Contains($"TEST request-response POST {request.RequestUri}"));
         }
 
         [TestMethod]
         public async Task ResponseException()
         {
             var logRequestAndResponse =
-                new LogOutboundRequestAndResponse {UnitTest_SendAsyncDependencyInjection = SendAsyncResponseException};
+                new LogRequestAndResponse {UnitTest_SendAsyncDependencyInjection = SendAsyncResponseException};
             var request = new HttpRequestMessage(HttpMethod.Post, "http://example.com/exception");
             SetExpectedNumberOfLogs(1);
             try
@@ -68,7 +68,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Test
             {
                 var lastMessage = LastMessage(LogSeverityLevel.Error);
                 Assert.IsNotNull(lastMessage);
-                Assert.IsTrue(lastMessage.Contains($"OUT request-exception POST {request.RequestUri}"));
+                Assert.IsTrue(lastMessage.Contains($"TEST request-exception POST {request.RequestUri}"));
             }
         }
 

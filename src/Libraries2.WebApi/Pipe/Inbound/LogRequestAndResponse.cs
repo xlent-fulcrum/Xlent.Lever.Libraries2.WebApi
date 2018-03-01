@@ -5,7 +5,7 @@
     {
         /// <inheritdoc />
         public LogRequestAndResponse()
-            : base(false)
+            : base("INBOUND")
         {
         }
     }

@@ -4,9 +4,9 @@ using System.Threading.Tasks;
 
 namespace Xlent.Lever.Libraries2.WebApi.Test.Support
 {
-    internal class LogOutboundRequestAndResponse : Pipe.LogRequestAndResponse
+    internal class LogRequestAndResponse : Pipe.LogRequestAndResponse
     {
-        public LogOutboundRequestAndResponse() : base(false)
+        public LogRequestAndResponse() : base("TEST")
         {
         }
 
