@@ -45,7 +45,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Pipe.Inbound
         {
             var rgx = new Regex("/v[^/]+/([^/]+)/([^/]+)/");
 
-            var match = rgx.Match(request.RequestUri.OriginalString);
+            var match = rgx.Match(request.RequestUri.PathAndQuery);
             if (match.Success && match.Groups.Count == 3)
             {
                 var organization = match.Groups[1].Value;
