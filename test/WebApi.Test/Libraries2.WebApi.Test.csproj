@@ -79,6 +79,7 @@
     <Compile Include="Support\Models\Person.cs" />
     <Compile Include="LogRequestAndResponseTest.cs" />
     <Compile Include="ContextTests.cs" />
+    <Compile Include="InboundPipeTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
