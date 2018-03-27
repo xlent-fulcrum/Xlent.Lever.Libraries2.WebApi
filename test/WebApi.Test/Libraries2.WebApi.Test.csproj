@@ -73,7 +73,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ConverterTests.cs" />
-    <Compile Include="RestClientHelperTest.cs" />
+    <Compile Include="RestClientHelper\RestClientTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Support\LogRequestAndResponse.cs" />
     <Compile Include="Support\Models\Person.cs" />

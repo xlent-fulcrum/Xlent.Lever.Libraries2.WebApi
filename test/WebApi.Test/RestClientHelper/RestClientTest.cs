@@ -13,10 +13,10 @@ using Xlent.Lever.Libraries2.Core.Context;
 using Xlent.Lever.Libraries2.WebApi.RestClientHelper;
 using Xlent.Lever.Libraries2.WebApi.Test.Support.Models;
 
-namespace Xlent.Lever.Libraries2.WebApi.Test
+namespace Xlent.Lever.Libraries2.WebApi.Test.RestClientHelper
 {
     [TestClass]
-    public class RestClientHelperTest
+    public class RestClientTest
     {
         private static Mock<IHttpClient> _httpClientMock;
 
@@ -24,7 +24,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Test
         [TestInitialize]
         public void Initialize()
         {
-            FulcrumApplicationHelper.UnitTestSetup(typeof(RestClientHelperTest).FullName);
+            FulcrumApplicationHelper.UnitTestSetup(typeof(RestClientTest).FullName);
             FulcrumApplication.Setup.ContextValueProvider = new SingleThreadValueProvider();
             _httpClientMock = new Mock<IHttpClient>();
             RestClient.HttpClient = _httpClientMock.Object;
