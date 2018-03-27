@@ -17,10 +17,10 @@ using Xlent.Lever.Libraries2.WebApi.Test.Support.Models;
 namespace Xlent.Lever.Libraries2.WebApi.Test.RestClientHelper
 {
     [TestClass]
-    public class RestClientReadTest : TestBase
+    public class RestClientCrudTest : TestBase
     {
         private const string ResourcePath = "http://example.se/Persons";
-        private RestClientRead<Person, Guid> _client;
+        private RestClientCrud<Person, Guid> _client;
         private Person _person;
         private HttpResponseMessage _okResponse;
 
@@ -32,7 +32,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Test.RestClientHelper
             FulcrumApplication.Setup.ContextValueProvider = new SingleThreadValueProvider();
             _httpClientMock = new Mock<IHttpClient>();
             RestClient.HttpClient = _httpClientMock.Object;
-            _client = new RestClientRead<Person, Guid>(ResourcePath);
+            _client = new RestClientCrud<Person, Guid>(ResourcePath);
             _person = new Person()
             {
                 GivenName = "Kalle",
@@ -45,50 +45,31 @@ namespace Xlent.Lever.Libraries2.WebApi.Test.RestClientHelper
         }
 
         [TestMethod]
-        public async Task ReadTest()
+        public async Task UpdateAndReturnTest()
         {
             var id = Guid.NewGuid();
             var expectedUri = $"{ResourcePath}/{id}";
             _httpClientMock.Setup(client => client.SendAsync(
-                    It.Is<HttpRequestMessage>(request => request.RequestUri.AbsoluteUri == expectedUri && request.Method == HttpMethod.Get),
+                    It.Is<HttpRequestMessage>(request => request.RequestUri.AbsoluteUri == expectedUri && request.Method == HttpMethod.Put),
                     CancellationToken.None))
                 .ReturnsAsync((HttpRequestMessage r, CancellationToken c) => CreateResponseMessage(r, _person))
                 .Verifiable();
-            var person = await _client.ReadAsync(id);
+            var person = await _client.UpdateAndReturnAsync(id, _person);
             Assert.AreEqual(_person, person);
             _httpClientMock.Verify();
         }
 
         [TestMethod]
-        public async Task ReadAllTest()
+        public async Task UpdateTest()
         {
-            var expectedUri = $"{ResourcePath}/?limit={int.MaxValue}";
+            var id = Guid.NewGuid();
+            var expectedUri = $"{ResourcePath}/{id}";
             _httpClientMock.Setup(client => client.SendAsync(
-                    It.Is<HttpRequestMessage>(request => request.RequestUri.AbsoluteUri == expectedUri && request.Method == HttpMethod.Get),
+                    It.Is<HttpRequestMessage>(request => request.RequestUri.AbsoluteUri == expectedUri && request.Method == HttpMethod.Put),
                     CancellationToken.None))
-                .ReturnsAsync((HttpRequestMessage r, CancellationToken c) => CreateResponseMessage(r, new[] { _person }))
+                .ReturnsAsync((HttpRequestMessage r, CancellationToken c) => CreateResponseMessage(r))
                 .Verifiable();
-            var persons = await _client.ReadAllAsync();
-            Assert.IsNotNull(persons);
-            Assert.AreEqual(1, persons.Count());
-            Assert.AreEqual(_person, persons.FirstOrDefault());
-            _httpClientMock.Verify();
-        }
-
-        [TestMethod]
-        public async Task ReadAllWithPagingTest()
-        {
-            var expectedUri = $"{ResourcePath}/?offset=0";
-            _httpClientMock.Setup(client => client.SendAsync(
-                    It.Is<HttpRequestMessage>(request => request.RequestUri.AbsoluteUri == expectedUri && request.Method == HttpMethod.Get),
-                    CancellationToken.None))
-                .ReturnsAsync((HttpRequestMessage r, CancellationToken c) => CreateResponseMessage(r, 
-                    new PageEnvelope<Person>(0, PageInfo.DefaultLimit, null, new []{_person})))
-                .Verifiable();
-            var page = await _client.ReadAllWithPagingAsync();
-            Assert.IsNotNull(page?.Data);
-            Assert.AreEqual(1, page.Data.Count());
-            Assert.AreEqual(_person, page.Data.FirstOrDefault());
+            await _client.UpdateAsync(id, _person);
             _httpClientMock.Verify();
         }
     }

@@ -77,5 +77,25 @@ namespace Xlent.Lever.Libraries2.WebApi.Test.RestClientHelper
                 return mockResponse;
             });
         }
+
+        protected HttpResponseMessage CreateResponseMessage(HttpRequestMessage request, HttpStatusCode statusCode,
+            string content)
+        {
+            return new HttpResponseMessage(statusCode)
+            {
+                RequestMessage = request,
+                Content = content == null ? null : new StringContent(content, Encoding.UTF8)
+            };
+        }
+
+        protected HttpResponseMessage CreateResponseMessage<T>(HttpRequestMessage request, T body)
+        {
+            return CreateResponseMessage(request, HttpStatusCode.OK, JsonConvert.SerializeObject(body));
+        }
+
+        protected HttpResponseMessage CreateResponseMessage(HttpRequestMessage request)
+        {
+            return CreateResponseMessage(request, HttpStatusCode.NoContent, null);
+        }
     }
 }

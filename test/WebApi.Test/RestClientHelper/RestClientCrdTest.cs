@@ -47,7 +47,6 @@ namespace Xlent.Lever.Libraries2.WebApi.Test.RestClientHelper
         [TestMethod]
         public async Task CreateAndReturnTest()
         {
-            var id = Guid.NewGuid();
             var expectedUri = $"{ResourcePath}/";
             _httpClientMock.Setup(client => client.SendAsync(
                     It.Is<HttpRequestMessage>(request => request.RequestUri.AbsoluteUri == expectedUri && request.Method == HttpMethod.Post),
@@ -82,7 +81,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Test.RestClientHelper
             _httpClientMock.Setup(client => client.SendAsync(
                     It.Is<HttpRequestMessage>(request => request.RequestUri.AbsoluteUri == expectedUri && request.Method == HttpMethod.Post),
                     CancellationToken.None))
-                .ReturnsAsync((HttpRequestMessage r, CancellationToken c) => CreateResponseMessage(r, HttpStatusCode.NoContent, null))
+                .ReturnsAsync((HttpRequestMessage r, CancellationToken c) => CreateResponseMessage(r))
                 .Verifiable();
             await _client.CreateWithSpecifiedIdAsync(id, _person);
             _httpClientMock.Verify();
@@ -111,7 +110,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Test.RestClientHelper
             _httpClientMock.Setup(client => client.SendAsync(
                     It.Is<HttpRequestMessage>(request => request.RequestUri.AbsoluteUri == expectedUri && request.Method == HttpMethod.Delete),
                     CancellationToken.None))
-                .ReturnsAsync((HttpRequestMessage r, CancellationToken c) => CreateResponseMessage(r, HttpStatusCode.NoContent, null))
+                .ReturnsAsync((HttpRequestMessage r, CancellationToken c) => CreateResponseMessage(r))
                 .Verifiable();
             await _client.DeleteAsync(id);
             _httpClientMock.Verify();
@@ -128,21 +127,6 @@ namespace Xlent.Lever.Libraries2.WebApi.Test.RestClientHelper
                 .Verifiable();
             await _client.DeleteAllAsync();
             _httpClientMock.Verify();
-        }
-
-        private HttpResponseMessage CreateResponseMessage(HttpRequestMessage request, HttpStatusCode statusCode,
-            string content)
-        {
-            return new HttpResponseMessage(statusCode)
-            {
-                RequestMessage = request,
-                Content = content == null ? null : new StringContent(content, Encoding.UTF8)
-            };
-        }
-
-        private HttpResponseMessage CreateResponseMessage<T>(HttpRequestMessage request, T body)
-        {
-            return CreateResponseMessage(request, HttpStatusCode.OK, JsonConvert.SerializeObject(body));
         }
     }
 }
