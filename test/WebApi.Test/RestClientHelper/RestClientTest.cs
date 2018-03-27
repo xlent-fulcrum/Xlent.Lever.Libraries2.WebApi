@@ -1,13 +1,9 @@
 ﻿using System.Net;
 using System.Net.Http;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Rest;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using Xlent.Lever.Libraries2.Core.Application;
 using Xlent.Lever.Libraries2.Core.Context;
 using Xlent.Lever.Libraries2.WebApi.RestClientHelper;
@@ -16,11 +12,8 @@ using Xlent.Lever.Libraries2.WebApi.Test.Support.Models;
 namespace Xlent.Lever.Libraries2.WebApi.Test.RestClientHelper
 {
     [TestClass]
-    public class RestClientTest
+    public class RestClientTest : TestBase
     {
-        private static Mock<IHttpClient> _httpClientMock;
-
-
         [TestInitialize]
         public void Initialize()
         {
@@ -38,6 +31,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Test.RestClientHelper
         }
 
         #region POST
+
         [TestMethod]
         public async Task PostNormal()
         {
@@ -73,19 +67,10 @@ namespace Xlent.Lever.Libraries2.WebApi.Test.RestClientHelper
                 throw;
             }
         }
-
-        private static void PrepareMockPost<T>(T content)
-        {
-            var mockResponse = new HttpResponseMessage(HttpStatusCode.OK)
-            {
-                Content = new StringContent(JObject.FromObject(content).ToString(Formatting.Indented), Encoding.UTF8)
-            };
-            PrepareMockOk<T>(mockResponse, HttpMethod.Post);
-        }
-
         #endregion
 
         #region GET
+
         [TestMethod]
         public async Task GetNormal()
         {
@@ -120,17 +105,11 @@ namespace Xlent.Lever.Libraries2.WebApi.Test.RestClientHelper
                 throw;
             }
         }
-        private static void PrepareMockGet<T>(T content)
-        {
-            var mockResponse = new HttpResponseMessage(HttpStatusCode.OK)
-            {
-                Content = new StringContent(JObject.FromObject(content).ToString(Formatting.Indented), Encoding.UTF8)
-            };
-            PrepareMockOk<T>(mockResponse, HttpMethod.Get);
-        }
+
         #endregion
 
         #region PUT
+
         [TestMethod]
         public async Task PutNormal()
         {
@@ -166,17 +145,10 @@ namespace Xlent.Lever.Libraries2.WebApi.Test.RestClientHelper
                 throw;
             }
         }
-        private static void PrepareMockPut<T>(T content)
-        {
-            var mockResponse = new HttpResponseMessage(HttpStatusCode.OK)
-            {
-                Content = new StringContent(JObject.FromObject(content).ToString(Formatting.Indented), Encoding.UTF8)
-            };
-            PrepareMockOk<T>(mockResponse, HttpMethod.Put);
-        }
         #endregion
 
         #region DELETE
+
         [TestMethod]
         public async Task DeleteNormal()
         {
@@ -209,42 +181,6 @@ namespace Xlent.Lever.Libraries2.WebApi.Test.RestClientHelper
                 throw;
             }
         }
-        // ReSharper disable once UnusedParameter.Local
-        private static void PrepareMockDelete<T>(T content)
-        {
-            var mockResponse = new HttpResponseMessage(HttpStatusCode.OK);
-            PrepareMockOk<T>(mockResponse, HttpMethod.Delete);
-        }
         #endregion
-
-        private static void AssertAreEqual(Person expected, Person actual)
-        {
-            Assert.AreEqual(expected.GivenName, actual.GivenName);
-            Assert.AreEqual(expected.Surname, actual.Surname);
-        }
-
-        private static void PrepareMockOk<T>(HttpResponseMessage mockResponse, HttpMethod method)
-        {
-            _httpClientMock.Setup(mock => mock.SendAsync(It.Is<HttpRequestMessage>(m => m.Method == method),
-                It.IsAny<CancellationToken>())).ReturnsAsync((HttpRequestMessage request, CancellationToken token) =>
-            {
-                mockResponse.RequestMessage = request;
-                return mockResponse;
-            });
-        }
-
-        private static void PrepareMockNotFound(HttpMethod method, string errorMessage)
-        {
-            var mockResponse = new HttpResponseMessage(HttpStatusCode.NotFound)
-            {
-                Content = new StringContent(errorMessage, Encoding.UTF8)
-            };
-            _httpClientMock.Setup(mock => mock.SendAsync(It.Is<HttpRequestMessage>(m => m.Method == method),
-                It.IsAny<CancellationToken>())).ReturnsAsync((HttpRequestMessage request, CancellationToken token) =>
-            {
-                mockResponse.RequestMessage = request;
-                return mockResponse;
-            });
-        }
     }
 }
