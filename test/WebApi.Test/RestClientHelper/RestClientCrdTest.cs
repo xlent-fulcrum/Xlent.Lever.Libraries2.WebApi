@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using Newtonsoft.Json;
 using Xlent.Lever.Libraries2.Core.Application;
 using Xlent.Lever.Libraries2.Core.Context;
 using Xlent.Lever.Libraries2.Core.Storage.Model;
@@ -20,9 +17,8 @@ namespace Xlent.Lever.Libraries2.WebApi.Test.RestClientHelper
     public class RestClientCrdTest : TestBase
     {
         private const string ResourcePath = "http://example.se/Persons";
-        private RestClientCrd<Person, Guid> _client;
+        private ICrd<Person, Guid> _client;
         private Person _person;
-        private HttpResponseMessage _okResponse;
 
 
         [TestInitialize]
@@ -37,10 +33,6 @@ namespace Xlent.Lever.Libraries2.WebApi.Test.RestClientHelper
             {
                 GivenName = "Kalle",
                 Surname = "Anka"
-            };
-            _okResponse = new HttpResponseMessage(HttpStatusCode.OK)
-            {
-                Content = new StringContent(JsonConvert.SerializeObject(_person), Encoding.UTF8)
             };
         }
 
