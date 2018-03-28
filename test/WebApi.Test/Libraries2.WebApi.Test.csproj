@@ -68,14 +68,21 @@
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="Xlent.Lever.Libraries2.Core.NetFramework, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Xlent.Lever.Libraries2.Core.NetFramework.1.20.1\lib\net46\Xlent.Lever.Libraries2.Core.NetFramework.dll</HintPath>
+      <HintPath>..\..\packages\Xlent.Lever.Libraries2.Core.NetFramework.1.20.2\lib\net46\Xlent.Lever.Libraries2.Core.NetFramework.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ConverterTests.cs" />
-    <Compile Include="RestClientHelperTest.cs" />
+    <Compile Include="RestClientHelper\RestClientManyToOneTest.cs" />
+    <Compile Include="RestClientHelper\RestClientManyToOneRecursiveTest.cs" />
+    <Compile Include="RestClientHelper\RestClientCrudTest.cs" />
+    <Compile Include="RestClientHelper\RestClientCrdTest.cs" />
+    <Compile Include="RestClientHelper\RestClientReadTest.cs" />
+    <Compile Include="RestClientHelper\TestBase.cs" />
+    <Compile Include="RestClientHelper\RestClientTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Support\LogRequestAndResponse.cs" />
+    <Compile Include="Support\Models\Address.cs" />
     <Compile Include="Support\Models\Person.cs" />
     <Compile Include="LogRequestAndResponseTest.cs" />
     <Compile Include="ContextTests.cs" />

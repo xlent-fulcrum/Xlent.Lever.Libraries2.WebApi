@@ -61,7 +61,7 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
     <Reference Include="Xlent.Lever.Libraries2.Core.NetFramework, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Xlent.Lever.Libraries2.Core.NetFramework.1.20.1\lib\net46\Xlent.Lever.Libraries2.Core.NetFramework.dll</HintPath>
+      <HintPath>..\..\packages\Xlent.Lever.Libraries2.Core.NetFramework.1.20.2\lib\net46\Xlent.Lever.Libraries2.Core.NetFramework.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -75,6 +75,10 @@
     <Compile Include="Pipe\LogRequestAndResponse.cs" />
     <Compile Include="Pipe\Outbound\LogRequestAndResponse.cs" />
     <Compile Include="RestClientHelper\ClientCredentials.cs" />
+    <Compile Include="RestClientHelper\RestClientManyToOne.cs" />
+    <Compile Include="RestClientHelper\RestClientManyToOneRecursive.cs" />
+    <Compile Include="RestClientHelper\RestClientCrud.cs" />
+    <Compile Include="RestClientHelper\RestClientCrd.cs" />
     <Compile Include="RestClientHelper\RestClientRead.cs" />
     <Compile Include="Threads\HostingThreads.cs" />
     <Compile Include="Pipe\Inbound\LogRequestAndResponse.cs" />

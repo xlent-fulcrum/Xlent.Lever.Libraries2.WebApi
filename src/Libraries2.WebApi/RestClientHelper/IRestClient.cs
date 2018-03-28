@@ -38,8 +38,7 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
             string relativeUrl,
             TBody body,
             Dictionary<string, List<string>> customHeaders = null,
-            CancellationToken cancellationToken = default(CancellationToken))
-            where TBody : class;
+            CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Send POST to <paramref name="relativeUrl"/> with no body, but with a returned object.
@@ -67,8 +66,7 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
             string relativeUrl,
             TBodyAndResponse body,
             Dictionary<string, List<string>> customHeaders = null,
-            CancellationToken cancellationToken = default(CancellationToken))
-            where TBodyAndResponse : class;
+            CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Send POST to <paramref name="relativeUrl"/> with <paramref name="body"/> with no returned value.
@@ -82,8 +80,7 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
             string relativeUrl,
             TBody body,
             Dictionary<string, List<string>> customHeaders = null,
-            CancellationToken cancellationToken = default(CancellationToken))
-            where TBody : class;
+            CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Post to <paramref name="relativeUrl"/> with no body and no returned value.
@@ -127,8 +124,7 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
         Task<TResponse> PutAsync<TResponse, TBody>(
             string relativeUrl, TBody body,
             Dictionary<string, List<string>> customHeaders = null,
-            CancellationToken cancellationToken = default(CancellationToken))
-            where TBody : class;
+            CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Send PUT to <paramref name="relativeUrl"/> with <paramref name="body"/> with the updated object as the returned value.
@@ -143,8 +139,7 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
             string relativeUrl,
             TBodyAndResponse body,
             Dictionary<string, List<string>> customHeaders = null,
-            CancellationToken cancellationToken = default(CancellationToken))
-            where TBodyAndResponse : class;
+            CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Send PUT to <paramref name="relativeUrl"/> with <paramref name="body"/> with no returned value.
@@ -158,8 +153,7 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
             string relativeUrl,
             TBody body,
             Dictionary<string, List<string>> customHeaders = null,
-            CancellationToken cancellationToken = default(CancellationToken))
-            where TBody : class;
+            CancellationToken cancellationToken = default(CancellationToken));
         #endregion
 
         #region DELETE
@@ -197,7 +191,9 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
         /// <param name="customHeaders">Optional headers.</param>
         /// <param name="cancellationToken">Optional cancellation token.</param>
         /// <returns></returns>
-        Task<HttpResponseMessage> SendRequestAsync<TBody>(HttpMethod method, string relativeUrl, TBody body = null, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken)) where TBody : class;
+        Task<HttpResponseMessage> SendRequestAsync<TBody>(HttpMethod method, string relativeUrl, TBody body = default(TBody),
+            Dictionary<string, List<string>> customHeaders = null,
+            CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Send a request with method <paramref name="method"/> to <paramref name="relativeUrl"/> with <paramref name="body"/> and expect a result of a specific type.
@@ -210,7 +206,9 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
         /// <param name="customHeaders">Optional headers.</param>
         /// <param name="cancellationToken">Optional cancellation token.</param>
         /// <returns></returns>
-        Task<HttpOperationResponse<TResponse>> SendRequestAsync<TResponse, TBody>(HttpMethod method, string relativeUrl, TBody body = null, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken)) where TBody : class;
+        Task<HttpOperationResponse<TResponse>> SendRequestAsync<TResponse, TBody>(HttpMethod method, string relativeUrl,
+            TBody body = default(TBody), Dictionary<string, List<string>> customHeaders = null,
+            CancellationToken cancellationToken = default(CancellationToken));
 
         #endregion
     }

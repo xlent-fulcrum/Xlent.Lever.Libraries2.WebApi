@@ -178,7 +178,7 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
         #region POST
         /// <inheritdoc />
         public async Task<TResponse> PostAsync<TResponse, TBody>(string relativeUrl, TBody body, Dictionary<string, List<string>> customHeaders = null,
-            CancellationToken cancellationToken = new CancellationToken()) where TBody : class
+            CancellationToken cancellationToken = new CancellationToken())
         {
             InternalContract.RequireNotNull(relativeUrl, nameof(relativeUrl));
             var response = await SendRequestAsync<TResponse, TBody>(HttpMethod.Post, relativeUrl, body, customHeaders, cancellationToken);
@@ -195,7 +195,7 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
 
         /// <inheritdoc />
         public async Task<TBodyAndResponse> PostAndReturnCreatedObjectAsync<TBodyAndResponse>(string relativeUrl, TBodyAndResponse body,
-            Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = new CancellationToken()) where TBodyAndResponse : class
+            Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = new CancellationToken())
         {
             InternalContract.RequireNotNull(relativeUrl, nameof(relativeUrl));
             return await PostAsync<TBodyAndResponse, TBodyAndResponse>(relativeUrl, body, customHeaders, cancellationToken);
@@ -203,7 +203,7 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
 
         /// <inheritdoc />
         public async Task PostNoResponseContentAsync<TBody>(string relativeUrl, TBody body, Dictionary<string, List<string>> customHeaders = null,
-            CancellationToken cancellationToken = new CancellationToken()) where TBody : class
+            CancellationToken cancellationToken = new CancellationToken())
         {
             InternalContract.RequireNotNull(relativeUrl, nameof(relativeUrl));
             var response = await SendRequestAsync(HttpMethod.Post, relativeUrl, body, customHeaders, cancellationToken);
@@ -236,7 +236,7 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
 
         /// <inheritdoc />
         public async Task<TResponse> PutAsync<TResponse, TBody>(string relativeUrl, TBody body, Dictionary<string, List<string>> customHeaders = null,
-            CancellationToken cancellationToken = new CancellationToken()) where TBody : class
+            CancellationToken cancellationToken = new CancellationToken())
         {
             InternalContract.RequireNotNull(relativeUrl, nameof(relativeUrl));
             var response = await SendRequestAsync<TResponse, TBody>(HttpMethod.Put, relativeUrl, body, customHeaders, cancellationToken);
@@ -245,7 +245,7 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
 
         /// <inheritdoc />
         public async Task<TBodyAndResponse> PutAndReturnUpdatedObjectAsync<TBodyAndResponse>(string relativeUrl, TBodyAndResponse body,
-            Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = new CancellationToken()) where TBodyAndResponse : class
+            Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = new CancellationToken())
         {
             InternalContract.RequireNotNull(relativeUrl, nameof(relativeUrl));
             return await PutAsync<TBodyAndResponse, TBodyAndResponse>(relativeUrl, body, customHeaders, cancellationToken);
@@ -253,7 +253,7 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
 
         /// <inheritdoc />
         public async Task PutNoResponseContentAsync<TBody>(string relativeUrl, TBody body, Dictionary<string, List<string>> customHeaders = null,
-            CancellationToken cancellationToken = new CancellationToken()) where TBody : class
+            CancellationToken cancellationToken = new CancellationToken())
         {
             InternalContract.RequireNotNull(relativeUrl, nameof(relativeUrl));
             var response = await SendRequestAsync(HttpMethod.Put, relativeUrl, body, customHeaders, cancellationToken);
@@ -278,9 +278,8 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
         #region Send
         /// <inheritdoc />
         public async Task<HttpOperationResponse<TResponse>> SendRequestAsync<TResponse, TBody>(HttpMethod method, string relativeUrl,
-            TBody body = null, Dictionary<string, List<string>> customHeaders = null,
+            TBody body = default(TBody), Dictionary<string, List<string>> customHeaders = null,
             CancellationToken cancellationToken = default(CancellationToken))
-            where TBody : class
         {
             HttpResponseMessage response = null;
             try
@@ -297,9 +296,8 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
 
         /// <inheritdoc />
         public async Task<HttpResponseMessage> SendRequestAsync<TBody>(HttpMethod method, string relativeUrl,
-            TBody body = null, Dictionary<string, List<string>> customHeaders = null,
+            TBody body = default(TBody), Dictionary<string, List<string>> customHeaders = null,
             CancellationToken cancellationToken = default(CancellationToken))
-            where TBody : class
         {
             HttpRequestMessage request = null;
             try
@@ -408,7 +406,7 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
         }
 
         private async Task<HttpRequestMessage> CreateRequest<TBody>(HttpMethod method, string relativeUrl, TBody instance, Dictionary<string, List<string>> customHeaders,
-            CancellationToken cancellationToken) where TBody : class
+            CancellationToken cancellationToken)
         {
             InternalContract.RequireNotNull(relativeUrl, nameof(relativeUrl));
             var baseUri = BaseUri.AbsoluteUri;

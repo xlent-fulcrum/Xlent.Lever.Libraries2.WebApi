@@ -3,26 +3,26 @@ using Xlent.Lever.Libraries2.Core.Storage.Model;
 
 namespace Xlent.Lever.Libraries2.WebApi.Test.Support.Models
 {
-    public class Person : IUniquelyIdentifiable<Guid>
+    public class Address : IUniquelyIdentifiable<Guid>
     {
-        public string GivenName { get; set; }
-        public string Surname { get; set; }
-
         /// <inheritdoc />
         public Guid Id { get; set; }
 
-        public Guid? ParentId { get; set; }
+        public string Street { get; set; }
+
+        public Guid? PersonId { get; set; }
+        public string City { get; set; }
 
         /// <inheritdoc />
         public override bool Equals(object o)
         {
-            if (!(o is Person person)) return false;
-            return Equals(person);
+            if (!(o is Address address)) return false;
+            return Equals(address);
         }
 
-        protected bool Equals(Person other)
+        protected bool Equals(Address other)
         {
-            return string.Equals(GivenName, other.GivenName) && string.Equals(Surname, other.Surname);
+            return string.Equals(Street, other.Street) && string.Equals(City, other.City);
         }
 
         /// <inheritdoc />
@@ -31,7 +31,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Test.Support.Models
             unchecked
             {
                 // ReSharper disable NonReadonlyMemberInGetHashCode
-                return ((GivenName != null ? GivenName.GetHashCode() : 0) * 397) ^ (Surname != null ? Surname.GetHashCode() : 0);
+                return ((Street != null ? Street.GetHashCode() : 0) * 397) ^ (City != null ? City.GetHashCode() : 0);
                 // ReSharper restore NonReadonlyMemberInGetHashCode
             }
         }
