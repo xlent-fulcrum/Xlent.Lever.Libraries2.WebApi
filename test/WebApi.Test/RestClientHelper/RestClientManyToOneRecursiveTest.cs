@@ -17,10 +17,10 @@ using Xlent.Lever.Libraries2.WebApi.Test.Support.Models;
 namespace Xlent.Lever.Libraries2.WebApi.Test.RestClientHelper
 {
     [TestClass]
-    public class RestClientReadTest : TestBase
+    public class RestClientManyToOneRecursiveTest : TestBase
     {
         private const string ResourcePath = "http://example.se/Persons";
-        private RestClientRead<Person, Guid> _client;
+        private RestClientManyToOneRecursive<Person, Guid> _client;
         private Person _person;
         private HttpResponseMessage _okResponse;
 
@@ -32,7 +32,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Test.RestClientHelper
             FulcrumApplication.Setup.ContextValueProvider = new SingleThreadValueProvider();
             _httpClientMock = new Mock<IHttpClient>();
             RestClient.HttpClient = _httpClientMock.Object;
-            _client = new RestClientRead<Person, Guid>(ResourcePath);
+            _client = new RestClientManyToOneRecursive<Person, Guid>(ResourcePath);
             _person = new Person()
             {
                 GivenName = "Kalle",
@@ -45,30 +45,30 @@ namespace Xlent.Lever.Libraries2.WebApi.Test.RestClientHelper
         }
 
         [TestMethod]
-        public async Task ReadTest()
+        public async Task DeleteChildrenTest()
         {
-            var id = Guid.NewGuid();
-            var expectedUri = $"{ResourcePath}/{id}";
+            var parentId = Guid.NewGuid();
+            var expectedUri = $"{ResourcePath}/{parentId}/Children";
             _httpClientMock.Setup(client => client.SendAsync(
-                    It.Is<HttpRequestMessage>(request => request.RequestUri.AbsoluteUri == expectedUri && request.Method == HttpMethod.Get),
+                    It.Is<HttpRequestMessage>(request => request.RequestUri.AbsoluteUri == expectedUri && request.Method == HttpMethod.Delete),
                     CancellationToken.None))
                 .ReturnsAsync((HttpRequestMessage r, CancellationToken c) => CreateResponseMessage(r, _person))
                 .Verifiable();
-            var person = await _client.ReadAsync(id);
-            Assert.AreEqual(_person, person);
+            await _client.DeleteChildrenAsync(parentId);
             _httpClientMock.Verify();
         }
 
         [TestMethod]
-        public async Task ReadAllTest()
+        public async Task ReadChildrenTest()
         {
-            var expectedUri = $"{ResourcePath}/?limit={int.MaxValue}";
+            var parentId = Guid.NewGuid();
+            var expectedUri = $"{ResourcePath}/{parentId}/Children/?limit={int.MaxValue}";
             _httpClientMock.Setup(client => client.SendAsync(
                     It.Is<HttpRequestMessage>(request => request.RequestUri.AbsoluteUri == expectedUri && request.Method == HttpMethod.Get),
                     CancellationToken.None))
                 .ReturnsAsync((HttpRequestMessage r, CancellationToken c) => CreateResponseMessage(r, new[] { _person }))
                 .Verifiable();
-            var persons = await _client.ReadAllAsync();
+            var persons = await _client.ReadChildrenAsync(parentId);
             Assert.IsNotNull(persons);
             Assert.AreEqual(1, persons.Count());
             Assert.AreEqual(_person, persons.FirstOrDefault());
@@ -76,19 +76,36 @@ namespace Xlent.Lever.Libraries2.WebApi.Test.RestClientHelper
         }
 
         [TestMethod]
-        public async Task ReadAllWithPagingTest()
+        public async Task ReadChildrenWithPagingTest()
         {
-            var expectedUri = $"{ResourcePath}/?offset=0";
+            var parentId = Guid.NewGuid();
+            var expectedUri = $"{ResourcePath}/{parentId}/Children/?offset=0";
             var pageEnvelope = new PageEnvelope<Person>(0, PageInfo.DefaultLimit, null, new[] { _person });
             _httpClientMock.Setup(client => client.SendAsync(
                     It.Is<HttpRequestMessage>(request => request.RequestUri.AbsoluteUri == expectedUri && request.Method == HttpMethod.Get),
                     CancellationToken.None))
                 .ReturnsAsync((HttpRequestMessage r, CancellationToken c) => CreateResponseMessage(r, pageEnvelope))
                 .Verifiable();
-            var page = await _client.ReadAllWithPagingAsync();
-            Assert.IsNotNull(page?.Data);
-            Assert.AreEqual(1, page.Data.Count());
-            Assert.AreEqual(_person, page.Data.FirstOrDefault());
+            var readPage = await _client.ReadChildrenWithPagingAsync(parentId);
+            Assert.IsNotNull(readPage?.Data);
+            Assert.AreEqual(1, readPage.Data.Count());
+            Assert.AreEqual(_person, readPage.Data.FirstOrDefault());
+            _httpClientMock.Verify();
+        }
+
+        [TestMethod]
+        public async Task ReadParentTest()
+        {
+            var childId = Guid.NewGuid();
+            var expectedUri = $"{ResourcePath}/{childId}/Parent";
+            _httpClientMock.Setup(client => client.SendAsync(
+                    It.Is<HttpRequestMessage>(request => request.RequestUri.AbsoluteUri == expectedUri && request.Method == HttpMethod.Get),
+                    CancellationToken.None))
+                .ReturnsAsync((HttpRequestMessage r, CancellationToken c) => CreateResponseMessage(r, _person))
+                .Verifiable();
+            var parent = await _client.ReadParentAsync(childId);
+            Assert.IsNotNull(parent);
+            Assert.AreEqual(_person, parent);
             _httpClientMock.Verify();
         }
     }

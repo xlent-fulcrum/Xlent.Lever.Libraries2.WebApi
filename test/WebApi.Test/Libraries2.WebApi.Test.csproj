@@ -73,6 +73,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ConverterTests.cs" />
+    <Compile Include="RestClientHelper\RestClientManyToOneRecursiveTest.cs" />
     <Compile Include="RestClientHelper\RestClientCrudTest.cs" />
     <Compile Include="RestClientHelper\RestClientCrdTest.cs" />
     <Compile Include="RestClientHelper\RestClientReadTest.cs" />

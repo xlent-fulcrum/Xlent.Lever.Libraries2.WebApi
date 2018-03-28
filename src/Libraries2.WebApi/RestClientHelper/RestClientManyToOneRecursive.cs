@@ -45,7 +45,7 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
         public virtual async Task DeleteChildrenAsync(TId parentId)
         {
             InternalContract.RequireNotDefaultValue(parentId, nameof(parentId));
-            await DeleteAsync($"?parentId={parentId}");
+            await DeleteAsync($"{parentId}/Children");
         }
 
         /// <summary>
@@ -73,7 +73,7 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
         {
             InternalContract.RequireNotDefaultValue(parentId, nameof(parentId));
             InternalContract.RequireGreaterThan(0, limit, nameof(limit));
-            return await GetAsync<IEnumerable<TModel>>($"?parentId={parentId}&limit={limit}");
+            return await GetAsync<IEnumerable<TModel>>($"{parentId}/Children/?limit={limit}");
         }
 
         /// <summary>
@@ -109,7 +109,7 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
                 InternalContract.RequireGreaterThan(0, limit.Value, nameof(limit));
                 limitParameter = $"&limit={limit}";
             }
-            return await GetAsync<PageEnvelope<TModel>>($"?parentId={parentId}&offset={offset}&limit={limitParameter}");
+            return await GetAsync<PageEnvelope<TModel>>($"{parentId}/Children/?offset={offset}{limitParameter}");
         }
 
         /// <summary>
