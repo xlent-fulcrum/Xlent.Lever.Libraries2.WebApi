@@ -92,7 +92,7 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
         {
             InternalContract.RequireNotDefaultValue(parentId, nameof(parentId));
             InternalContract.RequireGreaterThan(0, limit, nameof(limit));
-            return await GetAsync<IEnumerable<TManyModel>>($"{parentId}/{ChildrenName}/?limit={limit}");
+            return await GetAsync<IEnumerable<TManyModel>>($"{parentId}/{ChildrenName}?limit={limit}");
         }
 
         /// <summary>
@@ -128,7 +128,7 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
                 InternalContract.RequireGreaterThan(0, limit.Value, nameof(limit));
                 limitParameter = $"&limit={limit}";
             }
-            return await GetAsync<PageEnvelope<TManyModel>>($"{parentId}/{ChildrenName}/?offset={offset}{limitParameter}");
+            return await GetAsync<PageEnvelope<TManyModel>>($"{parentId}/{ChildrenName}/WithPaging?offset={offset}{limitParameter}");
         }
     }
 }

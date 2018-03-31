@@ -46,7 +46,7 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
         /// <inheritdoc />
         public virtual async Task<TModel> CreateAndReturnAsync(TModel item)
         {
-            return await PostAndReturnCreatedObjectAsync("", item);
+            return await PostAndReturnCreatedObjectAsync("ReturnCreated", item);
         }
 
         /// <summary>
@@ -69,7 +69,7 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
         /// <inheritdoc />
         public virtual async Task<TModel> CreateWithSpecifiedIdAndReturnAsync(TId id, TModel item)
         {
-            return await PostAndReturnCreatedObjectAsync($"?id={id}", item);
+            return await PostAndReturnCreatedObjectAsync($"ReturnCreated?id={id}", item);
         }
 
         /// <summary>

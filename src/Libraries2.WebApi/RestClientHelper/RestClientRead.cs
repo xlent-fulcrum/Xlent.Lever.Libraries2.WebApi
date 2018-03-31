@@ -57,7 +57,7 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
                 InternalContract.RequireGreaterThan(0, limit.Value, nameof(limit));
                 limitParameter = $"&limit={limit}";
             }
-            return await GetAsync<PageEnvelope<TModel>>($"?offset={offset}{limitParameter}");
+            return await GetAsync<PageEnvelope<TModel>>($"WithPaging?offset={offset}{limitParameter}");
         }
 
         /// <inheritdoc />

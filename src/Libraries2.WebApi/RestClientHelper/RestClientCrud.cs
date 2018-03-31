@@ -46,7 +46,7 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
         /// <inheritdoc />
         public virtual async Task<TModel> UpdateAndReturnAsync(TId id, TModel item)
         {
-            return await PutAndReturnUpdatedObjectAsync($"{id}", item);
+            return await PutAndReturnUpdatedObjectAsync($"{id}/ReturnUpdated", item);
         }
 
         /// <summary>

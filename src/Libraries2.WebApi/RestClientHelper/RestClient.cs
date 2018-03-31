@@ -305,6 +305,7 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
                 request = await CreateRequest(method, relativeUrl, body, customHeaders, cancellationToken);
                 cancellationToken.ThrowIfCancellationRequested();
                 var response = await HttpClient.SendAsync(request, cancellationToken).ConfigureAwait(false);
+                FulcrumAssert.IsNotNull(response);
                 return response;
             }
             finally
@@ -410,9 +411,7 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
         {
             InternalContract.RequireNotNull(relativeUrl, nameof(relativeUrl));
             var baseUri = BaseUri.AbsoluteUri;
-            if (!baseUri.EndsWith("/")) baseUri += "/";
-            if (relativeUrl.StartsWith("/")) relativeUrl = relativeUrl.Substring(1);
-            var url = new Uri(new Uri(baseUri), relativeUrl).ToString();
+            var url = ConcatenateBaseUrlAndRelativeUrl(baseUri, relativeUrl);
 
             var request = CreateRequest(method, url, customHeaders);
 
@@ -430,6 +429,23 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
             cancellationToken.ThrowIfCancellationRequested();
             await Credentials.ProcessHttpRequestAsync(request, cancellationToken).ConfigureAwait(false);
             return request;
+        }
+
+        private static string ConcatenateBaseUrlAndRelativeUrl(string baseUri, string relativeUrl)
+        {
+            var relativeUrlBeginsWithSpecialCharacter = relativeUrl.StartsWith("/") || relativeUrl.StartsWith("?");
+            var slashIsRequired = !string.IsNullOrWhiteSpace(relativeUrl) && !relativeUrlBeginsWithSpecialCharacter;
+            if (baseUri.EndsWith("/"))
+            {
+                // Maybe remove the /
+                if (relativeUrlBeginsWithSpecialCharacter) baseUri = baseUri.Substring(0, baseUri.Length - 1);
+            }
+            else
+            {
+                if (slashIsRequired) baseUri += "/";
+            }
+
+            return baseUri + relativeUrl;
         }
         #endregion
     }

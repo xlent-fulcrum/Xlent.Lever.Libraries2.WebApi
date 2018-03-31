@@ -39,7 +39,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Test.RestClientHelper
         [TestMethod]
         public async Task CreateAndReturnTest()
         {
-            var expectedUri = $"{ResourcePath}/";
+            var expectedUri = $"{ResourcePath}/ReturnCreated";
             _httpClientMock.Setup(client => client.SendAsync(
                     It.Is<HttpRequestMessage>(request => request.RequestUri.AbsoluteUri == expectedUri && request.Method == HttpMethod.Post),
                     CancellationToken.None))
@@ -54,7 +54,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Test.RestClientHelper
         public async Task CreateTest()
         {
             var id = Guid.NewGuid();
-            var expectedUri = $"{ResourcePath}/";
+            var expectedUri = $"{ResourcePath}";
             _httpClientMock.Setup(client => client.SendAsync(
                     It.Is<HttpRequestMessage>(request => request.RequestUri.AbsoluteUri == expectedUri && request.Method == HttpMethod.Post),
                     CancellationToken.None))
@@ -69,7 +69,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Test.RestClientHelper
         public async Task CreateWithSpecifiedIdTest()
         {
             var id = Guid.NewGuid();
-            var expectedUri = $"{ResourcePath}/?id={id}";
+            var expectedUri = $"{ResourcePath}?id={id}";
             _httpClientMock.Setup(client => client.SendAsync(
                     It.Is<HttpRequestMessage>(request => request.RequestUri.AbsoluteUri == expectedUri && request.Method == HttpMethod.Post),
                     CancellationToken.None))
@@ -83,7 +83,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Test.RestClientHelper
         public async Task CreateWithSpecifiedIdAndReturnTest()
         {
             var id = Guid.NewGuid();
-            var expectedUri = $"{ResourcePath}/?id={id}";
+            var expectedUri = $"{ResourcePath}/ReturnCreated?id={id}";
             _httpClientMock.Setup(client => client.SendAsync(
                     It.Is<HttpRequestMessage>(request => request.RequestUri.AbsoluteUri == expectedUri && request.Method == HttpMethod.Post),
                     CancellationToken.None))
@@ -111,7 +111,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Test.RestClientHelper
         [TestMethod]
         public async Task DeleteAllTest()
         {
-            var expectedUri = $"{ResourcePath}/";
+            var expectedUri = $"{ResourcePath}";
             _httpClientMock.Setup(client => client.SendAsync(
                     It.Is<HttpRequestMessage>(request => request.RequestUri.AbsoluteUri == expectedUri && request.Method == HttpMethod.Delete),
                     CancellationToken.None))

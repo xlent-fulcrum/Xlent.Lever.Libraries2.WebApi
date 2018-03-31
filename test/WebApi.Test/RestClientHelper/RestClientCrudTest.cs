@@ -39,7 +39,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Test.RestClientHelper
         public async Task UpdateAndReturnTest()
         {
             var id = Guid.NewGuid();
-            var expectedUri = $"{ResourcePath}/{id}";
+            var expectedUri = $"{ResourcePath}/{id}/ReturnUpdated";
             _httpClientMock.Setup(client => client.SendAsync(
                     It.Is<HttpRequestMessage>(request => request.RequestUri.AbsoluteUri == expectedUri && request.Method == HttpMethod.Put),
                     CancellationToken.None))

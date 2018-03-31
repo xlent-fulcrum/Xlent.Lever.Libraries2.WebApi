@@ -78,7 +78,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Test.RestClientHelper
         public async Task ReadChildrenTest(IManyToOneRelation<Person, Guid> restClient, string resourceName)
         {
             var parentId = Guid.NewGuid();
-            var expectedUri = $"{ResourcePath}/{parentId}/{resourceName}/?limit={int.MaxValue}";
+            var expectedUri = $"{ResourcePath}/{parentId}/{resourceName}?limit={int.MaxValue}";
             _httpClientMock.Setup(client => client.SendAsync(
                     It.Is<HttpRequestMessage>(request => request.RequestUri.AbsoluteUri == expectedUri && request.Method == HttpMethod.Get),
                     CancellationToken.None))
@@ -107,7 +107,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Test.RestClientHelper
         public async Task ReadChildrenWithPagingTest(IManyToOneRelation<Person, Guid> restClient, string resourceName)
         {
             var parentId = Guid.NewGuid();
-            var expectedUri = $"{ResourcePath}/{parentId}/{resourceName}/?offset=0";
+            var expectedUri = $"{ResourcePath}/{parentId}/{resourceName}/WithPaging?offset=0";
             var pageEnvelope = new PageEnvelope<Person>(0, PageInfo.DefaultLimit, null, new[] { _person });
             _httpClientMock.Setup(client => client.SendAsync(
                     It.Is<HttpRequestMessage>(request => request.RequestUri.AbsoluteUri == expectedUri && request.Method == HttpMethod.Get),
