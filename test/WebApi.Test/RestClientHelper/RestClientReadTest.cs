@@ -78,7 +78,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Test.RestClientHelper
                     CancellationToken.None))
                 .ReturnsAsync((HttpRequestMessage r, CancellationToken c) => CreateResponseMessage(r, pageEnvelope))
                 .Verifiable();
-            var page = await _client.ReadAllWithPagingAsync();
+            var page = await _client.ReadAllWithPagingAsync(0);
             Assert.IsNotNull(page?.Data);
             Assert.AreEqual(1, page.Data.Count());
             Assert.AreEqual(_person, page.Data.FirstOrDefault());

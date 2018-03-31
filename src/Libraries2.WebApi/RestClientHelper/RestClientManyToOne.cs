@@ -1,8 +1,9 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Rest;
 using Xlent.Lever.Libraries2.Core.Assert;
 using Xlent.Lever.Libraries2.Core.Platform.Authentication;
+using Xlent.Lever.Libraries2.Core.Storage.Logic;
 using Xlent.Lever.Libraries2.Core.Storage.Model;
 
 namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
@@ -10,16 +11,27 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
     /// <summary>
     /// Convenience client for making REST calls
     /// </summary>
-    public class RestClientManyToOne<TManyModel, TOneModel, TId> : RestClientManyToOneRecursive<TManyModel, TId>, IManyToOneRelationComplete<TManyModel, TOneModel, TId>
+    public class RestClientManyToOne<TManyModel, TId> : RestClientCrud<TManyModel, TId>, IManyToOneRelationComplete<TManyModel, TId>
     {
+        /// <summary>
+        /// The name of the sub path that is the parent of the children. (Singularis)
+        /// </summary>
+        protected string ParentName { get; }
+
+        /// <summary>
+        /// The name of the sub path that are the children. (Pluralis)
+        /// </summary>
+        public string ChildrenName { get; }
         /// <summary></summary>
         /// <param name="baseUri">The base URL that all HTTP calls methods will refer to.</param>
         /// <param name="parentName">The name of the sub path that is the parent of the children. (Singularis)</param>
         /// <param name="childrenName">The name of the sub path that are the children. (Pluralis)</param>
         /// <param name="withLogging">Should logging handlers be used in outbound pipe?</param>
-        public RestClientManyToOne(string baseUri, string parentName, string childrenName, bool withLogging = true)
-            : base(baseUri, parentName, childrenName, withLogging)
+        public RestClientManyToOne(string baseUri, string parentName = "Parent", string childrenName = "Children", bool withLogging = true)
+            : base(baseUri, withLogging)
         {
+            ParentName = parentName;
+            ChildrenName = childrenName;
         }
 
         /// <summary></summary>
@@ -28,9 +40,11 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
         /// <param name="childrenName">The name of the sub path that are the children. (Pluralis)</param>
         /// <param name="credentials">The credentials used when making the HTTP calls.</param>
         /// <param name="withLogging">Should logging handlers be used in outbound pipe?</param>
-        public RestClientManyToOne(string baseUri, ServiceClientCredentials credentials, string parentName, string childrenName, bool withLogging = true)
-            : base(baseUri, credentials, parentName, childrenName, withLogging)
+        public RestClientManyToOne(string baseUri, ServiceClientCredentials credentials, string parentName = "Parent", string childrenName = "Children", bool withLogging = true)
+            : base(baseUri, credentials, withLogging)
         {
+            ParentName = parentName;
+            ChildrenName = childrenName;
         }
 
         /// <summary></summary>
@@ -39,21 +53,82 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
         /// <param name="childrenName">The name of the sub path that are the children. (Pluralis)</param>
         /// <param name="authenticationToken">The token used when making the HTTP calls.</param>
         /// <param name="withLogging">Should logging handlers be used in outbound pipe?</param>
-        public RestClientManyToOne(string baseUri, AuthenticationToken authenticationToken, string parentName, string childrenName, bool withLogging = true)
-            : base(baseUri, authenticationToken, parentName, childrenName, withLogging)
+        public RestClientManyToOne(string baseUri, AuthenticationToken authenticationToken, string parentName = "Parent", string childrenName = "Children", bool withLogging = true)
+            : base(baseUri, authenticationToken, withLogging)
         {
+            ParentName = parentName;
+            ChildrenName = childrenName;
+        }
+
+        /// <inheritdoc />
+        public virtual async Task DeleteChildrenAsync(TId parentId)
+        {
+            InternalContract.RequireNotDefaultValue(parentId, nameof(parentId));
+            await DeleteAsync($"{parentId}/{ChildrenName}");
         }
 
         /// <summary>
-        /// 
+        /// Use this method to simulate the <see cref="DeleteChildrenAsync"/> method if that method is not implemented in the service.
         /// </summary>
-        /// <param name="childId"></param>
-        /// <returns></returns>
-        /// <exception cref="NotImplementedException"></exception>
-        public new virtual async Task<TOneModel> ReadParentAsync(TId childId)
+        /// <param name="parentId">The id of the parent to the children to be deleted.</param>
+        /// <remarks>Calls the method <see cref="ReadChildrenAsync"/> and then (for each child) calls the <see cref="RestClientCrd{TManyModel,TId}.DeleteAsync(TId)"/> method. Can potentially mean a lot of remote calls.</remarks>
+        protected virtual async Task SimulateDeleteChildrenAsync(TId parentId)
         {
-            InternalContract.RequireNotDefaultValue(childId, nameof(childId));
-            return await GetAsync<TOneModel>($"{childId}/{ParentName}");
+            InternalContract.RequireNotDefaultValue(parentId, nameof(parentId));
+            var children = await ReadChildrenAsync(parentId);
+            var tasks = new List<Task>();
+            foreach (var child in children)
+            {
+                var uniquelyIdentifiable = child as IUniquelyIdentifiable<TId>;
+                FulcrumAssert.IsNotNull(uniquelyIdentifiable, null, $"Type {typeof(TManyModel).FullName} must to implement IUniquelyIdentifiable<TId> for this method to work.");
+                var task = DeleteAsync(parentId);
+                tasks.Add(task);
+            }
+            await Task.WhenAll(tasks);
+        }
+
+        /// <inheritdoc />
+        public virtual async Task<IEnumerable<TManyModel>> ReadChildrenAsync(TId parentId, int limit = int.MaxValue)
+        {
+            InternalContract.RequireNotDefaultValue(parentId, nameof(parentId));
+            InternalContract.RequireGreaterThan(0, limit, nameof(limit));
+            return await GetAsync<IEnumerable<TManyModel>>($"{parentId}/{ChildrenName}/?limit={limit}");
+        }
+
+        /// <summary>
+        /// Use this method to simulate the <see cref="ReadChildrenAsync"/> method if that method is not implemented in the service.
+        /// </summary>
+        /// <param name="parentId">The specific parent to read the child items for.</param>
+        /// <param name="limit">Maximum number of returned items</param>
+        /// <remarks>Calls the method <see cref="ReadChildrenWithPagingAsync"/> repeatedly to collect all items. Could result in a large number of remote calls if there are a lot of items .</remarks>
+        protected virtual async Task<IEnumerable<TManyModel>> SimulateReadChildrenAsync(TId parentId, int limit = int.MaxValue)
+        {
+            InternalContract.RequireGreaterThan(0, limit, nameof(limit));
+            var items = new PageEnvelopeEnumerableAsync<TManyModel>(offset => ReadChildrenWithPagingAsync(parentId, offset));
+            var list = new List<TManyModel>();
+            var count = 0;
+            using (var enumerator = items.GetEnumerator())
+            {
+                while (count < limit && await enumerator.MoveNextAsync())
+                {
+                    list.Add(enumerator.Current);
+                    count++;
+                }
+            }
+            return list;
+        }
+
+        /// <inheritdoc />
+        public virtual async Task<PageEnvelope<TManyModel>> ReadChildrenWithPagingAsync(TId parentId, int offset = 0, int? limit = null)
+        {
+            InternalContract.RequireGreaterThanOrEqualTo(0, offset, nameof(offset));
+            var limitParameter = "";
+            if (limit != null)
+            {
+                InternalContract.RequireGreaterThan(0, limit.Value, nameof(limit));
+                limitParameter = $"&limit={limit}";
+            }
+            return await GetAsync<PageEnvelope<TManyModel>>($"{parentId}/{ChildrenName}/?offset={offset}{limitParameter}");
         }
     }
 }

@@ -18,8 +18,8 @@ namespace Xlent.Lever.Libraries2.WebApi.Test.RestClientHelper
     {
         private const string ResourcePath = "http://example.se/Persons";
         private Person _person;
-        private IManyToOneRecursiveRelation<Person, Guid> _parentChildrenClient;
-        private IManyToOneRecursiveRelation<Person, Guid> _oneManyClient;
+        private IManyToOneRelation<Person, Guid> _parentChildrenClient;
+        private IManyToOneRelation<Person, Guid> _oneManyClient;
 
 
         [TestInitialize]
@@ -29,8 +29,8 @@ namespace Xlent.Lever.Libraries2.WebApi.Test.RestClientHelper
             FulcrumApplication.Setup.ContextValueProvider = new SingleThreadValueProvider();
             _httpClientMock = new Mock<IHttpClient>();
             RestClient.HttpClient = _httpClientMock.Object;
-            _parentChildrenClient = new RestClientManyToOneRecursive<Person, Guid>(ResourcePath);
-            _oneManyClient = new RestClientManyToOneRecursive<Person, Guid>(ResourcePath, "One", "Many");
+            _parentChildrenClient = new RestClientManyToOne<Person, Guid>(ResourcePath);
+            _oneManyClient = new RestClientManyToOne<Person, Guid>(ResourcePath, "One", "Many");
             _person = new Person()
             {
                 GivenName = "Kalle",
@@ -50,7 +50,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Test.RestClientHelper
             await DeleteChildrenTest(_oneManyClient, "Many");
         }
 
-        private async Task DeleteChildrenTest(IManyToOneRecursiveRelation<Person, Guid> restClient, string resourceName)
+        private async Task DeleteChildrenTest(IManyToOneRelation<Person, Guid> restClient, string resourceName)
         {
             var parentId = Guid.NewGuid();
             var expectedUri = $"{ResourcePath}/{parentId}/{resourceName}";
@@ -75,7 +75,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Test.RestClientHelper
         {
             await ReadChildrenTest(_oneManyClient, "Many");
         }
-        public async Task ReadChildrenTest(IManyToOneRecursiveRelation<Person, Guid> restClient, string resourceName)
+        public async Task ReadChildrenTest(IManyToOneRelation<Person, Guid> restClient, string resourceName)
         {
             var parentId = Guid.NewGuid();
             var expectedUri = $"{ResourcePath}/{parentId}/{resourceName}/?limit={int.MaxValue}";
@@ -104,7 +104,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Test.RestClientHelper
             await ReadChildrenWithPagingTest(_oneManyClient, "Many");
         }
 
-        public async Task ReadChildrenWithPagingTest(IManyToOneRecursiveRelation<Person, Guid> restClient, string resourceName)
+        public async Task ReadChildrenWithPagingTest(IManyToOneRelation<Person, Guid> restClient, string resourceName)
         {
             var parentId = Guid.NewGuid();
             var expectedUri = $"{ResourcePath}/{parentId}/{resourceName}/?offset=0";
@@ -114,36 +114,10 @@ namespace Xlent.Lever.Libraries2.WebApi.Test.RestClientHelper
                     CancellationToken.None))
                 .ReturnsAsync((HttpRequestMessage r, CancellationToken c) => CreateResponseMessage(r, pageEnvelope))
                 .Verifiable();
-            var readPage = await restClient.ReadChildrenWithPagingAsync(parentId);
+            var readPage = await restClient.ReadChildrenWithPagingAsync(parentId, 0);
             Assert.IsNotNull(readPage?.Data);
             Assert.AreEqual(1, readPage.Data.Count());
             Assert.AreEqual(_person, readPage.Data.FirstOrDefault());
-            _httpClientMock.Verify();
-        }
-
-        [TestMethod]
-        public async Task ReadParent1Test()
-        {
-            await ReadParentTest(_parentChildrenClient, "Parent");
-        }
-
-        [TestMethod]
-        public async Task ReadParent2Test()
-        {
-            await ReadParentTest(_oneManyClient, "One");
-        }
-        public async Task ReadParentTest(IManyToOneRecursiveRelation<Person, Guid> restClient, string resourceName)
-        {
-            var childId = Guid.NewGuid();
-            var expectedUri = $"{ResourcePath}/{childId}/{resourceName}";
-            _httpClientMock.Setup(client => client.SendAsync(
-                    It.Is<HttpRequestMessage>(request => request.RequestUri.AbsoluteUri == expectedUri && request.Method == HttpMethod.Get),
-                    CancellationToken.None))
-                .ReturnsAsync((HttpRequestMessage r, CancellationToken c) => CreateResponseMessage(r, _person))
-                .Verifiable();
-            var parent = await restClient.ReadParentAsync(childId);
-            Assert.IsNotNull(parent);
-            Assert.AreEqual(_person, parent);
             _httpClientMock.Verify();
         }
     }
