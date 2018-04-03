@@ -29,8 +29,8 @@ namespace Xlent.Lever.Libraries2.WebApi.Test.RestClientHelper
             FulcrumApplication.Setup.ContextValueProvider = new SingleThreadValueProvider();
             _httpClientMock = new Mock<IHttpClient>();
             RestClient.HttpClient = _httpClientMock.Object;
-            _parentChildrenClient = new RestClientManyToOne<Person, Guid>(ResourcePath);
-            _oneManyClient = new RestClientManyToOne<Person, Guid>(ResourcePath, "One", "Many");
+            _parentChildrenClient = new RestClientManyToOneComplete<Person, Guid>(ResourcePath);
+            _oneManyClient = new RestClientManyToOneComplete<Person, Guid>(ResourcePath, "One", "Many");
             _person = new Person()
             {
                 GivenName = "Kalle",

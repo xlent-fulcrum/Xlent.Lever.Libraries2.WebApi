@@ -28,7 +28,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Test.RestClientHelper
             FulcrumApplication.Setup.ContextValueProvider = new SingleThreadValueProvider();
             _httpClientMock = new Mock<IHttpClient>();
             RestClient.HttpClient = _httpClientMock.Object;
-            _client = new RestClientManyToOne<Address, Guid>(ResourcePath, "Person", "Addresses");
+            _client = new RestClientManyToOneComplete<Address, Guid>(ResourcePath, "Person", "Addresses");
             _address = new Address()
             {
                 Street = "Paradisäppelvägen 111",

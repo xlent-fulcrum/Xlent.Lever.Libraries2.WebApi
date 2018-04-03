@@ -76,6 +76,7 @@
     <Compile Include="Pipe\Outbound\LogRequestAndResponse.cs" />
     <Compile Include="RestClientHelper\ClientCredentials.cs" />
     <Compile Include="RestClientHelper\RestClientManyToOne.cs" />
+    <Compile Include="RestClientHelper\RestClientManyToOneComplete.cs" />
     <Compile Include="RestClientHelper\RestClientCrud.cs" />
     <Compile Include="RestClientHelper\RestClientCrd.cs" />
     <Compile Include="RestClientHelper\RestClientRead.cs" />

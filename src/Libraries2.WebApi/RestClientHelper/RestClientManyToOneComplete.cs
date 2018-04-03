@@ -11,7 +11,7 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
     /// <summary>
     /// Convenience client for making REST calls
     /// </summary>
-    public class RestClientManyToOne<TManyModel, TId> : RestClient, IManyToOneRelation<TManyModel, TId>
+    public class RestClientManyToOneComplete<TManyModel, TId> : RestClientCrud<TManyModel, TId>, IManyToOneRelationComplete<TManyModel, TId>
     {
         /// <summary>
         /// The name of the sub path that is the parent of the children. (Singularis)
@@ -27,7 +27,7 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
         /// <param name="parentName">The name of the sub path that is the parent of the children. (Singularis)</param>
         /// <param name="childrenName">The name of the sub path that are the children. (Pluralis)</param>
         /// <param name="withLogging">Should logging handlers be used in outbound pipe?</param>
-        public RestClientManyToOne(string baseUri, string parentName = "Parent", string childrenName = "Children", bool withLogging = true)
+        public RestClientManyToOneComplete(string baseUri, string parentName = "Parent", string childrenName = "Children", bool withLogging = true)
             : base(baseUri, withLogging)
         {
             ParentName = parentName;
@@ -40,7 +40,7 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
         /// <param name="childrenName">The name of the sub path that are the children. (Pluralis)</param>
         /// <param name="credentials">The credentials used when making the HTTP calls.</param>
         /// <param name="withLogging">Should logging handlers be used in outbound pipe?</param>
-        public RestClientManyToOne(string baseUri, ServiceClientCredentials credentials, string parentName = "Parent", string childrenName = "Children", bool withLogging = true)
+        public RestClientManyToOneComplete(string baseUri, ServiceClientCredentials credentials, string parentName = "Parent", string childrenName = "Children", bool withLogging = true)
             : base(baseUri, credentials, withLogging)
         {
             ParentName = parentName;
@@ -53,7 +53,7 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
         /// <param name="childrenName">The name of the sub path that are the children. (Pluralis)</param>
         /// <param name="authenticationToken">The token used when making the HTTP calls.</param>
         /// <param name="withLogging">Should logging handlers be used in outbound pipe?</param>
-        public RestClientManyToOne(string baseUri, AuthenticationToken authenticationToken, string parentName = "Parent", string childrenName = "Children", bool withLogging = true)
+        public RestClientManyToOneComplete(string baseUri, AuthenticationToken authenticationToken, string parentName = "Parent", string childrenName = "Children", bool withLogging = true)
             : base(baseUri, authenticationToken, withLogging)
         {
             ParentName = parentName;
@@ -81,7 +81,7 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
             {
                 var uniquelyIdentifiable = child as IUniquelyIdentifiable<TId>;
                 FulcrumAssert.IsNotNull(uniquelyIdentifiable, null, $"Type {typeof(TManyModel).FullName} must to implement IUniquelyIdentifiable<TId> for this method to work.");
-                var task = DeleteAsync(parentId.ToString());
+                var task = DeleteAsync(parentId);
                 tasks.Add(task);
             }
             await Task.WhenAll(tasks);
