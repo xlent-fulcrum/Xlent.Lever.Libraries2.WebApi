@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Rest;
 using Xlent.Lever.Libraries2.Core.Assert;
@@ -61,34 +62,35 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
         }
 
         /// <inheritdoc />
-        public virtual async Task DeleteChildrenAsync(TId parentId)
+        public virtual async Task DeleteChildrenAsync(TId parentId, CancellationToken token = default(CancellationToken))
         {
             InternalContract.RequireNotDefaultValue(parentId, nameof(parentId));
-            await DeleteAsync($"{parentId}/{ChildrenName}");
+            await DeleteAsync($"{parentId}/{ChildrenName}", cancellationToken: token);
         }
 
         /// <summary>
         /// Use this method to simulate the <see cref="DeleteChildrenAsync"/> method if that method is not implemented in the service.
         /// </summary>
         /// <param name="parentId">The id of the parent to the children to be deleted.</param>
-        /// <remarks>Calls the method <see cref="ReadChildrenAsync"/> and then (for each child) calls the <see cref="RestClientCrd{TManyModel,TId}.DeleteAsync(TId)"/> method. Can potentially mean a lot of remote calls.</remarks>
-        protected virtual async Task SimulateDeleteChildrenAsync(TId parentId)
+        /// <param name="token">Propagates notification that operations should be canceled</param>
+        /// <remarks>Calls the method <see cref="ReadChildrenAsync"/> and then (for each child) calls the <see cref="RestClientCrd{TModel,TId}.DeleteAsync(TId,System.Threading.CancellationToken)"/> method. Can potentially mean a lot of remote calls.</remarks>
+        protected virtual async Task SimulateDeleteChildrenAsync(TId parentId, CancellationToken token = default(CancellationToken))
         {
             InternalContract.RequireNotDefaultValue(parentId, nameof(parentId));
-            var children = await ReadChildrenAsync(parentId);
+            var children = await ReadChildrenAsync(parentId, token: token);
             var tasks = new List<Task>();
             foreach (var child in children)
             {
                 var uniquelyIdentifiable = child as IUniquelyIdentifiable<TId>;
                 FulcrumAssert.IsNotNull(uniquelyIdentifiable, null, $"Type {typeof(TManyModel).FullName} must to implement IUniquelyIdentifiable<TId> for this method to work.");
-                var task = DeleteAsync(parentId);
+                var task = DeleteAsync(parentId, token);
                 tasks.Add(task);
             }
             await Task.WhenAll(tasks);
         }
 
         /// <inheritdoc />
-        public virtual async Task<IEnumerable<TManyModel>> ReadChildrenAsync(TId parentId, int limit = int.MaxValue)
+        public virtual async Task<IEnumerable<TManyModel>> ReadChildrenAsync(TId parentId, int limit = int.MaxValue, CancellationToken token = default(CancellationToken))
         {
             InternalContract.RequireNotDefaultValue(parentId, nameof(parentId));
             InternalContract.RequireGreaterThan(0, limit, nameof(limit));
@@ -100,11 +102,12 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
         /// </summary>
         /// <param name="parentId">The specific parent to read the child items for.</param>
         /// <param name="limit">Maximum number of returned items</param>
+        /// <param name="token">Propagates notification that operations should be canceled</param>
         /// <remarks>Calls the method <see cref="ReadChildrenWithPagingAsync"/> repeatedly to collect all items. Could result in a large number of remote calls if there are a lot of items .</remarks>
-        protected virtual async Task<IEnumerable<TManyModel>> SimulateReadChildrenAsync(TId parentId, int limit = int.MaxValue)
+        protected virtual async Task<IEnumerable<TManyModel>> SimulateReadChildrenAsync(TId parentId, int limit = int.MaxValue, CancellationToken token = default(CancellationToken))
         {
             InternalContract.RequireGreaterThan(0, limit, nameof(limit));
-            var items = new PageEnvelopeEnumerableAsync<TManyModel>(offset => ReadChildrenWithPagingAsync(parentId, offset));
+            var items = new PageEnvelopeEnumerableAsync<TManyModel>((offset,t) => ReadChildrenWithPagingAsync(parentId, offset, null, t), token);
             var list = new List<TManyModel>();
             var count = 0;
             using (var enumerator = items.GetEnumerator())
@@ -119,7 +122,7 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
         }
 
         /// <inheritdoc />
-        public virtual async Task<PageEnvelope<TManyModel>> ReadChildrenWithPagingAsync(TId parentId, int offset = 0, int? limit = null)
+        public virtual async Task<PageEnvelope<TManyModel>> ReadChildrenWithPagingAsync(TId parentId, int offset = 0, int? limit = null, CancellationToken token = default(CancellationToken))
         {
             InternalContract.RequireGreaterThanOrEqualTo(0, offset, nameof(offset));
             var limitParameter = "";
@@ -128,7 +131,7 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
                 InternalContract.RequireGreaterThan(0, limit.Value, nameof(limit));
                 limitParameter = $"&limit={limit}";
             }
-            return await GetAsync<PageEnvelope<TManyModel>>($"{parentId}/{ChildrenName}/WithPaging?offset={offset}{limitParameter}");
+            return await GetAsync<PageEnvelope<TManyModel>>($"{parentId}/{ChildrenName}/WithPaging?offset={offset}{limitParameter}", cancellationToken: token);
         }
     }
 }

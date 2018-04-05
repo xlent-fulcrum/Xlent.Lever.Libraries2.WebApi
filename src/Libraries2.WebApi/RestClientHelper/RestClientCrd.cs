@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.Rest;
 using Xlent.Lever.Libraries2.Core.Platform.Authentication;
 using Xlent.Lever.Libraries2.Core.Storage.Model;
@@ -38,38 +39,39 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
         }
 
         /// <inheritdoc />
-        public virtual async Task<TId> CreateAsync(TModel item)
+        public virtual async Task<TId> CreateAsync(TModel item, CancellationToken token = default(CancellationToken))
         {
-            return await PostAsync<TId, TModel>("", item);
+            return await PostAsync<TId, TModel>("", item, cancellationToken: token);
         }
 
         /// <inheritdoc />
-        public virtual async Task<TModel> CreateAndReturnAsync(TModel item)
+        public virtual async Task<TModel> CreateAndReturnAsync(TModel item, CancellationToken token = default(CancellationToken))
         {
-            return await PostAndReturnCreatedObjectAsync("ReturnCreated", item);
+            return await PostAndReturnCreatedObjectAsync("ReturnCreated", item, cancellationToken: token);
         }
 
         /// <summary>
         /// Use this method to simulate the <see cref="CreateAndReturnAsync"/> method if that method is not implemented in the service.
         /// </summary>
         /// <param name="item">The item to create</param>
+        /// <param name="token">Propagates notification that operations should be canceled</param>
         /// <remarks>Calls the method <see cref="CreateAsync"/> and then the ReadAsync method.</remarks>
-        protected virtual async Task<TModel> SimulateCreateAndReturnAsync(TModel item)
+        protected virtual async Task<TModel> SimulateCreateAndReturnAsync(TModel item, CancellationToken token = default(CancellationToken))
         {
-            var id = await CreateAsync(item);
+            var id = await CreateAsync(item, token);
             return await ReadAsync(id);
         }
 
         /// <inheritdoc />
-        public virtual async Task CreateWithSpecifiedIdAsync(TId id, TModel item)
+        public virtual async Task CreateWithSpecifiedIdAsync(TId id, TModel item, CancellationToken token = default(CancellationToken))
         {
-            await PostNoResponseContentAsync($"?id={id}", item);
+            await PostNoResponseContentAsync($"?id={id}", item, cancellationToken: token);
         }
 
         /// <inheritdoc />
-        public virtual async Task<TModel> CreateWithSpecifiedIdAndReturnAsync(TId id, TModel item)
+        public virtual async Task<TModel> CreateWithSpecifiedIdAndReturnAsync(TId id, TModel item, CancellationToken token = default(CancellationToken))
         {
-            return await PostAndReturnCreatedObjectAsync($"ReturnCreated?id={id}", item);
+            return await PostAndReturnCreatedObjectAsync($"ReturnCreated?id={id}", item, cancellationToken: token);
         }
 
         /// <summary>
@@ -77,23 +79,24 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
         /// </summary>
         /// <param name="id">The id for the new item.</param>
         /// <param name="item">The item to create.</param>
+        /// <param name="token">Propagates notification that operations should be canceled</param>
         /// <remarks>Calls the method <see cref="CreateWithSpecifiedIdAsync"/> and then teh ReadAsync method.</remarks>
-        protected virtual async Task<TModel> SimulateCreateWithSpecifiedIdAndReturnAsync(TId id, TModel item)
+        protected virtual async Task<TModel> SimulateCreateWithSpecifiedIdAndReturnAsync(TId id, TModel item, CancellationToken token = default(CancellationToken))
         {
-            await CreateWithSpecifiedIdAsync(id, item);
+            await CreateWithSpecifiedIdAsync(id, item, token);
             return await ReadAsync(id);
         }
 
         /// <inheritdoc />
-        public virtual async Task DeleteAsync(TId id)
+        public virtual async Task DeleteAsync(TId id, CancellationToken token = default(CancellationToken))
         {
-            await DeleteAsync($"{id}");
+            await DeleteAsync($"{id}", cancellationToken: token);
         }
 
         /// <inheritdoc />
-        public virtual async Task DeleteAllAsync()
+        public virtual async Task DeleteAllAsync(CancellationToken token = default(CancellationToken))
         {
-            await DeleteAsync("");
+            await DeleteAsync("", cancellationToken: token);
         }
     }
 }

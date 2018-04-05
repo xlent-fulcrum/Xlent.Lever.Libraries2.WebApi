@@ -14,7 +14,8 @@ namespace Xlent.Lever.Libraries2.WebApi.Threads
         /// Execute an <paramref name="action"/> in the background.
         /// </summary>
         /// <param name="action">The action to run in the background.</param>
-        public void FireAndForget(Action<CancellationToken> action)
+        /// <param name="token">Propagates notification that operations should be canceled</param>
+        public void FireAndForget(Action<CancellationToken> action, CancellationToken token = default(CancellationToken))
         {
             if (HostingEnvironment.IsHosted)
             {
@@ -23,7 +24,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Threads
             }
             else
             {
-                ThreadHelper.RecommendedForNetFramework.FireAndForget(action);
+                ThreadHelper.RecommendedForNetFramework.FireAndForget(action, token);
             }
         }
     }

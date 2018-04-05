@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Rest;
 using Xlent.Lever.Libraries2.Core.Assert;
@@ -41,14 +42,14 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
         }
 
         /// <inheritdoc />
-        public virtual async Task<TModel> ReadAsync(TId id)
+        public virtual async Task<TModel> ReadAsync(TId id, CancellationToken token = default(CancellationToken))
         {
             InternalContract.RequireNotDefaultValue(id, nameof(id));
-            return await GetAsync<TModel>($"{id}");
+            return await GetAsync<TModel>($"{id}", cancellationToken: token);
         }
 
         /// <inheritdoc />
-        public virtual async Task<PageEnvelope<TModel>> ReadAllWithPagingAsync(int offset = 0, int? limit = null)
+        public virtual async Task<PageEnvelope<TModel>> ReadAllWithPagingAsync(int offset = 0, int? limit = null, CancellationToken token = default(CancellationToken))
         {
             InternalContract.RequireGreaterThanOrEqualTo(0, offset, nameof(offset));
             var limitParameter = "";
@@ -57,25 +58,26 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
                 InternalContract.RequireGreaterThan(0, limit.Value, nameof(limit));
                 limitParameter = $"&limit={limit}";
             }
-            return await GetAsync<PageEnvelope<TModel>>($"WithPaging?offset={offset}{limitParameter}");
+            return await GetAsync<PageEnvelope<TModel>>($"WithPaging?offset={offset}{limitParameter}", cancellationToken: token);
         }
 
         /// <inheritdoc />
-        public virtual async Task<IEnumerable<TModel>> ReadAllAsync(int limit = int.MaxValue)
+        public virtual async Task<IEnumerable<TModel>> ReadAllAsync(int limit = int.MaxValue, CancellationToken token = default(CancellationToken))
         {
             InternalContract.RequireGreaterThan(0, limit, nameof(limit));
-            return await GetAsync<IEnumerable<TModel>>($"?limit={limit}");
+            return await GetAsync<IEnumerable<TModel>>($"?limit={limit}", cancellationToken: token);
         }
 
         /// <summary>
         /// Use this method to simulate the <see cref="ReadAllAsync"/> method if that method is not implemented in the service.
         /// </summary>
         /// <param name="limit">Maximum number of returned items</param>
+        /// <param name="token">Propagates notification that operations should be canceled</param>
         /// <remarks>Calls the method <see cref="ReadAllWithPagingAsync"/> repeatedly to collect all items. Could result in a large number of remote calls if there are a lot of items .</remarks>
-        protected virtual async Task<IEnumerable<TModel>> SimulateReadAllAsync(int limit = int.MaxValue)
+        protected virtual async Task<IEnumerable<TModel>> SimulateReadAllAsync(int limit = int.MaxValue, CancellationToken token = default(CancellationToken))
         {
             InternalContract.RequireGreaterThan(0, limit, nameof(limit));
-            var items = new PageEnvelopeEnumerableAsync<TModel>(offset => ReadAllWithPagingAsync(offset));
+            var items = new PageEnvelopeEnumerableAsync<TModel>((offset,t) => ReadAllWithPagingAsync(offset, null, t), token);
             var list = new List<TModel>();
             var count = 0;
             using (var enumerator = items.GetEnumerator())

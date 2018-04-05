@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.Rest;
 using Xlent.Lever.Libraries2.Core.Platform.Authentication;
 using Xlent.Lever.Libraries2.Core.Storage.Model;
@@ -38,15 +39,15 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
         }
 
         /// <inheritdoc />
-        public virtual async Task UpdateAsync(TId id, TModel item)
+        public virtual async Task UpdateAsync(TId id, TModel item, CancellationToken token = default(CancellationToken))
         {
-            await PutNoResponseContentAsync($"{id}", item);
+            await PutNoResponseContentAsync($"{id}", item, cancellationToken: token);
         }
 
         /// <inheritdoc />
-        public virtual async Task<TModel> UpdateAndReturnAsync(TId id, TModel item)
+        public virtual async Task<TModel> UpdateAndReturnAsync(TId id, TModel item, CancellationToken token = default(CancellationToken))
         {
-            return await PutAndReturnUpdatedObjectAsync($"{id}/ReturnUpdated", item);
+            return await PutAndReturnUpdatedObjectAsync($"{id}/ReturnUpdated", item, cancellationToken: token);
         }
 
         /// <summary>
@@ -54,11 +55,12 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
         /// </summary>
         /// <param name="id">How the object to be updated is identified.</param>
         /// <param name="item">The new version of the item. </param>
+        /// <param name="token">Propagates notification that operations should be canceled</param>
         /// <remarks>Calls the method <see cref="UpdateAsync"/> and then the ReadAsync method.</remarks>
-        protected virtual async Task<TModel> SimulateUpdateAndReturnAsync(TId id, TModel item)
+        protected virtual async Task<TModel> SimulateUpdateAndReturnAsync(TId id, TModel item, CancellationToken token = default(CancellationToken))
         {
-            await PutNoResponseContentAsync($"{id}", item);
-            return await ReadAsync(id);
+            await PutNoResponseContentAsync($"{id}", item, cancellationToken: token);
+            return await ReadAsync(id, token);
         }
     }
 }
