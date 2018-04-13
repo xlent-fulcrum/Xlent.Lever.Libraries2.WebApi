@@ -61,13 +61,17 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
     <Reference Include="Xlent.Lever.Libraries2.Core.NetFramework, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Xlent.Lever.Libraries2.Core.NetFramework.1.21.0\lib\net46\Xlent.Lever.Libraries2.Core.NetFramework.dll</HintPath>
+      <HintPath>..\..\packages\Xlent.Lever.Libraries2.Core.NetFramework.1.22.1-rc\lib\net46\Xlent.Lever.Libraries2.Core.NetFramework.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Application\FulcrumApplicationHelper.cs" />
     <Compile Include="Context\ContextValueProvider.cs" />
     <Compile Include="Context\HttpContextValueProvider.cs" />
+    <Compile Include="Crud\ApiControllers\CrdApiController.cs" />
+    <Compile Include="Crud\ApiControllers\CrudApiController.cs" />
+    <Compile Include="Crud\ApiControllers\ManyToOneApiController.cs" />
+    <Compile Include="Crud\ApiControllers\ReadApiController.cs" />
     <Compile Include="Error\Logic\Converter.cs" />
     <Compile Include="Logging\LoggableWebApiExtensions.cs" />
     <Compile Include="Misc\HttpHelper.cs" />
