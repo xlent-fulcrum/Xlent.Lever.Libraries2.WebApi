@@ -32,6 +32,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Error.Logic
         {
             InternalContract.RequireNotNull(fulcrumExceptionType, nameof(fulcrumExceptionType));
             var methodInfo = fulcrumExceptionType.GetMethod("Create");
+            FulcrumAssert.IsNotNull(methodInfo);
             Func<string, Exception, FulcrumException> createInstanceDelegate;
             try
             {
@@ -155,8 +156,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Error.Logic
         /// </summary>
         public static FulcrumError ToFulcrumError(Exception e)
         {
-            var fulcrumException = e as FulcrumException;
-            if (fulcrumException == null) return null;
+            if (!(e is FulcrumException fulcrumException)) return null;
             var error = new FulcrumError();
             error.CopyFrom(fulcrumException);
             error.InnerError = ToFulcrumError(fulcrumException.InnerException);

@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using Microsoft.Rest;
 using Xlent.Lever.Libraries2.Core.Crud.Interfaces;
 using Xlent.Lever.Libraries2.Core.Platform.Authentication;
-using Xlent.Lever.Libraries2.Core.Storage.Model;
 
 namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
 {

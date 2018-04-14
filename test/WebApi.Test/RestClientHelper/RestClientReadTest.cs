@@ -27,8 +27,8 @@ namespace Xlent.Lever.Libraries2.WebApi.Test.RestClientHelper
         {
             FulcrumApplicationHelper.UnitTestSetup(typeof(RestClientTest).FullName);
             FulcrumApplication.Setup.ContextValueProvider = new SingleThreadValueProvider();
-            _httpClientMock = new Mock<IHttpClient>();
-            RestClient.HttpClient = _httpClientMock.Object;
+            HttpClientMock = new Mock<IHttpClient>();
+            RestClient.HttpClient = HttpClientMock.Object;
             _client = new RestClientRead<Person, Guid>(ResourcePath);
             _person = new Person()
             {
@@ -42,21 +42,21 @@ namespace Xlent.Lever.Libraries2.WebApi.Test.RestClientHelper
         {
             var id = Guid.NewGuid();
             var expectedUri = $"{ResourcePath}/{id}";
-            _httpClientMock.Setup(client => client.SendAsync(
+            HttpClientMock.Setup(client => client.SendAsync(
                     It.Is<HttpRequestMessage>(request => request.RequestUri.AbsoluteUri == expectedUri && request.Method == HttpMethod.Get),
                     CancellationToken.None))
                 .ReturnsAsync((HttpRequestMessage r, CancellationToken c) => CreateResponseMessage(r, _person))
                 .Verifiable();
             var person = await _client.ReadAsync(id);
             Assert.AreEqual(_person, person);
-            _httpClientMock.Verify();
+            HttpClientMock.Verify();
         }
 
         [TestMethod]
         public async Task ReadAllTest()
         {
             var expectedUri = $"{ResourcePath}?limit={int.MaxValue}";
-            _httpClientMock.Setup(client => client.SendAsync(
+            HttpClientMock.Setup(client => client.SendAsync(
                     It.Is<HttpRequestMessage>(request => request.RequestUri.AbsoluteUri == expectedUri && request.Method == HttpMethod.Get),
                     CancellationToken.None))
                 .ReturnsAsync((HttpRequestMessage r, CancellationToken c) => CreateResponseMessage(r, new[] { _person }))
@@ -66,7 +66,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Test.RestClientHelper
             var personArray = persons as Person[] ?? persons.ToArray();
             Assert.AreEqual(1, personArray.Length);
             Assert.AreEqual(_person, personArray.FirstOrDefault());
-            _httpClientMock.Verify();
+            HttpClientMock.Verify();
         }
 
         [TestMethod]
@@ -74,7 +74,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Test.RestClientHelper
         {
             var expectedUri = $"{ResourcePath}/WithPaging?offset=0";
             var pageEnvelope = new PageEnvelope<Person>(0, PageInfo.DefaultLimit, null, new[] { _person });
-            _httpClientMock.Setup(client => client.SendAsync(
+            HttpClientMock.Setup(client => client.SendAsync(
                     It.Is<HttpRequestMessage>(request => request.RequestUri.AbsoluteUri == expectedUri && request.Method == HttpMethod.Get),
                     CancellationToken.None))
                 .ReturnsAsync((HttpRequestMessage r, CancellationToken c) => CreateResponseMessage(r, pageEnvelope))
@@ -83,7 +83,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Test.RestClientHelper
             Assert.IsNotNull(page?.Data);
             Assert.AreEqual(1, page.Data.Count());
             Assert.AreEqual(_person, page.Data.FirstOrDefault());
-            _httpClientMock.Verify();
+            HttpClientMock.Verify();
         }
     }
 }

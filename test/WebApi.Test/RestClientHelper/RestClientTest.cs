@@ -19,8 +19,8 @@ namespace Xlent.Lever.Libraries2.WebApi.Test.RestClientHelper
         {
             FulcrumApplicationHelper.UnitTestSetup(typeof(RestClientTest).FullName);
             FulcrumApplication.Setup.ContextValueProvider = new SingleThreadValueProvider();
-            _httpClientMock = new Mock<IHttpClient>();
-            RestClient.HttpClient = _httpClientMock.Object;
+            HttpClientMock = new Mock<IHttpClient>();
+            RestClient.HttpClient = HttpClientMock.Object;
         }
 
         [TestMethod]
@@ -42,7 +42,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Test.RestClientHelper
             var result = await client.PostAndReturnCreatedObjectAsync("Persons", person);
             Assert.IsNotNull(result);
             AssertAreEqual(person, result);
-            _httpClientMock.VerifyAll();
+            HttpClientMock.VerifyAll();
         }
 
         [TestMethod]
@@ -63,7 +63,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Test.RestClientHelper
             {
                 Assert.AreEqual(HttpStatusCode.NotFound, e.Response.StatusCode);
                 Assert.IsTrue(e.Response.Content.Contains(content));
-                _httpClientMock.VerifyAll();
+                HttpClientMock.VerifyAll();
                 throw;
             }
         }
@@ -81,7 +81,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Test.RestClientHelper
             var result = await client.GetAsync<Person>("Persons/23");
             Assert.IsNotNull(result);
             AssertAreEqual(person, result);
-            _httpClientMock.VerifyAll();
+            HttpClientMock.VerifyAll();
         }
 
         [TestMethod]
@@ -101,7 +101,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Test.RestClientHelper
             {
                 Assert.AreEqual(HttpStatusCode.NotFound, e.Response.StatusCode);
                 Assert.IsTrue(e.Response.Content.Contains(content));
-                _httpClientMock.VerifyAll();
+                HttpClientMock.VerifyAll();
                 throw;
             }
         }
@@ -120,7 +120,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Test.RestClientHelper
             var result = await client.PutAndReturnUpdatedObjectAsync("Persons/23", person);
             Assert.IsNotNull(result);
             AssertAreEqual(person, result);
-            _httpClientMock.VerifyAll();
+            HttpClientMock.VerifyAll();
         }
 
         [TestMethod]
@@ -141,7 +141,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Test.RestClientHelper
             {
                 Assert.AreEqual(HttpStatusCode.NotFound, e.Response.StatusCode);
                 Assert.IsTrue(e.Response.Content.Contains(content));
-                _httpClientMock.VerifyAll();
+                HttpClientMock.VerifyAll();
                 throw;
             }
         }
@@ -157,7 +157,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Test.RestClientHelper
             var client = new RestClient("http://example.se");
             Assert.IsNotNull(client);
             await client.DeleteAsync("Persons/23");
-            _httpClientMock.VerifyAll();
+            HttpClientMock.VerifyAll();
         }
 
         [TestMethod]
@@ -177,7 +177,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Test.RestClientHelper
             {
                 Assert.AreEqual(HttpStatusCode.NotFound, e.Response.StatusCode);
                 Assert.IsTrue(e.Response.Content.Contains(content));
-                _httpClientMock.VerifyAll();
+                HttpClientMock.VerifyAll();
                 throw;
             }
         }

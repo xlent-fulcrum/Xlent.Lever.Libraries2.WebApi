@@ -72,9 +72,8 @@ namespace Xlent.Lever.Libraries2.WebApi.Pipe.Inbound
 
         private static string ExtractCorrelationIdFromHeader(HttpRequestMessage request)
         {
-            IEnumerable<string> correlationIds;
             var correlationHeaderValueExists =
-                request.Headers.TryGetValues(Constants.FulcrumCorrelationIdHeaderName, out correlationIds);
+                request.Headers.TryGetValues(Constants.FulcrumCorrelationIdHeaderName, out IEnumerable<string> correlationIds);
             if (!correlationHeaderValueExists) return null;
             var correlationsArray = correlationIds as string[] ?? correlationIds.ToArray();
             if (correlationsArray.Length > 1)

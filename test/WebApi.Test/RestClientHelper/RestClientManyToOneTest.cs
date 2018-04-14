@@ -27,8 +27,8 @@ namespace Xlent.Lever.Libraries2.WebApi.Test.RestClientHelper
         {
             FulcrumApplicationHelper.UnitTestSetup(typeof(RestClientTest).FullName);
             FulcrumApplication.Setup.ContextValueProvider = new SingleThreadValueProvider();
-            _httpClientMock = new Mock<IHttpClient>();
-            RestClient.HttpClient = _httpClientMock.Object;
+            HttpClientMock = new Mock<IHttpClient>();
+            RestClient.HttpClient = HttpClientMock.Object;
             _client = new RestClientManyToOneComplete<Address, Guid>(ResourcePath, "Person", "Addresses");
             _address = new Address()
             {
@@ -42,14 +42,14 @@ namespace Xlent.Lever.Libraries2.WebApi.Test.RestClientHelper
         {
             var parentId = Guid.NewGuid();
             var expectedUri = $"{ResourcePath}/{parentId}/Addresses";
-            _httpClientMock.Setup(client => client.SendAsync(
+            HttpClientMock.Setup(client => client.SendAsync(
                     It.Is<HttpRequestMessage>(request =>
                         request.RequestUri.AbsoluteUri == expectedUri && request.Method == HttpMethod.Delete),
                     CancellationToken.None))
                 .ReturnsAsync((HttpRequestMessage r, CancellationToken c) => CreateResponseMessage(r, _address))
                 .Verifiable();
             await _client.DeleteChildrenAsync(parentId);
-            _httpClientMock.Verify();
+            HttpClientMock.Verify();
         }
 
         [TestMethod]
@@ -57,7 +57,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Test.RestClientHelper
         {
             var parentId = Guid.NewGuid();
             var expectedUri = $"{ResourcePath}/{parentId}/Addresses?limit={int.MaxValue}";
-            _httpClientMock.Setup(client => client.SendAsync(
+            HttpClientMock.Setup(client => client.SendAsync(
                     It.Is<HttpRequestMessage>(request => request.RequestUri.AbsoluteUri == expectedUri && request.Method == HttpMethod.Get),
                     CancellationToken.None))
                 .ReturnsAsync((HttpRequestMessage r, CancellationToken c) => CreateResponseMessage(r, new[] { _address }))
@@ -67,7 +67,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Test.RestClientHelper
             var addressArray = addresses as Address[] ?? addresses.ToArray();
             Assert.AreEqual(1, addressArray.Length);
             Assert.AreEqual(_address, addressArray.FirstOrDefault());
-            _httpClientMock.Verify();
+            HttpClientMock.Verify();
         }
 
         [TestMethod]
@@ -76,7 +76,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Test.RestClientHelper
             var parentId = Guid.NewGuid();
             var expectedUri = $"{ResourcePath}/{parentId}/Addresses/WithPaging?offset=0";
             var pageEnvelope = new PageEnvelope<Address>(0, PageInfo.DefaultLimit, null, new[] { _address });
-            _httpClientMock.Setup(client => client.SendAsync(
+            HttpClientMock.Setup(client => client.SendAsync(
                     It.Is<HttpRequestMessage>(request => request.RequestUri.AbsoluteUri == expectedUri && request.Method == HttpMethod.Get),
                     CancellationToken.None))
                 .ReturnsAsync((HttpRequestMessage r, CancellationToken c) => CreateResponseMessage(r, pageEnvelope))
@@ -85,7 +85,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Test.RestClientHelper
             Assert.IsNotNull(readPage?.Data);
             Assert.AreEqual(1, readPage.Data.Count());
             Assert.AreEqual(_address, readPage.Data.FirstOrDefault());
-            _httpClientMock.Verify();
+            HttpClientMock.Verify();
         }
     }
 }

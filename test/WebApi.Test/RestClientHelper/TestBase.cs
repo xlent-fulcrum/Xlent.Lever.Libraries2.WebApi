@@ -13,14 +13,14 @@ namespace Xlent.Lever.Libraries2.WebApi.Test.RestClientHelper
 {
     public class TestBase
     {
-        protected static Mock<IHttpClient> _httpClientMock;
+        protected static Mock<IHttpClient> HttpClientMock;
         protected static void PrepareMockPost<T>(T content)
         {
             var mockResponse = new HttpResponseMessage(HttpStatusCode.OK)
             {
                 Content = new StringContent(JObject.FromObject(content).ToString(Formatting.Indented), Encoding.UTF8)
             };
-            PrepareMockOk<T>(mockResponse, HttpMethod.Post);
+            PrepareMockOk(mockResponse, HttpMethod.Post);
         }
 
         protected static void PrepareMockGet<T>(T content)
@@ -29,7 +29,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Test.RestClientHelper
             {
                 Content = new StringContent(JObject.FromObject(content).ToString(Formatting.Indented), Encoding.UTF8)
             };
-            PrepareMockOk<T>(mockResponse, HttpMethod.Get);
+            PrepareMockOk(mockResponse, HttpMethod.Get);
         }
 
         protected static void PrepareMockPut<T>(T content)
@@ -38,14 +38,14 @@ namespace Xlent.Lever.Libraries2.WebApi.Test.RestClientHelper
             {
                 Content = new StringContent(JObject.FromObject(content).ToString(Formatting.Indented), Encoding.UTF8)
             };
-            PrepareMockOk<T>(mockResponse, HttpMethod.Put);
+            PrepareMockOk(mockResponse, HttpMethod.Put);
         }
 
         // ReSharper disable once UnusedParameter.Local
         protected static void PrepareMockDelete<T>(T content)
         {
             var mockResponse = new HttpResponseMessage(HttpStatusCode.OK);
-            PrepareMockOk<T>(mockResponse, HttpMethod.Delete);
+            PrepareMockOk(mockResponse, HttpMethod.Delete);
         }
 
         protected static void AssertAreEqual(Person expected, Person actual)
@@ -54,9 +54,9 @@ namespace Xlent.Lever.Libraries2.WebApi.Test.RestClientHelper
             Assert.AreEqual(expected.Surname, actual.Surname);
         }
 
-        private static void PrepareMockOk<T>(HttpResponseMessage mockResponse, HttpMethod method)
+        private static void PrepareMockOk(HttpResponseMessage mockResponse, HttpMethod method)
         {
-            _httpClientMock.Setup(mock => mock.SendAsync(It.Is<HttpRequestMessage>(m => m.Method == method),
+            HttpClientMock.Setup(mock => mock.SendAsync(It.Is<HttpRequestMessage>(m => m.Method == method),
                 It.IsAny<CancellationToken>())).ReturnsAsync((HttpRequestMessage request, CancellationToken token) =>
             {
                 mockResponse.RequestMessage = request;
@@ -70,7 +70,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Test.RestClientHelper
             {
                 Content = new StringContent(errorMessage, Encoding.UTF8)
             };
-            _httpClientMock.Setup(mock => mock.SendAsync(It.Is<HttpRequestMessage>(m => m.Method == method),
+            HttpClientMock.Setup(mock => mock.SendAsync(It.Is<HttpRequestMessage>(m => m.Method == method),
                 It.IsAny<CancellationToken>())).ReturnsAsync((HttpRequestMessage request, CancellationToken token) =>
             {
                 mockResponse.RequestMessage = request;

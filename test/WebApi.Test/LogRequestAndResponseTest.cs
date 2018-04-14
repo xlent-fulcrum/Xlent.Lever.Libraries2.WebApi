@@ -28,8 +28,10 @@ namespace Xlent.Lever.Libraries2.WebApi.Test
         [TestMethod]
         public async Task ResponseOk()
         {
-            var logRequestAndResponse = new LogRequestAndResponse();
-            logRequestAndResponse.UnitTest_SendAsyncDependencyInjection = SendAsyncResponseOk;
+            var logRequestAndResponse = new LogRequestAndResponse
+            {
+                UnitTest_SendAsyncDependencyInjection = SendAsyncResponseOk
+            };
             var request = new HttpRequestMessage(HttpMethod.Post, "http://example.com/okresponse");
             SetExpectedNumberOfLogs(1);
             await logRequestAndResponse.SendAsync(request);
@@ -42,8 +44,10 @@ namespace Xlent.Lever.Libraries2.WebApi.Test
         [TestMethod]
         public async Task ResponseBadRequest()
         {
-            var logRequestAndResponse = new LogRequestAndResponse();
-            logRequestAndResponse.UnitTest_SendAsyncDependencyInjection = SendAsyncResponseBadRequest;
+            var logRequestAndResponse = new LogRequestAndResponse
+            {
+                UnitTest_SendAsyncDependencyInjection = SendAsyncResponseBadRequest
+            };
             var request = new HttpRequestMessage(HttpMethod.Post, "http://example.com/badrequest");
             SetExpectedNumberOfLogs(1);
             await logRequestAndResponse.SendAsync(request);
