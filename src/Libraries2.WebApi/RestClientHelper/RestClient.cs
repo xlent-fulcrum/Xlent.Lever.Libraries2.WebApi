@@ -46,6 +46,7 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
         /// <param name="baseUri">The base URL that all HTTP calls methods will refer to.</param>
         /// <param name="valueProvider"></param>
         [Obsolete("Use (string, value provider) overload")]
+        // ReSharper disable once UnusedParameter.Local
         public RestClient(Uri baseUri, IValueProvider valueProvider)
             : this(baseUri.AbsoluteUri)
         {
@@ -109,9 +110,8 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
         /// <param name="baseUri">The base URL that all HTTP calls methods will refer to.</param>
         /// <param name="valueProvider"></param>
         [Obsolete("Use the overload that only accepts a string", true)]
-#pragma warning disable 618
+        // ReSharper disable once UnusedParameter.Local
         public RestClient(string baseUri, IValueProvider valueProvider) : this(baseUri)
-#pragma warning restore 618
         {
         }
 
@@ -401,7 +401,7 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
             }
             catch (Exception e)
             {
-                if (!silentlyIgnoreExceptions) throw new FulcrumAssertionFailedException($"Expected to be able to read an HttpContent.", e);
+                if (!silentlyIgnoreExceptions) throw new FulcrumAssertionFailedException("Expected to be able to read an HttpContent.", e);
             }
             return null;
         }

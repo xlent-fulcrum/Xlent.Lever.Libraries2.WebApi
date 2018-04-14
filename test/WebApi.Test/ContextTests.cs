@@ -57,7 +57,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Test
                                         BindingFlags.NonPublic | BindingFlags.Instance,
                                         null, CallingConventions.Standard,
                                         new[] { typeof(HttpSessionStateContainer) },
-                                        null)
+                                        null)?
                                 .Invoke(new object[] { sessionContainer });
 
             return httpContext;

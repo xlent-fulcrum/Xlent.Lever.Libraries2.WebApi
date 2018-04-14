@@ -51,8 +51,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Pipe.Outbound
             }
             else
             {
-                IEnumerable<string> correlationIds;
-                if (!request.Headers.TryGetValues(Constants.FulcrumCorrelationIdHeaderName, out correlationIds))
+                if (!request.Headers.TryGetValues(Constants.FulcrumCorrelationIdHeaderName, out IEnumerable<string> _))
                 {
                     request.Headers.Add(Constants.FulcrumCorrelationIdHeaderName,
                         _correlationIdValueProvider.CorrelationId);

@@ -7,6 +7,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Xlent.Lever.Libraries2.Core.Application;
 using Xlent.Lever.Libraries2.Core.Context;
+using Xlent.Lever.Libraries2.Core.Crud.Interfaces;
 using Xlent.Lever.Libraries2.Core.Storage.Model;
 using Xlent.Lever.Libraries2.WebApi.RestClientHelper;
 using Xlent.Lever.Libraries2.WebApi.Test.Support.Models;
@@ -27,8 +28,8 @@ namespace Xlent.Lever.Libraries2.WebApi.Test.RestClientHelper
         {
             FulcrumApplicationHelper.UnitTestSetup(typeof(RestClientTest).FullName);
             FulcrumApplication.Setup.ContextValueProvider = new SingleThreadValueProvider();
-            _httpClientMock = new Mock<IHttpClient>();
-            RestClient.HttpClient = _httpClientMock.Object;
+            HttpClientMock = new Mock<IHttpClient>();
+            RestClient.HttpClient = HttpClientMock.Object;
             _parentChildrenClient = new RestClientManyToOneComplete<Person, Guid>(ResourcePath);
             _oneManyClient = new RestClientManyToOneComplete<Person, Guid>(ResourcePath, "One", "Many");
             _person = new Person()
@@ -54,14 +55,14 @@ namespace Xlent.Lever.Libraries2.WebApi.Test.RestClientHelper
         {
             var parentId = Guid.NewGuid();
             var expectedUri = $"{ResourcePath}/{parentId}/{resourceName}";
-            _httpClientMock.Setup(client => client.SendAsync(
+            HttpClientMock.Setup(client => client.SendAsync(
                     It.Is<HttpRequestMessage>(request =>
                         request.RequestUri.AbsoluteUri == expectedUri && request.Method == HttpMethod.Delete),
                     CancellationToken.None))
                 .ReturnsAsync((HttpRequestMessage r, CancellationToken c) => CreateResponseMessage(r, _person))
                 .Verifiable();
             await restClient.DeleteChildrenAsync(parentId);
-            _httpClientMock.Verify();
+            HttpClientMock.Verify();
         }
 
         [TestMethod]
@@ -79,7 +80,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Test.RestClientHelper
         {
             var parentId = Guid.NewGuid();
             var expectedUri = $"{ResourcePath}/{parentId}/{resourceName}?limit={int.MaxValue}";
-            _httpClientMock.Setup(client => client.SendAsync(
+            HttpClientMock.Setup(client => client.SendAsync(
                     It.Is<HttpRequestMessage>(request => request.RequestUri.AbsoluteUri == expectedUri && request.Method == HttpMethod.Get),
                     CancellationToken.None))
                 .ReturnsAsync((HttpRequestMessage r, CancellationToken c) => CreateResponseMessage(r, new[] { _person }))
@@ -89,7 +90,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Test.RestClientHelper
             var personArray = persons as Person[] ?? persons.ToArray();
             Assert.AreEqual(1, personArray.Length);
             Assert.AreEqual(_person, personArray.FirstOrDefault());
-            _httpClientMock.Verify();
+            HttpClientMock.Verify();
         }
 
         [TestMethod]
@@ -109,7 +110,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Test.RestClientHelper
             var parentId = Guid.NewGuid();
             var expectedUri = $"{ResourcePath}/{parentId}/{resourceName}/WithPaging?offset=0";
             var pageEnvelope = new PageEnvelope<Person>(0, PageInfo.DefaultLimit, null, new[] { _person });
-            _httpClientMock.Setup(client => client.SendAsync(
+            HttpClientMock.Setup(client => client.SendAsync(
                     It.Is<HttpRequestMessage>(request => request.RequestUri.AbsoluteUri == expectedUri && request.Method == HttpMethod.Get),
                     CancellationToken.None))
                 .ReturnsAsync((HttpRequestMessage r, CancellationToken c) => CreateResponseMessage(r, pageEnvelope))
@@ -118,7 +119,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Test.RestClientHelper
             Assert.IsNotNull(readPage?.Data);
             Assert.AreEqual(1, readPage.Data.Count());
             Assert.AreEqual(_person, readPage.Data.FirstOrDefault());
-            _httpClientMock.Verify();
+            HttpClientMock.Verify();
         }
     }
 }
