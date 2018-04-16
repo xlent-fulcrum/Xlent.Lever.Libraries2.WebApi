@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>Xlent.Lever.Libraries2.WebApi</id>
-    <version>4.8.1</version>
+    <version>4.9.0-rc</version>
     <authors>XLENT Fulcrum</authors>
     <projectUrl>https://github.com/xlent-fulcrum/Xlent.Lever.Libraries2.WebApi</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
@@ -11,6 +11,7 @@
     <summary>Fulcrum library based on .NET WebApi.</summary>
     <copyright>Copyright ©2017 Xlent Business Integration AB</copyright>
     <releaseNotes>
+      4.9.0-rc TModelCreate i ICrud.
       4.8.1 Introduced Crud
       4.7.0 Added CancellationToken to all ICrud-related interfaces.
       4.6.2 Introduced Crud for RestClientHelper.
@@ -88,7 +89,7 @@
         <dependency id="Microsoft.AspNet.WebApi.Client" version="5.2.3" />
         <dependency id="Microsoft.Rest.ClientRuntime" version="2.3.8" />
         <dependency id="Newtonsoft.Json" version="9.0.1" />
-        <dependency id="Xlent.Lever.Libraries2.Core.NetFramework" version="1.22.2" />
+        <dependency id="Xlent.Lever.Libraries2.Core.NetFramework" version="1.24.4-rc" />
       </group>
     </dependencies>
   </metadata>

@@ -7,14 +7,26 @@ using Xlent.Lever.Libraries2.Core.Crud.Interfaces;
 namespace Xlent.Lever.Libraries2.WebApi.Crud.ApiControllers
 {
     /// <inheritdoc cref="CrdApiController{TModel}" />
-    public abstract class CrudApiController<TModel> : CrdApiController<TModel>, ICrud<TModel, string>
-    where TModel : IValidatable
+    public abstract class CrudApiController<TModel> : CrudApiController<TModel, TModel>, ICrud<TModel, string>
+        where TModel : IValidatable
     {
-        private readonly ICrud<TModel, string> _storage;
-
         /// <inheritdoc />
         protected CrudApiController(ICrud<TModel, string> storage)
-        :base(storage)
+            : base(storage)
+        {
+        }
+    }
+
+    /// <inheritdoc cref="CrdApiController{TModel}" />
+    public abstract class CrudApiController<TModelCreate, TModel> : CrdApiController<TModelCreate, TModel>, ICrud<TModelCreate, TModel, string>
+        where TModel : TModelCreate
+        where TModelCreate : IValidatable
+    {
+        private readonly ICrud<TModelCreate, TModel, string> _storage;
+
+        /// <inheritdoc />
+        protected CrudApiController(ICrud<TModelCreate, TModel, string> storage)
+            : base(storage)
         {
             _storage = storage;
         }
