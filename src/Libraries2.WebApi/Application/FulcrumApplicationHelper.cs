@@ -19,7 +19,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Application
         /// <param name="name">The name of the application.</param>
         /// <param name="tenant">The tenant that the application itself runs in.</param>
         /// <param name="level">The run time level for the application itself.</param>
-        public static void WebApiBasicSetup(string name, ITenant tenant, RunTimeLevelEnum level)
+        public static void WebApiBasicSetup(string name, Tenant tenant, RunTimeLevelEnum level)
         {
             FulcrumApplication.Initialize(name, tenant, level);
             FulcrumApplication.Setup.ThreadHandler = new HostingThreads();

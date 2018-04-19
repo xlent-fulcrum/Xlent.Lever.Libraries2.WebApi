@@ -7,14 +7,26 @@ using Xlent.Lever.Libraries2.Core.Crud.Interfaces;
 namespace Xlent.Lever.Libraries2.WebApi.Crud.ApiControllers
 {
     /// <inheritdoc cref="ReadApiController{TModel}" />
-    public abstract class CrdApiController<TModel> : ReadApiController<TModel>, ICrd<TModel, string>
-    where TModel : IValidatable
+    public abstract class CrdApiController<TModel> : CrdApiController<TModel, TModel>, ICrd<TModel, string>
+        where TModel : IValidatable
     {
-        private readonly ICrd<TModel, string> _storage;
-
         /// <inheritdoc />
         protected CrdApiController(ICrd<TModel, string> storage)
-        :base(storage)
+            : base(storage)
+        {
+        }
+    }
+
+    /// <inheritdoc cref="ReadApiController{TModel}" />
+    public abstract class CrdApiController<TModelCreate, TModel> : ReadApiController<TModel>, ICrd<TModelCreate, TModel, string>
+        where TModel : TModelCreate
+        where TModelCreate : IValidatable
+    {
+        private readonly ICrd<TModelCreate, TModel, string> _storage;
+
+        /// <inheritdoc />
+        protected CrdApiController(ICrd<TModelCreate, TModel, string> storage)
+            : base(storage)
         {
             _storage = storage;
         }
@@ -22,7 +34,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Crud.ApiControllers
         /// <inheritdoc />
         [HttpPost]
         [Route("")]
-        public virtual async Task<string> CreateAsync(TModel item, CancellationToken token = default(CancellationToken))
+        public virtual async Task<string> CreateAsync(TModelCreate item, CancellationToken token = default(CancellationToken))
         {
             ServiceContract.RequireNotNull(item, nameof(item));
             ServiceContract.RequireValidated(item, nameof(item));
@@ -32,7 +44,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Crud.ApiControllers
         /// <inheritdoc />
         [HttpPost]
         [Route("ReturnCreated")]
-        public virtual async Task<TModel> CreateAndReturnAsync(TModel item, CancellationToken token = default(CancellationToken))
+        public virtual async Task<TModel> CreateAndReturnAsync(TModelCreate item, CancellationToken token = default(CancellationToken))
         {
             ServiceContract.RequireNotNull(item, nameof(item));
             ServiceContract.RequireValidated(item, nameof(item));
@@ -40,9 +52,13 @@ namespace Xlent.Lever.Libraries2.WebApi.Crud.ApiControllers
         }
 
         /// <inheritdoc />
-        [HttpPost]
-        [Route("{id}")]
-        public virtual async Task CreateWithSpecifiedIdAsync(string id, TModel item, CancellationToken token = default(CancellationToken))
+        ///<remarks>
+        /// This method was not attributed with route and method, because we don't think it should be in a REST api.
+        /// If you still want to do that, override it, add attributes and call this method.
+        /// </remarks>
+        //[HttpPost]
+        //[Route("{id}")]
+        public virtual async Task CreateWithSpecifiedIdAsync(string id, TModelCreate item, CancellationToken token = default(CancellationToken))
         {
             ServiceContract.RequireNotNullOrWhitespace(id, nameof(id));
             ServiceContract.RequireNotNull(item, nameof(item));
@@ -51,9 +67,13 @@ namespace Xlent.Lever.Libraries2.WebApi.Crud.ApiControllers
         }
 
         /// <inheritdoc />
-        [HttpPost]
-        [Route("{id}/ReturnCreated")]
-        public virtual async Task<TModel> CreateWithSpecifiedIdAndReturnAsync(string id, TModel item, CancellationToken token = default(CancellationToken))
+        ///<remarks>
+        /// This method was not attributed with route and method, because we don't think it should be in a REST api.
+        /// If you still want to do that, override it, add attributes and call this method.
+        /// </remarks>
+        //[HttpPost]
+        //[Route("{id}/ReturnCreated")]
+        public virtual async Task<TModel> CreateWithSpecifiedIdAndReturnAsync(string id, TModelCreate item, CancellationToken token = default(CancellationToken))
         {
             ServiceContract.RequireNotNullOrWhitespace(id, nameof(id));
             ServiceContract.RequireNotNull(item, nameof(item));
