@@ -10,8 +10,6 @@ namespace Xlent.Lever.Libraries2.WebApi.Crud.ApiControllers
     public abstract class CrdApiController<TModel> : CrdApiController<TModel, TModel>, ICrd<TModel, string>
         where TModel : IValidatable
     {
-        private readonly ICrd<TModel, string> _storage;
-
         /// <inheritdoc />
         protected CrdApiController(ICrd<TModel, string> storage)
             : base(storage)
