@@ -52,37 +52,6 @@ namespace Xlent.Lever.Libraries2.WebApi.Crud.ApiControllers
         }
 
         /// <inheritdoc />
-        ///<remarks>
-        /// This method was not attributed with route and method, because we don't think it should be in a REST api.
-        /// If you still want to do that, override it, add attributes and call this method.
-        /// </remarks>
-        //[HttpPost]
-        //[Route("{id}")]
-        public virtual async Task CreateWithSpecifiedIdAsync(string id, TModelCreate item, CancellationToken token = default(CancellationToken))
-        {
-            ServiceContract.RequireNotNullOrWhitespace(id, nameof(id));
-            ServiceContract.RequireNotNull(item, nameof(item));
-            ServiceContract.RequireValidated(item, nameof(item));
-            await _storage.CreateWithSpecifiedIdAsync(id, item, token);
-        }
-
-        /// <inheritdoc />
-        ///<remarks>
-        /// This method was not attributed with route and method, because we don't think it should be in a REST api.
-        /// If you still want to do that, override it, add attributes and call this method.
-        /// </remarks>
-        //[HttpPost]
-        //[Route("{id}/ReturnCreated")]
-        public virtual async Task<TModel> CreateWithSpecifiedIdAndReturnAsync(string id, TModelCreate item, CancellationToken token = default(CancellationToken))
-        {
-            ServiceContract.RequireNotNullOrWhitespace(id, nameof(id));
-            ServiceContract.RequireNotNull(item, nameof(item));
-            ServiceContract.RequireValidated(item, nameof(item));
-            return await _storage.CreateWithSpecifiedIdAndReturnAsync(id, item, token);
-        }
-
-
-        /// <inheritdoc />
         [HttpDelete]
         [Route("{id}")]
         public virtual async Task DeleteAsync(string id, CancellationToken token = default(CancellationToken))

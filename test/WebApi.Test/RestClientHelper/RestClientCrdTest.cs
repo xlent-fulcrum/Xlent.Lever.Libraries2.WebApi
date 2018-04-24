@@ -66,35 +66,6 @@ namespace Xlent.Lever.Libraries2.WebApi.Test.RestClientHelper
         }
 
         [TestMethod]
-        public async Task CreateWithSpecifiedIdTest()
-        {
-            var id = Guid.NewGuid();
-            var expectedUri = $"{ResourcePath}?id={id}";
-            HttpClientMock.Setup(client => client.SendAsync(
-                    It.Is<HttpRequestMessage>(request => request.RequestUri.AbsoluteUri == expectedUri && request.Method == HttpMethod.Post),
-                    CancellationToken.None))
-                .ReturnsAsync((HttpRequestMessage r, CancellationToken c) => CreateResponseMessage(r))
-                .Verifiable();
-            await _client.CreateWithSpecifiedIdAsync(id, _person);
-            HttpClientMock.Verify();
-        }
-
-        [TestMethod]
-        public async Task CreateWithSpecifiedIdAndReturnTest()
-        {
-            var id = Guid.NewGuid();
-            var expectedUri = $"{ResourcePath}/ReturnCreated?id={id}";
-            HttpClientMock.Setup(client => client.SendAsync(
-                    It.Is<HttpRequestMessage>(request => request.RequestUri.AbsoluteUri == expectedUri && request.Method == HttpMethod.Post),
-                    CancellationToken.None))
-                .ReturnsAsync((HttpRequestMessage r, CancellationToken c) => CreateResponseMessage(r, _person))
-                .Verifiable();
-            var person = await _client.CreateWithSpecifiedIdAndReturnAsync(id, _person);
-            Assert.AreEqual(_person, person);
-            HttpClientMock.Verify();
-        }
-
-        [TestMethod]
         public async Task DeleteTest()
         {
             var id = Guid.NewGuid();
