@@ -11,17 +11,16 @@ namespace Xlent.Lever.Libraries2.WebApi.Crud.ApiControllers
     /// <summary>
     /// ApiController with CRUD-support
     /// </summary>
-    public abstract class ReadApiController<TModel> : ApiController, IReadAll<TModel, string>
-    where TModel : IValidatable
+    public abstract class ReadApiController<TModel> : ApiControllerBase<TModel>, IReadAll<TModel, string>
     {
-        private readonly IReadAll<TModel, string> _storage;
+        private readonly IReadAll<TModel, string> _logic;
 
         /// <summary>
         /// Constructor
         /// </summary>
-        protected ReadApiController(IReadAll<TModel, string> storage)
+        protected ReadApiController(IReadAll<TModel, string> logic)
         {
-            _storage = storage;
+            _logic = logic;
         }
 
         /// <inheritdoc />
@@ -30,7 +29,9 @@ namespace Xlent.Lever.Libraries2.WebApi.Crud.ApiControllers
         public virtual async Task<TModel> ReadAsync(string id, CancellationToken token = default(CancellationToken))
         {
             ServiceContract.RequireNotNullOrWhitespace(id, nameof(id));
-            return await _storage.ReadAsync(id, token);
+            var item = await _logic.ReadAsync(id, token);
+            MaybeAssertIsValidated(item);
+            return item;
         }
 
         /// <inheritdoc />
@@ -44,7 +45,10 @@ namespace Xlent.Lever.Libraries2.WebApi.Crud.ApiControllers
                 ServiceContract.RequireGreaterThan(0, limit.Value, nameof(limit));
             }
 
-            return await _storage.ReadAllWithPagingAsync(offset, limit, token);
+            var page = await _logic.ReadAllWithPagingAsync(offset, limit, token);
+            FulcrumAssert.IsNotNull(page?.Data);
+            MaybeAssertIsValidated(page?.Data);
+            return page;
         }
 
         /// <inheritdoc />
@@ -53,7 +57,10 @@ namespace Xlent.Lever.Libraries2.WebApi.Crud.ApiControllers
         public virtual async Task<IEnumerable<TModel>> ReadAllAsync(int limit = int.MaxValue, CancellationToken token = default(CancellationToken))
         {
             ServiceContract.RequireGreaterThan(0, limit, nameof(limit));
-            return await _storage.ReadAllAsync(limit, token);
+            var items = await _logic.ReadAllAsync(limit, token);
+            FulcrumAssert.IsNotNull(items);
+            MaybeAssertIsValidated(items);
+            return items;
         }
     }
 }

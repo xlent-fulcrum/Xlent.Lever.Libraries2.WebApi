@@ -11,16 +11,16 @@ namespace Xlent.Lever.Libraries2.WebApi.Crud.ApiControllers
     /// <summary>
     /// ApiController with CRUD-support
     /// </summary>
-    public abstract class ManyToOneApiController<TModel> : ApiController, IManyToOneRelation<TModel, string>
+    public abstract class ManyToOneApiController<TModel> : ApiControllerBase<TModel>, IManyToOneRelation<TModel, string>
     {
-        private readonly IManyToOneRelation<TModel, string> _storage;
+        private readonly IManyToOneRelation<TModel, string> _logic;
 
         /// <summary>
         /// Constructor
         /// </summary>
-        protected ManyToOneApiController(IManyToOneRelation<TModel, string> storage)
+        protected ManyToOneApiController(IManyToOneRelation<TModel, string> logic)
         {
-            _storage = storage;
+            _logic = logic;
         }
 
         /// <inheritdoc />
@@ -34,7 +34,11 @@ namespace Xlent.Lever.Libraries2.WebApi.Crud.ApiControllers
             {
                 ServiceContract.RequireGreaterThan(0, limit.Value, nameof(limit));
             }
-            return await _storage.ReadChildrenWithPagingAsync(parentId, offset, limit, token);
+
+            var page = await _logic.ReadChildrenWithPagingAsync(parentId, offset, limit, token);
+            FulcrumAssert.IsNotNull(page?.Data);
+            MaybeAssertIsValidated(page.Data);
+            return page;
         }
 
         /// <inheritdoc />
@@ -44,7 +48,10 @@ namespace Xlent.Lever.Libraries2.WebApi.Crud.ApiControllers
         {
             ServiceContract.RequireNotNullOrWhitespace(parentId, nameof(parentId));
             ServiceContract.RequireGreaterThan(0, limit, nameof(limit));
-            return await _storage.ReadChildrenAsync(parentId, limit, token);
+            var items = await _logic.ReadChildrenAsync(parentId, limit, token);
+            FulcrumAssert.IsNotNull(items);
+            MaybeAssertIsValidated(items);
+            return items;
         }
 
         /// <inheritdoc />
@@ -53,7 +60,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Crud.ApiControllers
         public virtual async Task DeleteChildrenAsync(string parentId, CancellationToken token = default(CancellationToken))
         {
             ServiceContract.RequireNotNullOrWhitespace(parentId, nameof(parentId));
-            await _storage.DeleteChildrenAsync(parentId, token);
+            await _logic.DeleteChildrenAsync(parentId, token);
         }
     }
 }

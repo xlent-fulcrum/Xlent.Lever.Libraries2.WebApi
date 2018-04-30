@@ -8,11 +8,10 @@ namespace Xlent.Lever.Libraries2.WebApi.Crud.ApiControllers
 {
     /// <inheritdoc cref="CrdApiController{TModel}" />
     public abstract class CrudApiController<TModel> : CrudApiController<TModel, TModel>, ICrud<TModel, string>
-        where TModel : IValidatable
     {
         /// <inheritdoc />
-        protected CrudApiController(ICrud<TModel, string> storage)
-            : base(storage)
+        protected CrudApiController(ICrud<TModel, string> logic)
+            : base(logic)
         {
         }
     }
@@ -20,15 +19,14 @@ namespace Xlent.Lever.Libraries2.WebApi.Crud.ApiControllers
     /// <inheritdoc cref="CrdApiController{TModel}" />
     public abstract class CrudApiController<TModelCreate, TModel> : CrdApiController<TModelCreate, TModel>, ICrud<TModelCreate, TModel, string>
         where TModel : TModelCreate
-        where TModelCreate : IValidatable
     {
-        private readonly ICrud<TModelCreate, TModel, string> _storage;
+        private readonly ICrud<TModelCreate, TModel, string> _logic;
 
         /// <inheritdoc />
-        protected CrudApiController(ICrud<TModelCreate, TModel, string> storage)
-            : base(storage)
+        protected CrudApiController(ICrud<TModelCreate, TModel, string> logic)
+            : base(logic)
         {
-            _storage = storage;
+            _logic = logic;
         }
         /// <inheritdoc />
         [HttpPut]
@@ -37,8 +35,8 @@ namespace Xlent.Lever.Libraries2.WebApi.Crud.ApiControllers
         {
             ServiceContract.RequireNotNullOrWhitespace(id, nameof(id));
             ServiceContract.RequireNotNull(item, nameof(item));
-            ServiceContract.RequireValidated(item, nameof(item));
-            await _storage.UpdateAsync(id, item, token);
+            MaybeRequireValidated(item, nameof(item));
+            await _logic.UpdateAsync(id, item, token);
         }
 
         /// <inheritdoc />
@@ -48,8 +46,11 @@ namespace Xlent.Lever.Libraries2.WebApi.Crud.ApiControllers
         {
             ServiceContract.RequireNotNullOrWhitespace(id, nameof(id));
             ServiceContract.RequireNotNull(item, nameof(item));
-            ServiceContract.RequireValidated(item, nameof(item));
-            return await _storage.UpdateAndReturnAsync(id, item, token);
+            MaybeRequireValidated(item, nameof(item));
+            var updatedItem = await _logic.UpdateAndReturnAsync(id, item, token);
+            FulcrumAssert.IsNotNull(updatedItem);
+            MaybeAssertIsValidated(updatedItem);
+            return updatedItem;
         }
     }
 }
