@@ -68,6 +68,11 @@
     <Compile Include="Application\FulcrumApplicationHelper.cs" />
     <Compile Include="Context\ContextValueProvider.cs" />
     <Compile Include="Context\HttpContextValueProvider.cs" />
+    <Compile Include="Crud\DefaultControllers\CrdDefaultController.cs" />
+    <Compile Include="Crud\DefaultControllers\CrudDefaultController.cs" />
+    <Compile Include="Crud\DefaultControllers\ManyToOneCompleteDefaultController.cs" />
+    <Compile Include="Crud\DefaultControllers\ManyToOneDefaultController.cs" />
+    <Compile Include="Crud\DefaultControllers\ReadDefaultController.cs" />
     <Compile Include="Crud\ApiControllers\CrdApiController.cs" />
     <Compile Include="Crud\ApiControllers\CrudApiController.cs" />
     <Compile Include="Crud\ApiControllers\ManyToOneCompleteApiController.cs" />

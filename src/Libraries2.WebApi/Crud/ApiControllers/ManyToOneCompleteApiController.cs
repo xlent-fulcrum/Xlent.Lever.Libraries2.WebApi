@@ -37,7 +37,8 @@ namespace Xlent.Lever.Libraries2.WebApi.Crud.ApiControllers
         }
 
         /// <inheritdoc />
-        public async Task CreateWithSpecifiedIdAsync(string id, TModelCreate item, CancellationToken token = new CancellationToken())
+        [HttpPost]
+        public virtual async Task CreateWithSpecifiedIdAsync(string id, TModelCreate item, CancellationToken token = new CancellationToken())
         {
             ServiceContract.RequireNotNullOrWhitespace(id, nameof(id));
             ServiceContract.RequireNotNull(item, nameof(item));
@@ -46,7 +47,8 @@ namespace Xlent.Lever.Libraries2.WebApi.Crud.ApiControllers
         }
 
         /// <inheritdoc />
-        public async Task<TModel> CreateWithSpecifiedIdAndReturnAsync(string id, TModelCreate item,
+        [HttpPost]
+        public virtual async Task<TModel> CreateWithSpecifiedIdAndReturnAsync(string id, TModelCreate item,
             CancellationToken token = new CancellationToken())
         {
             ServiceContract.RequireNotNullOrWhitespace(id, nameof(id));
@@ -60,7 +62,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Crud.ApiControllers
         /// <inheritdoc />
         [HttpGet]
         [Route("WithPaging")]
-        public async Task<PageEnvelope<TModel>> ReadChildrenWithPagingAsync(string parentId, int offset, int? limit = null,
+        public virtual async Task<PageEnvelope<TModel>> ReadChildrenWithPagingAsync(string parentId, int offset, int? limit = null,
             CancellationToken token = new CancellationToken())
         {
             ServiceContract.RequireNotNullOrWhitespace(parentId, nameof(parentId));
@@ -79,7 +81,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Crud.ApiControllers
         /// <inheritdoc />
         [HttpGet]
         [Route("")]
-        public async Task<IEnumerable<TModel>> ReadChildrenAsync(string parentId, int limit = int.MaxValue, CancellationToken token = new CancellationToken())
+        public virtual async Task<IEnumerable<TModel>> ReadChildrenAsync(string parentId, int limit = int.MaxValue, CancellationToken token = new CancellationToken())
         {
             ServiceContract.RequireNotNullOrWhitespace(parentId, nameof(parentId));
             ServiceContract.RequireGreaterThan(0, limit, nameof(limit));
@@ -92,7 +94,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Crud.ApiControllers
         /// <inheritdoc />
         [HttpDelete]
         [Route("")]
-        public async Task DeleteChildrenAsync(string parentId, CancellationToken token = new CancellationToken())
+        public virtual async Task DeleteChildrenAsync(string parentId, CancellationToken token = new CancellationToken())
         {
             ServiceContract.RequireNotNullOrWhitespace(parentId, nameof(parentId));
             await _logic.DeleteChildrenAsync(parentId, token);
