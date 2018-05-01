@@ -21,13 +21,10 @@ namespace Xlent.Lever.Libraries2.WebApi.Crud.DefaultControllers
     public abstract class CrudDefaultController<TModelCreate, TModel> : CrudApiController<TModelCreate, TModel>, ICrud<TModelCreate, TModel, string>
         where TModel : TModelCreate
     {
-        private readonly ICrud<TModelCreate, TModel, string> _logic;
-
         /// <inheritdoc />
         protected CrudDefaultController(ICrud<TModelCreate, TModel, string> logic)
             : base(logic)
         {
-            _logic = logic;
         }
 
         /// <inheritdoc />

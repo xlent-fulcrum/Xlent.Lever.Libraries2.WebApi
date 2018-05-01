@@ -14,15 +14,12 @@ namespace Xlent.Lever.Libraries2.WebApi.Crud.DefaultControllers
     /// </summary>
     public abstract class ReadDefaultController<TModel> : ReadApiController<TModel>, IReadAll<TModel, string>
     {
-        private readonly IReadAll<TModel, string> _logic;
-
         /// <summary>
         /// Constructor
         /// </summary>
         protected ReadDefaultController(IReadAll<TModel, string> logic)
         :base(logic)
         {
-            _logic = logic;
         }
 
         /// <inheritdoc />
