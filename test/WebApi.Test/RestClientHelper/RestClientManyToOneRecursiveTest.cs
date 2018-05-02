@@ -19,8 +19,8 @@ namespace Xlent.Lever.Libraries2.WebApi.Test.RestClientHelper
     {
         private const string ResourcePath = "http://example.se/Persons";
         private Person _person;
-        private IManyToOneRelation<Person, Guid> _parentChildrenClient;
-        private IManyToOneRelation<Person, Guid> _oneManyClient;
+        private IManyToOne<Person, Guid> _parentChildrenClient;
+        private IManyToOne<Person, Guid> _oneManyClient;
 
 
         [TestInitialize]
@@ -40,32 +40,6 @@ namespace Xlent.Lever.Libraries2.WebApi.Test.RestClientHelper
         }
 
         [TestMethod]
-        public async Task DeleteChildren1Test()
-        {
-            await DeleteChildrenTest(_parentChildrenClient, "Children");
-        }
-
-        [TestMethod]
-        public async Task DeleteChildren2Test()
-        {
-            await DeleteChildrenTest(_oneManyClient, "Many");
-        }
-
-        private async Task DeleteChildrenTest(IManyToOneRelation<Person, Guid> restClient, string resourceName)
-        {
-            var parentId = Guid.NewGuid();
-            var expectedUri = $"{ResourcePath}/{parentId}/{resourceName}";
-            HttpClientMock.Setup(client => client.SendAsync(
-                    It.Is<HttpRequestMessage>(request =>
-                        request.RequestUri.AbsoluteUri == expectedUri && request.Method == HttpMethod.Delete),
-                    CancellationToken.None))
-                .ReturnsAsync((HttpRequestMessage r, CancellationToken c) => CreateResponseMessage(r, _person))
-                .Verifiable();
-            await restClient.DeleteChildrenAsync(parentId);
-            HttpClientMock.Verify();
-        }
-
-        [TestMethod]
         public async Task ReadChildren1Test()
         {
             await ReadChildrenTest(_parentChildrenClient, "Children");
@@ -76,7 +50,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Test.RestClientHelper
         {
             await ReadChildrenTest(_oneManyClient, "Many");
         }
-        public async Task ReadChildrenTest(IManyToOneRelation<Person, Guid> restClient, string resourceName)
+        public async Task ReadChildrenTest(IManyToOne<Person, Guid> restClient, string resourceName)
         {
             var parentId = Guid.NewGuid();
             var expectedUri = $"{ResourcePath}/{parentId}/{resourceName}?limit={int.MaxValue}";
@@ -105,7 +79,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Test.RestClientHelper
             await ReadChildrenWithPagingTest(_oneManyClient, "Many");
         }
 
-        public async Task ReadChildrenWithPagingTest(IManyToOneRelation<Person, Guid> restClient, string resourceName)
+        public async Task ReadChildrenWithPagingTest(IManyToOne<Person, Guid> restClient, string resourceName)
         {
             var parentId = Guid.NewGuid();
             var expectedUri = $"{ResourcePath}/{parentId}/{resourceName}/WithPaging?offset=0";

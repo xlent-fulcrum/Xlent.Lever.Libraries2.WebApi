@@ -13,7 +13,7 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
     /// <summary>
     /// Convenience client for making REST calls
     /// </summary>
-    public class RestClientRead<TModel, TId> : RestClient, IReadAll<TModel, TId>
+    public class RestClientRead<TModel, TId> : RestClient, IRead<TModel, TId>
     {
 
         /// <summary></summary>

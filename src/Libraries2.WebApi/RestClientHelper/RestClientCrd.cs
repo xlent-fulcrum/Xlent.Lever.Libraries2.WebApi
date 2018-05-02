@@ -59,19 +59,19 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
         protected virtual async Task<TModel> SimulateCreateAndReturnAsync(TModel item, CancellationToken token = default(CancellationToken))
         {
             var id = await CreateAsync(item, token);
-            return await ReadAsync(id);
+            return await ReadAsync(id, token);
         }
 
         /// <inheritdoc />
         public virtual async Task CreateWithSpecifiedIdAsync(TId id, TModel item, CancellationToken token = default(CancellationToken))
         {
-            await PostNoResponseContentAsync($"?id={id}", item, cancellationToken: token);
+            await PostNoResponseContentAsync($"{id}", item, cancellationToken: token);
         }
 
         /// <inheritdoc />
         public virtual async Task<TModel> CreateWithSpecifiedIdAndReturnAsync(TId id, TModel item, CancellationToken token = default(CancellationToken))
         {
-            return await PostAndReturnCreatedObjectAsync($"ReturnCreated?id={id}", item, cancellationToken: token);
+            return await PostAndReturnCreatedObjectAsync($"{id}/ReturnCreated", item, cancellationToken: token);
         }
 
         /// <summary>
@@ -84,7 +84,7 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
         protected virtual async Task<TModel> SimulateCreateWithSpecifiedIdAndReturnAsync(TId id, TModel item, CancellationToken token = default(CancellationToken))
         {
             await CreateWithSpecifiedIdAsync(id, item, token);
-            return await ReadAsync(id);
+            return await ReadAsync(id, token);
         }
 
         /// <inheritdoc />
@@ -97,6 +97,18 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
         public virtual async Task DeleteAllAsync(CancellationToken token = default(CancellationToken))
         {
             await DeleteAsync("", cancellationToken: token);
+        }
+
+        /// <inheritdoc />
+        public async Task<Lock> ClaimLockAsync(TId id, CancellationToken token = new CancellationToken())
+        {
+            return await PostAsync<Lock>($"{id}/ClaimLock", cancellationToken: token);
+        }
+
+        /// <inheritdoc />
+        public async Task ReleaseLockAsync(Lock @lock, CancellationToken token = new CancellationToken())
+        {
+            await PostNoResponseContentAsync($"ReleaseLock", cancellationToken: token);
         }
     }
 }

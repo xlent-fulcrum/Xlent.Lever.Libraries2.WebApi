@@ -13,7 +13,7 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
     /// <summary>
     /// Convenience client for making REST calls
     /// </summary>
-    public class RestClientManyToOneComplete<TManyModel, TId> : RestClientCrud<TManyModel, TId>, IManyToOneRelationComplete<TManyModel, TId>
+    public class RestClientManyToOneComplete<TManyModel, TId> : RestClientCrud<TManyModel, TId>, IManyToOneComplete<TManyModel, TId>
     {
         /// <summary>
         /// The name of the sub path that is the parent of the children. (Singularis)

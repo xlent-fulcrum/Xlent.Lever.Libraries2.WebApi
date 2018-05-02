@@ -12,29 +12,31 @@ namespace Xlent.Lever.Libraries2.WebApi.Crud.DefaultControllers
     /// <summary>
     /// ApiController with CRUD-support
     /// </summary>
-    public abstract class ReadDefaultController<TModel> : ReadApiController<TModel>, IReadAll<TModel, string>
+    public abstract class ReadDefaultController<TModel> : ReadApiController<TModel, string>, IRead<TModel, string>
     {
         /// <summary>
         /// Constructor
         /// </summary>
-        protected ReadDefaultController(IReadAll<TModel, string> logic)
+        protected ReadDefaultController(IRead<TModel, string> logic)
         :base(logic)
         {
         }
 
         /// <inheritdoc />
+        [HttpGet]
         [Route("{id}")]
-        public override async Task<TModel> ReadAsync(string id, CancellationToken token = default(CancellationToken))
+        public override Task<TModel> ReadAsync(string id, CancellationToken token = default(CancellationToken))
         {
-            return await base.ReadAsync(id, token);
+            return base.ReadAsync(id, token);
         }
 
         /// <inheritdoc />
+        [HttpGet]
         [Route("")]
-        public override async Task<PageEnvelope<TModel>> ReadAllWithPagingAsync(int offset, int? limit = null, CancellationToken token = default(CancellationToken))
+        public override Task<PageEnvelope<TModel>> ReadAllWithPagingAsync(int offset, int? limit = null, CancellationToken token = default(CancellationToken))
         {
 
-            return await base.ReadAllWithPagingAsync(offset, limit, token);
+            return base.ReadAllWithPagingAsync(offset, limit, token);
         }
     }
 }

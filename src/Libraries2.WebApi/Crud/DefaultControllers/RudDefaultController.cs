@@ -8,22 +8,11 @@ using Xlent.Lever.Libraries2.WebApi.Crud.ApiControllers;
 
 namespace Xlent.Lever.Libraries2.WebApi.Crud.DefaultControllers
 {
-    /// <inheritdoc cref="CrdDefaultController{TModel}" />
-    public abstract class CrudDefaultController<TModel> : CrudDefaultController<TModel, TModel>, ICrud<TModel, string>
+    /// <inheritdoc cref="ReadDefaultController{TModel}" />
+    public abstract class RudDefaultController<TModel> : RudApiController<TModel, string>, IRud<TModel, string>
     {
         /// <inheritdoc />
-        protected CrudDefaultController(ICrud<TModel, string> logic)
-            : base(logic)
-        {
-        }
-    }
-
-    /// <inheritdoc cref="CrdDefaultController{TModel}" />
-    public abstract class CrudDefaultController<TModelCreate, TModel> : CrudApiController<TModelCreate, TModel>, ICrud<TModelCreate, TModel, string>
-        where TModel : TModelCreate
-    {
-        /// <inheritdoc />
-        protected CrudDefaultController(ICrud<TModelCreate, TModel, string> logic)
+        protected RudDefaultController(IRud<TModel, string> logic)
             : base(logic)
         {
         }
@@ -43,14 +32,6 @@ namespace Xlent.Lever.Libraries2.WebApi.Crud.DefaultControllers
         {
 
             return base.ReadAllWithPagingAsync(offset, limit, token);
-        }
-
-        /// <inheritdoc />
-        [HttpPost]
-        [Route("")]
-        public override Task<string> CreateAsync(TModelCreate item, CancellationToken token = default(CancellationToken))
-        {
-            return base.CreateAsync(item, token);
         }
 
         /// <inheritdoc />
