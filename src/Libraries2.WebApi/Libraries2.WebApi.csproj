@@ -61,7 +61,7 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
     <Reference Include="Xlent.Lever.Libraries2.Core.NetFramework, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Xlent.Lever.Libraries2.Core.NetFramework.1.26.2-rc\lib\net46\Xlent.Lever.Libraries2.Core.NetFramework.dll</HintPath>
+      <HintPath>..\..\packages\Xlent.Lever.Libraries2.Core.NetFramework.1.26.5-rc\lib\net46\Xlent.Lever.Libraries2.Core.NetFramework.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -70,6 +70,7 @@
     <Compile Include="Context\HttpContextValueProvider.cs" />
     <Compile Include="Crud\ApiControllers\RudApiController.cs" />
     <Compile Include="Crud\ApiControllers\SlaveToMasterApiController.cs" />
+    <Compile Include="Crud\ApiControllers\SlaveToMasterCompleteApiController.cs" />
     <Compile Include="Crud\DefaultControllers\RudDefaultController.cs" />
     <Compile Include="Crud\DefaultControllers\CrdDefaultController.cs" />
     <Compile Include="Crud\DefaultControllers\CrudDefaultController.cs" />
@@ -81,6 +82,7 @@
     <Compile Include="Crud\ApiControllers\ManyToOneApiController.cs" />
     <Compile Include="Crud\ApiControllers\ApiControllerBase.cs" />
     <Compile Include="Crud\ApiControllers\ReadApiController.cs" />
+    <Compile Include="Crud\DefaultControllers\SlaveToMasterCompleteDefaultController.cs" />
     <Compile Include="Crud\DefaultControllers\SlaveToMasterDefaultController.cs" />
     <Compile Include="Error\Logic\Converter.cs" />
     <Compile Include="Logging\LoggableWebApiExtensions.cs" />

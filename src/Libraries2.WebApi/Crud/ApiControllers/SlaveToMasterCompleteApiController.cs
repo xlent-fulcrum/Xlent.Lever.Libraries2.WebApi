@@ -12,13 +12,13 @@ namespace Xlent.Lever.Libraries2.WebApi.Crud.ApiControllers
     /// <summary>
     /// ApiController with CRUD-support
     /// </summary>
-    public abstract class SlaveToMasterApiController<TModel> :
-        SlaveToMasterApiController<TModel, TModel>, ISlaveToMaster<TModel, string>
+    public abstract class SlaveToMasterCompleteApiController<TModel> :
+        SlaveToMasterCompleteApiController<TModel, TModel>, ISlaveToMasterComplete<TModel, string>
     {
         /// <summary>
         /// Constructor
         /// </summary>
-        protected SlaveToMasterApiController(ISlaveToMaster<TModel, string> logic)
+        protected SlaveToMasterCompleteApiController(ISlaveToMasterComplete<TModel, string> logic)
             : base(logic)
         {
         }
@@ -27,15 +27,16 @@ namespace Xlent.Lever.Libraries2.WebApi.Crud.ApiControllers
     /// <summary>
     /// ApiController with CRUD-support
     /// </summary>
-    public abstract class SlaveToMasterApiController<TModelCreate, TModel> : ApiControllerBase<TModel>, ISlaveToMaster<TModelCreate, TModel, string>
+    public abstract class SlaveToMasterCompleteApiController<TModelCreate, TModel> : RudApiController<TModel, SlaveToMasterId<string>>, ISlaveToMasterComplete<TModelCreate, TModel, string>
         where TModel : TModelCreate
     {
-        private readonly ISlaveToMaster<TModelCreate, TModel, string> _logic;
+        private readonly ISlaveToMasterComplete<TModelCreate, TModel, string> _logic;
 
         /// <summary>
         /// Constructor
         /// </summary>
-        protected SlaveToMasterApiController(ISlaveToMaster<TModelCreate, TModel, string> logic)
+        protected SlaveToMasterCompleteApiController(ISlaveToMasterComplete<TModelCreate, TModel, string> logic)
+            : base(logic)
         {
             _logic = logic;
         }
