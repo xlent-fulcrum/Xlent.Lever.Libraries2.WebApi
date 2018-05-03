@@ -9,11 +9,11 @@ using Xlent.Lever.Libraries2.Core.Storage.Model;
 namespace Xlent.Lever.Libraries2.WebApi.Crud.ApiControllers
 {
     /// <inheritdoc cref="CrdApiController{TModel}" />
-    public abstract class ManyToOneCompleteApiController<TModel> : ManyToOneCompleteApiController<TModel, TModel>, IManyToOneRelationComplete<TModel, string>
+    public abstract class ManyToOneCompleteApiController<TModel> : ManyToOneCompleteApiController<TModel, TModel>, IManyToOneComplete<TModel, string>
         where TModel : IValidatable
     {
         /// <inheritdoc />
-        protected ManyToOneCompleteApiController(IManyToOneRelationComplete<TModel, string> logic)
+        protected ManyToOneCompleteApiController(IManyToOneComplete<TModel, string> logic)
             : base(logic)
         {
         }
@@ -22,46 +22,21 @@ namespace Xlent.Lever.Libraries2.WebApi.Crud.ApiControllers
     /// <summary>
     /// ApiController with CRUD-support
     /// </summary>
-    public abstract class ManyToOneCompleteApiController<TModelCreate, TModel> : CrudApiController<TModelCreate, TModel>, IManyToOneRelationComplete<TModelCreate, TModel, string>
+    public abstract class ManyToOneCompleteApiController<TModelCreate, TModel> : CrudApiController<TModelCreate, TModel>, IManyToOneComplete<TModelCreate, TModel, string>
         where TModel : TModelCreate
     {
-        private readonly IManyToOneRelationComplete<TModelCreate, TModel, string> _logic;
+        private readonly IManyToOneComplete<TModelCreate, TModel, string> _logic;
 
         /// <summary>
         /// Constructor
         /// </summary>
-        protected ManyToOneCompleteApiController(IManyToOneRelationComplete<TModelCreate, TModel, string> logic)
+        protected ManyToOneCompleteApiController(IManyToOneComplete<TModelCreate, TModel, string> logic)
         :base(logic)
         {
             _logic = logic;
         }
 
         /// <inheritdoc />
-        [HttpPost]
-        public virtual async Task CreateWithSpecifiedIdAsync(string id, TModelCreate item, CancellationToken token = new CancellationToken())
-        {
-            ServiceContract.RequireNotNullOrWhitespace(id, nameof(id));
-            ServiceContract.RequireNotNull(item, nameof(item));
-            MaybeRequireValidated(item, nameof(item));
-            await _logic.CreateWithSpecifiedIdAsync(id, item, token);
-        }
-
-        /// <inheritdoc />
-        [HttpPost]
-        public virtual async Task<TModel> CreateWithSpecifiedIdAndReturnAsync(string id, TModelCreate item,
-            CancellationToken token = new CancellationToken())
-        {
-            ServiceContract.RequireNotNullOrWhitespace(id, nameof(id));
-            ServiceContract.RequireNotNull(item, nameof(item));
-            MaybeRequireValidated(item, nameof(item));
-            var createdItem = await _logic.CreateWithSpecifiedIdAndReturnAsync(id, item, token);
-            MaybeAssertIsValidated(createdItem);
-            return createdItem;
-        }
-
-        /// <inheritdoc />
-        [HttpGet]
-        [Route("WithPaging")]
         public virtual async Task<PageEnvelope<TModel>> ReadChildrenWithPagingAsync(string parentId, int offset, int? limit = null,
             CancellationToken token = new CancellationToken())
         {
@@ -79,8 +54,6 @@ namespace Xlent.Lever.Libraries2.WebApi.Crud.ApiControllers
         }
 
         /// <inheritdoc />
-        [HttpGet]
-        [Route("")]
         public virtual async Task<IEnumerable<TModel>> ReadChildrenAsync(string parentId, int limit = int.MaxValue, CancellationToken token = new CancellationToken())
         {
             ServiceContract.RequireNotNullOrWhitespace(parentId, nameof(parentId));
@@ -92,8 +65,6 @@ namespace Xlent.Lever.Libraries2.WebApi.Crud.ApiControllers
         }
 
         /// <inheritdoc />
-        [HttpDelete]
-        [Route("")]
         public virtual async Task DeleteChildrenAsync(string parentId, CancellationToken token = new CancellationToken())
         {
             ServiceContract.RequireNotNullOrWhitespace(parentId, nameof(parentId));

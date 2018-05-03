@@ -11,32 +11,29 @@ namespace Xlent.Lever.Libraries2.WebApi.Crud.ApiControllers
     /// <summary>
     /// ApiController with CRUD-support
     /// </summary>
-    public abstract class ReadApiController<TModel> : ApiControllerBase<TModel>, IReadAll<TModel, string>
+    public abstract class ReadApiController<TModel, TId> : ApiControllerBase<TModel>, IRead<TModel, TId>
     {
-        private readonly IReadAll<TModel, string> _logic;
+        private readonly IRead<TModel, TId> _logic;
 
         /// <summary>
         /// Constructor
         /// </summary>
-        protected ReadApiController(IReadAll<TModel, string> logic)
+        protected ReadApiController(IRead<TModel, TId> logic)
         {
             _logic = logic;
         }
 
         /// <inheritdoc />
         [HttpGet]
-        [Route("{id}")]
-        public virtual async Task<TModel> ReadAsync(string id, CancellationToken token = default(CancellationToken))
+        public virtual async Task<TModel> ReadAsync(TId id, CancellationToken token = default(CancellationToken))
         {
-            ServiceContract.RequireNotNullOrWhitespace(id, nameof(id));
+            ServiceContract.RequireNotDefaultValue(id, nameof(id));
             var item = await _logic.ReadAsync(id, token);
             MaybeAssertIsValidated(item);
             return item;
         }
 
         /// <inheritdoc />
-        [HttpGet]
-        [Route("WithPaging")]
         public virtual async Task<PageEnvelope<TModel>> ReadAllWithPagingAsync(int offset, int? limit = null, CancellationToken token = default(CancellationToken))
         {
             ServiceContract.RequireGreaterThanOrEqualTo(0, offset, nameof(offset));
@@ -52,8 +49,6 @@ namespace Xlent.Lever.Libraries2.WebApi.Crud.ApiControllers
         }
 
         /// <inheritdoc />
-        [HttpGet]
-        [Route("")]
         public virtual async Task<IEnumerable<TModel>> ReadAllAsync(int limit = int.MaxValue, CancellationToken token = default(CancellationToken))
         {
             ServiceContract.RequireGreaterThan(0, limit, nameof(limit));

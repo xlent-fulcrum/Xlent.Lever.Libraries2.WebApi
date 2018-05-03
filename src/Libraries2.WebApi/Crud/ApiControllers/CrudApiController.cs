@@ -29,8 +29,6 @@ namespace Xlent.Lever.Libraries2.WebApi.Crud.ApiControllers
             _logic = logic;
         }
         /// <inheritdoc />
-        [HttpPut]
-        [Route("{id}")]
         public virtual async Task UpdateAsync(string id, TModel item, CancellationToken token = default(CancellationToken))
         {
             ServiceContract.RequireNotNullOrWhitespace(id, nameof(id));
@@ -40,8 +38,6 @@ namespace Xlent.Lever.Libraries2.WebApi.Crud.ApiControllers
         }
 
         /// <inheritdoc />
-        [HttpPut]
-        [Route("{id}/ReturnUpdated")]
         public virtual async Task<TModel> UpdateAndReturnAsync(string id, TModel item, CancellationToken token = default(CancellationToken))
         {
             ServiceContract.RequireNotNullOrWhitespace(id, nameof(id));

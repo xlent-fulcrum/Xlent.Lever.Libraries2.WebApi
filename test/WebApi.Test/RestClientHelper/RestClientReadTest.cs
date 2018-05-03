@@ -18,7 +18,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Test.RestClientHelper
     public class RestClientReadTest : TestBase
     {
         private const string ResourcePath = "http://example.se/Persons";
-        private IReadAll<Person, Guid> _client;
+        private IRead<Person, Guid> _client;
         private Person _person;
 
 

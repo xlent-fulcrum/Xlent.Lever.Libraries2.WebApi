@@ -18,7 +18,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Test.RestClientHelper
     public class RestClientManyToOneTest : TestBase
     {
         private const string ResourcePath = "http://example.se/Persons";
-        private IManyToOneRelation<Address, Guid> _client;
+        private IManyToOne<Address, Guid> _client;
         private Address _address;
 
 
@@ -35,21 +35,6 @@ namespace Xlent.Lever.Libraries2.WebApi.Test.RestClientHelper
                 Street = "Paradisäppelvägen 111",
                 City = "Ankeborg"
             };
-        }
-
-        [TestMethod]
-        public async Task DeleteChildrenTest()
-        {
-            var parentId = Guid.NewGuid();
-            var expectedUri = $"{ResourcePath}/{parentId}/Addresses";
-            HttpClientMock.Setup(client => client.SendAsync(
-                    It.Is<HttpRequestMessage>(request =>
-                        request.RequestUri.AbsoluteUri == expectedUri && request.Method == HttpMethod.Delete),
-                    CancellationToken.None))
-                .ReturnsAsync((HttpRequestMessage r, CancellationToken c) => CreateResponseMessage(r, _address))
-                .Verifiable();
-            await _client.DeleteChildrenAsync(parentId);
-            HttpClientMock.Verify();
         }
 
         [TestMethod]

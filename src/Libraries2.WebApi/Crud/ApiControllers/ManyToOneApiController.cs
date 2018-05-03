@@ -11,21 +11,19 @@ namespace Xlent.Lever.Libraries2.WebApi.Crud.ApiControllers
     /// <summary>
     /// ApiController with CRUD-support
     /// </summary>
-    public abstract class ManyToOneApiController<TModel> : ApiControllerBase<TModel>, IManyToOneRelation<TModel, string>
+    public abstract class ManyToOneApiController<TModel> : ApiControllerBase<TModel>, IManyToOne<TModel, string>
     {
-        private readonly IManyToOneRelation<TModel, string> _logic;
+        private readonly IManyToOne<TModel, string> _logic;
 
         /// <summary>
         /// Constructor
         /// </summary>
-        protected ManyToOneApiController(IManyToOneRelation<TModel, string> logic)
+        protected ManyToOneApiController(IManyToOne<TModel, string> logic)
         {
             _logic = logic;
         }
 
         /// <inheritdoc />
-        [HttpGet]
-        [Route("WithPaging")]
         public virtual async Task<PageEnvelope<TModel>> ReadChildrenWithPagingAsync(string parentId, int offset, int? limit = null, CancellationToken token = default(CancellationToken))
         {
             ServiceContract.RequireNotNullOrWhitespace(parentId, nameof(parentId));
@@ -42,8 +40,6 @@ namespace Xlent.Lever.Libraries2.WebApi.Crud.ApiControllers
         }
 
         /// <inheritdoc />
-        [HttpGet]
-        [Route("")]
         public virtual async Task<IEnumerable<TModel>> ReadChildrenAsync(string parentId, int limit = int.MaxValue, CancellationToken token = default(CancellationToken))
         {
             ServiceContract.RequireNotNullOrWhitespace(parentId, nameof(parentId));
@@ -52,15 +48,6 @@ namespace Xlent.Lever.Libraries2.WebApi.Crud.ApiControllers
             FulcrumAssert.IsNotNull(items);
             MaybeAssertIsValidated(items);
             return items;
-        }
-
-        /// <inheritdoc />
-        [HttpDelete]
-        [Route("")]
-        public virtual async Task DeleteChildrenAsync(string parentId, CancellationToken token = default(CancellationToken))
-        {
-            ServiceContract.RequireNotNullOrWhitespace(parentId, nameof(parentId));
-            await _logic.DeleteChildrenAsync(parentId, token);
         }
     }
 }

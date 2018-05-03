@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using Xlent.Lever.Libraries2.Core.Assert;
 using Xlent.Lever.Libraries2.Core.Crud.Interfaces;
+using Xlent.Lever.Libraries2.Core.Storage.Model;
 using Xlent.Lever.Libraries2.WebApi.Crud.ApiControllers;
 
 namespace Xlent.Lever.Libraries2.WebApi.Crud.DefaultControllers
@@ -28,24 +29,44 @@ namespace Xlent.Lever.Libraries2.WebApi.Crud.DefaultControllers
         }
 
         /// <inheritdoc />
-        [Route("")]
-        public override async Task<string> CreateAsync(TModelCreate item, CancellationToken token = default(CancellationToken))
-        {
-            return await base.CreateAsync(item, token);
-        }
-
-        /// <inheritdoc />
+        [HttpGet]
         [Route("{id}")]
-        public override async Task DeleteAsync(string id, CancellationToken token = default(CancellationToken))
+        public override Task<TModel> ReadAsync(string id, CancellationToken token = default(CancellationToken))
         {
-            await base.DeleteAsync(id, token);
+            return base.ReadAsync(id, token);
         }
 
         /// <inheritdoc />
+        [HttpGet]
         [Route("")]
-        public override async Task DeleteAllAsync(CancellationToken token = default(CancellationToken))
+        public override Task<PageEnvelope<TModel>> ReadAllWithPagingAsync(int offset, int? limit = null, CancellationToken token = default(CancellationToken))
         {
-            await base.DeleteAllAsync(token);
+
+            return base.ReadAllWithPagingAsync(offset, limit, token);
+        }
+
+        /// <inheritdoc />
+        [HttpPost]
+        [Route("")]
+        public override Task<string> CreateAsync(TModelCreate item, CancellationToken token = default(CancellationToken))
+        {
+            return base.CreateAsync(item, token);
+        }
+
+        /// <inheritdoc />
+        [HttpDelete]
+        [Route("{id}")]
+        public override Task DeleteAsync(string id, CancellationToken token = default(CancellationToken))
+        {
+            return base.DeleteAsync(id, token);
+        }
+
+        /// <inheritdoc />
+        [HttpDelete]
+        [Route("")]
+        public override Task DeleteAllAsync(CancellationToken token = default(CancellationToken))
+        {
+            return base.DeleteAllAsync(token);
         }
     }
 }
