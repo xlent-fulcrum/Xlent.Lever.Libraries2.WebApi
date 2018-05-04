@@ -64,6 +64,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Crud.DefaultControllers
             return base.DeleteChildrenAsync(masterId, token);
         }
 
+        /// <inheritdoc cref="ISlaveToMasterComplete{TModel,TId}" />
         [HttpGet]
         [Route("{masterId}/Children/{slaveId}")]
         public virtual Task<TModel> ReadAsync(string masterId, string slaveId, CancellationToken token = new CancellationToken())
@@ -72,6 +73,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Crud.DefaultControllers
             return base.ReadAsync(key, token);
         }
 
+        /// <inheritdoc cref="ISlaveToMasterComplete{TModel,TId}" />
         [HttpPut]
         [Route("{masterId}/Children/{slaveId}")]
         public virtual Task UpdateAsync(string masterId, string slaveId, TModel item, CancellationToken token = new CancellationToken())
@@ -80,6 +82,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Crud.DefaultControllers
             return base.UpdateAsync(key, item, token);
         }
 
+        /// <inheritdoc cref="ISlaveToMasterComplete{TModel,TId}" />
         [HttpDelete]
         [Route("{masterId}/Children/{slaveId}")]
         public virtual Task DeleteAsync(string masterId, string slaveId, CancellationToken token = new CancellationToken())
