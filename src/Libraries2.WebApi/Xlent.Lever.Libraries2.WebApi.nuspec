@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>Xlent.Lever.Libraries2.WebApi</id>
-    <version>4.10.8</version>
+    <version>4.10.9</version>
     <authors>XLENT Fulcrum</authors>
     <projectUrl>https://github.com/xlent-fulcrum/Xlent.Lever.Libraries2.WebApi</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
@@ -11,7 +11,7 @@
     <summary>Fulcrum library based on .NET WebApi.</summary>
     <copyright>Copyright ©2017 Xlent Business Integration AB</copyright>
     <releaseNotes>
-      4.10.8 Bumped nugets.
+      4.10.9 Bumped nugets.
       4.10.2 Refactored Crud
       4.9.7 Added Default controllers.
       4.9.5 Added ManyToOneCompleteApiController.
@@ -93,7 +93,7 @@
         <dependency id="Microsoft.AspNet.WebApi.Core" version="5.2.5" />
         <dependency id="Microsoft.Rest.ClientRuntime" version="2.3.8" />
         <dependency id="Newtonsoft.Json" version="10.0.3" />
-        <dependency id="Xlent.Lever.Libraries2.Core.NetFramework" version="1.26.10" />
+        <dependency id="Xlent.Lever.Libraries2.Core.NetFramework" version="1.27.0" />
       </group>
     </dependencies>
   </metadata>
