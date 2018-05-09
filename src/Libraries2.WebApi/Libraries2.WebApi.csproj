@@ -83,7 +83,6 @@
     <Compile Include="Annotations\SwaggerInternalServerErrorResponseAttribute.cs" />
     <Compile Include="Annotations\SwaggerSuccessResponseAttribute.cs" />
     <Compile Include="Application\FulcrumApplicationHelper.cs" />
-    <Compile Include="App_Start\SwaggerConfig.cs" />
     <Compile Include="Context\ContextValueProvider.cs" />
     <Compile Include="Context\HttpContextValueProvider.cs" />
     <Compile Include="Crud\ApiControllers\RudApiController.cs" />
