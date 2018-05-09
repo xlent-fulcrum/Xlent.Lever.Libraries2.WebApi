@@ -4,6 +4,7 @@ using System.Web.Http;
 using Xlent.Lever.Libraries2.Core.Assert;
 using Xlent.Lever.Libraries2.Core.Crud.Interfaces;
 using Xlent.Lever.Libraries2.Core.Error.Logic;
+using Xlent.Lever.Libraries2.WebApi.Annotations;
 
 namespace Xlent.Lever.Libraries2.WebApi.Crud.ApiControllers
 {
@@ -73,6 +74,8 @@ namespace Xlent.Lever.Libraries2.WebApi.Crud.ApiControllers
         }
 
         /// <inheritdoc />
+        [SwaggerBadRequestResponse]
+        [SwaggerInternalServerErrorResponse]
         public virtual async Task CreateWithSpecifiedIdAsync(string id, TModelCreate item, CancellationToken token = new CancellationToken())
         {
             ServiceContract.RequireNotNullOrWhitespace(id, nameof(id));
@@ -82,6 +85,8 @@ namespace Xlent.Lever.Libraries2.WebApi.Crud.ApiControllers
         }
 
         /// <inheritdoc />
+        [SwaggerBadRequestResponse]
+        [SwaggerInternalServerErrorResponse]
         public async Task<TModel> CreateWithSpecifiedIdAndReturnAsync(string id, TModelCreate item,
             CancellationToken token = new CancellationToken())
         {
@@ -95,6 +100,8 @@ namespace Xlent.Lever.Libraries2.WebApi.Crud.ApiControllers
         }
 
         /// <inheritdoc />
+        [SwaggerBadRequestResponse]
+        [SwaggerInternalServerErrorResponse]
         public async Task<Lock> ClaimLockAsync(string id, CancellationToken token = new CancellationToken())
         {
             ServiceContract.RequireNotNullOrWhitespace(id, nameof(id));
@@ -105,6 +112,8 @@ namespace Xlent.Lever.Libraries2.WebApi.Crud.ApiControllers
         }
 
         /// <inheritdoc />
+        [SwaggerBadRequestResponse]
+        [SwaggerInternalServerErrorResponse]
         public async Task ReleaseLockAsync(Lock @lock, CancellationToken token = new CancellationToken())
         {
             ServiceContract.RequireNotNull(@lock, nameof(@lock));

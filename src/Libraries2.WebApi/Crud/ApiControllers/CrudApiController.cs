@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using Xlent.Lever.Libraries2.Core.Assert;
 using Xlent.Lever.Libraries2.Core.Crud.Interfaces;
+using Xlent.Lever.Libraries2.WebApi.Annotations;
 
 namespace Xlent.Lever.Libraries2.WebApi.Crud.ApiControllers
 {
@@ -28,7 +29,10 @@ namespace Xlent.Lever.Libraries2.WebApi.Crud.ApiControllers
         {
             _logic = logic;
         }
+
         /// <inheritdoc />
+        [SwaggerBadRequestResponse]
+        [SwaggerInternalServerErrorResponse]
         public virtual async Task UpdateAsync(string id, TModel item, CancellationToken token = default(CancellationToken))
         {
             ServiceContract.RequireNotNullOrWhitespace(id, nameof(id));
@@ -38,6 +42,8 @@ namespace Xlent.Lever.Libraries2.WebApi.Crud.ApiControllers
         }
 
         /// <inheritdoc />
+        [SwaggerBadRequestResponse]
+        [SwaggerInternalServerErrorResponse]
         public virtual async Task<TModel> UpdateAndReturnAsync(string id, TModel item, CancellationToken token = default(CancellationToken))
         {
             ServiceContract.RequireNotNullOrWhitespace(id, nameof(id));

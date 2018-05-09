@@ -6,6 +6,7 @@ using Xlent.Lever.Libraries2.Core.Assert;
 using Xlent.Lever.Libraries2.Core.Crud.Interfaces;
 using Xlent.Lever.Libraries2.Core.Crud.Model;
 using Xlent.Lever.Libraries2.Core.Storage.Model;
+using Xlent.Lever.Libraries2.WebApi.Annotations;
 
 namespace Xlent.Lever.Libraries2.WebApi.Crud.ApiControllers
 {
@@ -41,6 +42,8 @@ namespace Xlent.Lever.Libraries2.WebApi.Crud.ApiControllers
         }
 
         /// <inheritdoc />
+        [SwaggerBadRequestResponse]
+        [SwaggerInternalServerErrorResponse]
         public virtual async Task<PageEnvelope<TModel>> ReadChildrenWithPagingAsync(string masterId, int offset, int? limit = null, CancellationToken token = default(CancellationToken))
         {
             ServiceContract.RequireNotNullOrWhitespace(masterId, nameof(masterId));
@@ -57,6 +60,8 @@ namespace Xlent.Lever.Libraries2.WebApi.Crud.ApiControllers
         }
 
         /// <inheritdoc />
+        [SwaggerBadRequestResponse]
+        [SwaggerInternalServerErrorResponse]
         public virtual async Task<IEnumerable<TModel>> ReadChildrenAsync(string parentId, int limit = int.MaxValue, CancellationToken token = default(CancellationToken))
         {
             ServiceContract.RequireNotNullOrWhitespace(parentId, nameof(parentId));
@@ -68,6 +73,8 @@ namespace Xlent.Lever.Libraries2.WebApi.Crud.ApiControllers
         }
 
         /// <inheritdoc />
+        [SwaggerBadRequestResponse]
+        [SwaggerInternalServerErrorResponse]
         public virtual async Task<SlaveToMasterId<string>> CreateAsync(string masterId, TModelCreate item, CancellationToken token = new CancellationToken())
         {
             ServiceContract.RequireNotNullOrWhitespace(masterId, nameof(masterId));
@@ -89,6 +96,8 @@ namespace Xlent.Lever.Libraries2.WebApi.Crud.ApiControllers
         }
 
         /// <inheritdoc />
+        [SwaggerBadRequestResponse]
+        [SwaggerInternalServerErrorResponse]
         public virtual async Task CreateWithSpecifiedIdAsync(SlaveToMasterId<string> id, TModelCreate item,
             CancellationToken token = new CancellationToken())
         {
@@ -100,6 +109,8 @@ namespace Xlent.Lever.Libraries2.WebApi.Crud.ApiControllers
         }
 
         /// <inheritdoc />
+        [SwaggerBadRequestResponse]
+        [SwaggerInternalServerErrorResponse]
         public virtual async Task<TModel> CreateWithSpecifiedIdAndReturnAsync(SlaveToMasterId<string> id, TModelCreate item,
             CancellationToken token = new CancellationToken())
         {
@@ -114,6 +125,8 @@ namespace Xlent.Lever.Libraries2.WebApi.Crud.ApiControllers
         }
 
         /// <inheritdoc />
+        [SwaggerBadRequestResponse]
+        [SwaggerInternalServerErrorResponse]
         public virtual async Task DeleteChildrenAsync(string masterId, CancellationToken token = new CancellationToken())
         {
             ServiceContract.RequireNotNullOrWhitespace(masterId, nameof(masterId));

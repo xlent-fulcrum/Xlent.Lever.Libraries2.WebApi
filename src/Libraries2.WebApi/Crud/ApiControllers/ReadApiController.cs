@@ -36,6 +36,8 @@ namespace Xlent.Lever.Libraries2.WebApi.Crud.ApiControllers
         }
 
         /// <inheritdoc />
+        [SwaggerBadRequestResponse]
+        [SwaggerInternalServerErrorResponse]
         public virtual async Task<PageEnvelope<TModel>> ReadAllWithPagingAsync(int offset, int? limit = null, CancellationToken token = default(CancellationToken))
         {
             ServiceContract.RequireGreaterThanOrEqualTo(0, offset, nameof(offset));
@@ -51,6 +53,8 @@ namespace Xlent.Lever.Libraries2.WebApi.Crud.ApiControllers
         }
 
         /// <inheritdoc />
+        [SwaggerBadRequestResponse]
+        [SwaggerInternalServerErrorResponse]
         public virtual async Task<IEnumerable<TModel>> ReadAllAsync(int limit = int.MaxValue, CancellationToken token = default(CancellationToken))
         {
             ServiceContract.RequireGreaterThan(0, limit, nameof(limit));
