@@ -1,6 +1,7 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using System.Web.Http;
+using Swashbuckle.Swagger.Annotations;
 using Xlent.Lever.Libraries2.Core.Assert;
 using Xlent.Lever.Libraries2.Core.Crud.Interfaces;
 using Xlent.Lever.Libraries2.Core.Error.Logic;
@@ -21,6 +22,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Crud.ApiControllers
         }
 
         /// <inheritdoc />
+        [SwaggerResponseRemoveDefaults]
         [SwaggerBadRequestResponse]
         [SwaggerInternalServerErrorResponse]
         public virtual async Task DeleteAsync(TId id, CancellationToken token = default(CancellationToken))
@@ -30,6 +32,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Crud.ApiControllers
         }
 
         /// <inheritdoc />
+        [SwaggerResponseRemoveDefaults]
         [SwaggerBadRequestResponse]
         [SwaggerInternalServerErrorResponse]
         public virtual async Task DeleteAllAsync(CancellationToken token = default(CancellationToken))
@@ -38,6 +41,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Crud.ApiControllers
         }
 
         /// <inheritdoc />
+        [SwaggerResponseRemoveDefaults]
         [SwaggerBadRequestResponse]
         [SwaggerInternalServerErrorResponse]
         public virtual async Task<Lock> ClaimLockAsync(TId id, CancellationToken token = new CancellationToken())
@@ -50,6 +54,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Crud.ApiControllers
         }
 
         /// <inheritdoc />
+        [SwaggerResponseRemoveDefaults]
         [SwaggerBadRequestResponse]
         [SwaggerInternalServerErrorResponse]
         public virtual async Task ReleaseLockAsync(Lock @lock, CancellationToken token = new CancellationToken())
@@ -60,6 +65,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Crud.ApiControllers
         }
 
         /// <inheritdoc />
+        [SwaggerResponseRemoveDefaults]
         [SwaggerBadRequestResponse]
         [SwaggerInternalServerErrorResponse]
         public virtual async Task UpdateAsync(TId id, TModel item, CancellationToken token = new CancellationToken())
@@ -71,6 +77,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Crud.ApiControllers
         }
 
         /// <inheritdoc />
+        [SwaggerResponseRemoveDefaults]
         [SwaggerBadRequestResponse]
         [SwaggerInternalServerErrorResponse]
         public virtual async Task<TModel> UpdateAndReturnAsync(TId id, TModel item, CancellationToken token = new CancellationToken())

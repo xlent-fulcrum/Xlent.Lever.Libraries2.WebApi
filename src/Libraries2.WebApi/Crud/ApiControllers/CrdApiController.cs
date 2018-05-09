@@ -1,6 +1,7 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using System.Web.Http;
+using Swashbuckle.Swagger.Annotations;
 using Xlent.Lever.Libraries2.Core.Assert;
 using Xlent.Lever.Libraries2.Core.Crud.Interfaces;
 using Xlent.Lever.Libraries2.Core.Error.Logic;
@@ -32,6 +33,9 @@ namespace Xlent.Lever.Libraries2.WebApi.Crud.ApiControllers
         }
 
         /// <inheritdoc />
+        [SwaggerResponseRemoveDefaults]
+        [SwaggerBadRequestResponse]
+        [SwaggerInternalServerErrorResponse]
         public virtual async Task<string> CreateAsync(TModelCreate item, CancellationToken token = default(CancellationToken))
         {
             ServiceContract.RequireNotNull(item, nameof(item));
@@ -40,6 +44,9 @@ namespace Xlent.Lever.Libraries2.WebApi.Crud.ApiControllers
         }
 
         /// <inheritdoc />
+        [SwaggerResponseRemoveDefaults]
+        [SwaggerBadRequestResponse]
+        [SwaggerInternalServerErrorResponse]
         public virtual async Task<TModel> CreateAndReturnAsync(TModelCreate item, CancellationToken token = default(CancellationToken))
         {
             ServiceContract.RequireNotNull(item, nameof(item));
@@ -51,6 +58,9 @@ namespace Xlent.Lever.Libraries2.WebApi.Crud.ApiControllers
         }
 
         /// <inheritdoc />
+        [SwaggerResponseRemoveDefaults]
+        [SwaggerBadRequestResponse]
+        [SwaggerInternalServerErrorResponse]
         public virtual async Task DeleteAsync(string id, CancellationToken token = default(CancellationToken))
         {
             ServiceContract.RequireNotNullOrWhitespace(id, nameof(id));
@@ -58,22 +68,16 @@ namespace Xlent.Lever.Libraries2.WebApi.Crud.ApiControllers
         }
 
         /// <inheritdoc />
+        [SwaggerResponseRemoveDefaults]
+        [SwaggerBadRequestResponse]
+        [SwaggerInternalServerErrorResponse]
         public virtual async Task DeleteAllAsync(CancellationToken token = default(CancellationToken))
         {
             await _logic.DeleteAllAsync(token);
         }
 
-        /// <summary>
-        /// Validate <paramref name="item"/> if it implements <see cref="IValidatable"/>.
-        /// </summary>
-        protected void MaybeRequireValidated(TModelCreate item, string parameterName)
-        {
-            if (item == null) return;
-            if (!typeof(IValidatable).IsAssignableFrom(typeof(TModel))) return;
-            if (item is IValidatable validatable) ServiceContract.RequireValidated(validatable, parameterName);
-        }
-
         /// <inheritdoc />
+        [SwaggerResponseRemoveDefaults]
         [SwaggerBadRequestResponse]
         [SwaggerInternalServerErrorResponse]
         public virtual async Task CreateWithSpecifiedIdAsync(string id, TModelCreate item, CancellationToken token = new CancellationToken())
@@ -85,6 +89,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Crud.ApiControllers
         }
 
         /// <inheritdoc />
+        [SwaggerResponseRemoveDefaults]
         [SwaggerBadRequestResponse]
         [SwaggerInternalServerErrorResponse]
         public async Task<TModel> CreateWithSpecifiedIdAndReturnAsync(string id, TModelCreate item,
@@ -100,6 +105,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Crud.ApiControllers
         }
 
         /// <inheritdoc />
+        [SwaggerResponseRemoveDefaults]
         [SwaggerBadRequestResponse]
         [SwaggerInternalServerErrorResponse]
         public async Task<Lock> ClaimLockAsync(string id, CancellationToken token = new CancellationToken())
@@ -112,6 +118,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Crud.ApiControllers
         }
 
         /// <inheritdoc />
+        [SwaggerResponseRemoveDefaults]
         [SwaggerBadRequestResponse]
         [SwaggerInternalServerErrorResponse]
         public async Task ReleaseLockAsync(Lock @lock, CancellationToken token = new CancellationToken())
@@ -119,6 +126,16 @@ namespace Xlent.Lever.Libraries2.WebApi.Crud.ApiControllers
             ServiceContract.RequireNotNull(@lock, nameof(@lock));
             ServiceContract.RequireValidated(@lock, nameof(@lock));
             await _logic.ReleaseLockAsync(@lock, token);
+        }
+
+        /// <summary>
+        /// Validate <paramref name="item"/> if it implements <see cref="IValidatable"/>.
+        /// </summary>
+        protected void MaybeRequireValidated(TModelCreate item, string parameterName)
+        {
+            if (item == null) return;
+            if (!typeof(IValidatable).IsAssignableFrom(typeof(TModel))) return;
+            if (item is IValidatable validatable) ServiceContract.RequireValidated(validatable, parameterName);
         }
     }
 }

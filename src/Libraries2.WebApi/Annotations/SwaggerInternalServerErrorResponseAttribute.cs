@@ -16,7 +16,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Annotations
         /// </summary>
         public SwaggerInternalServerErrorResponseAttribute()
             : base(HttpStatusCode.InternalServerError,
-                "The service had an internal error and could not fulfil the request completely. Please report this error and make sure that you attach the information that you find in the response body.", 
+                "The service had an internal error and could not fulfil the request completely. Please report this error and make sure that you attach any information that you find in the response body.", 
                 typeof(FulcrumError))
         {
         }
