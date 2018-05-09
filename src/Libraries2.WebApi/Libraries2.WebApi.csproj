@@ -81,6 +81,7 @@
     <Compile Include="Annotations\SwaggerAcceptedResponseAttribute.cs" />
     <Compile Include="Annotations\SwaggerBadRequestResponseAttribute.cs" />
     <Compile Include="Annotations\SwaggerInternalServerErrorResponseAttribute.cs" />
+    <Compile Include="Annotations\SwaggerGroupAttribute.cs" />
     <Compile Include="Annotations\SwaggerSuccessResponseAttribute.cs" />
     <Compile Include="Application\FulcrumApplicationHelper.cs" />
     <Compile Include="Context\ContextValueProvider.cs" />

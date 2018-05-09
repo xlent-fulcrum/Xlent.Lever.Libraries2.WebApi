@@ -6,7 +6,7 @@ using Xlent.Lever.Libraries2.Core.Error.Model;
 namespace Xlent.Lever.Libraries2.WebApi.Annotations
 {
     /// <summary>
-    /// Information about a translation concept
+    /// Create the swagger documentation for a failure with <see cref="HttpStatusCode.InternalServerError"/> status code.
     /// </summary>
     [AttributeUsage(AttributeTargets.Method)]
     public class SwaggerInternalServerErrorResponseAttribute : SwaggerResponseAttribute

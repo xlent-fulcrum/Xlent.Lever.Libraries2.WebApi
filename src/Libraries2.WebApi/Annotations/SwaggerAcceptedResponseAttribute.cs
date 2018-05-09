@@ -6,7 +6,7 @@ using Xlent.Lever.Libraries2.Core.Misc.Models;
 namespace Xlent.Lever.Libraries2.WebApi.Annotations
 {
     /// <summary>
-    /// Information about a translation concept
+    /// Create the swagger documentation for a success with a <see cref="HttpStatusCode.Accepted"/> status code.
     /// </summary>
     [AttributeUsage(AttributeTargets.Method)]
     public class SwaggerAcceptedResponseAttribute : SwaggerResponseAttribute
