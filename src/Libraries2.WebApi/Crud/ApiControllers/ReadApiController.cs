@@ -5,6 +5,7 @@ using System.Web.Http;
 using Xlent.Lever.Libraries2.Core.Assert;
 using Xlent.Lever.Libraries2.Core.Crud.Interfaces;
 using Xlent.Lever.Libraries2.Core.Storage.Model;
+using Xlent.Lever.Libraries2.WebApi.Annotations;
 
 namespace Xlent.Lever.Libraries2.WebApi.Crud.ApiControllers
 {
@@ -24,7 +25,8 @@ namespace Xlent.Lever.Libraries2.WebApi.Crud.ApiControllers
         }
 
         /// <inheritdoc />
-        [HttpGet]
+        [SwaggerBadRequestResponse]
+        [SwaggerInternalServerErrorResponse]
         public virtual async Task<TModel> ReadAsync(TId id, CancellationToken token = default(CancellationToken))
         {
             ServiceContract.RequireNotDefaultValue(id, nameof(id));
