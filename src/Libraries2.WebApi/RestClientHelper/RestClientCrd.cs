@@ -6,10 +6,41 @@ using Xlent.Lever.Libraries2.Core.Platform.Authentication;
 
 namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
 {
+    /// <inheritdoc cref="RestClientCrd{TModelCreate,TModel,TId}" />
+    public class RestClientCrd<TModel, TId> : RestClientCrd<TModel, TModel, TId>, ICrd<TModel, TId>
+    {
+
+        /// <summary></summary>
+        /// <param name="baseUri">The base URL that all HTTP calls methods will refer to.</param>
+        /// <param name="withLogging">Should logging handlers be used in outbound pipe?</param>
+        public RestClientCrd(string baseUri, bool withLogging = true)
+            : base(baseUri, withLogging)
+        {
+        }
+
+        /// <summary></summary>
+        /// <param name="baseUri">The base URL that all HTTP calls methods will refer to.</param>
+        /// <param name="credentials">The credentials used when making the HTTP calls.</param>
+        /// <param name="withLogging">Should logging handlers be used in outbound pipe?</param>
+        public RestClientCrd(string baseUri, ServiceClientCredentials credentials, bool withLogging = true)
+            : base(baseUri, credentials, withLogging)
+        {
+        }
+
+        /// <summary></summary>
+        /// <param name="baseUri">The base URL that all HTTP calls methods will refer to.</param>
+        /// <param name="authenticationToken">The token used when making the HTTP calls.</param>
+        /// <param name="withLogging">Should logging handlers be used in outbound pipe?</param>
+        public RestClientCrd(string baseUri, AuthenticationToken authenticationToken, bool withLogging)
+            : base(baseUri, authenticationToken, withLogging)
+        {
+        }
+    }
+
     /// <summary>
     /// Convenience client for making REST calls
     /// </summary>
-    public class RestClientCrd<TModel, TId> : RestClientRead<TModel, TId>, ICrd<TModel, TId>
+    public class RestClientCrd<TModelCreate, TModel, TId> : RestClientRead<TModel, TId>, ICrd<TModelCreate, TModel, TId> where TModel : TModelCreate
     {
 
         /// <summary></summary>
@@ -39,15 +70,15 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
         }
 
         /// <inheritdoc />
-        public virtual async Task<TId> CreateAsync(TModel item, CancellationToken token = default(CancellationToken))
+        public virtual async Task<TId> CreateAsync(TModelCreate item, CancellationToken token = default(CancellationToken))
         {
-            return await PostAsync<TId, TModel>("", item, cancellationToken: token);
+            return await PostAsync<TId, TModelCreate>("", item, cancellationToken: token);
         }
 
         /// <inheritdoc />
-        public virtual async Task<TModel> CreateAndReturnAsync(TModel item, CancellationToken token = default(CancellationToken))
+        public virtual async Task<TModel> CreateAndReturnAsync(TModelCreate item, CancellationToken token = default(CancellationToken))
         {
-            return await PostAndReturnCreatedObjectAsync("ReturnCreated", item, cancellationToken: token);
+            return await PostAsync<TModel, TModelCreate>("ReturnCreated", item, cancellationToken: token);
         }
 
         /// <summary>
@@ -56,22 +87,22 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
         /// <param name="item">The item to create</param>
         /// <param name="token">Propagates notification that operations should be canceled</param>
         /// <remarks>Calls the method <see cref="CreateAsync"/> and then the ReadAsync method.</remarks>
-        protected virtual async Task<TModel> SimulateCreateAndReturnAsync(TModel item, CancellationToken token = default(CancellationToken))
+        protected virtual async Task<TModel> SimulateCreateAndReturnAsync(TModelCreate item, CancellationToken token = default(CancellationToken))
         {
             var id = await CreateAsync(item, token);
             return await ReadAsync(id, token);
         }
 
         /// <inheritdoc />
-        public virtual async Task CreateWithSpecifiedIdAsync(TId id, TModel item, CancellationToken token = default(CancellationToken))
+        public virtual async Task CreateWithSpecifiedIdAsync(TId id, TModelCreate item, CancellationToken token = default(CancellationToken))
         {
             await PostNoResponseContentAsync($"{id}", item, cancellationToken: token);
         }
 
         /// <inheritdoc />
-        public virtual async Task<TModel> CreateWithSpecifiedIdAndReturnAsync(TId id, TModel item, CancellationToken token = default(CancellationToken))
+        public virtual async Task<TModel> CreateWithSpecifiedIdAndReturnAsync(TId id, TModelCreate item, CancellationToken token = default(CancellationToken))
         {
-            return await PostAndReturnCreatedObjectAsync($"{id}/ReturnCreated", item, cancellationToken: token);
+            return await PostAsync<TModel, TModelCreate>($"{id}/ReturnCreated", item, cancellationToken: token);
         }
 
         /// <summary>
@@ -81,7 +112,7 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
         /// <param name="item">The item to create.</param>
         /// <param name="token">Propagates notification that operations should be canceled</param>
         /// <remarks>Calls the method <see cref="CreateWithSpecifiedIdAsync"/> and then teh ReadAsync method.</remarks>
-        protected virtual async Task<TModel> SimulateCreateWithSpecifiedIdAndReturnAsync(TId id, TModel item, CancellationToken token = default(CancellationToken))
+        protected virtual async Task<TModel> SimulateCreateWithSpecifiedIdAndReturnAsync(TId id, TModelCreate item, CancellationToken token = default(CancellationToken))
         {
             await CreateWithSpecifiedIdAsync(id, item, token);
             return await ReadAsync(id, token);

@@ -1,9 +1,11 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using System.Web.Http;
+using Swashbuckle.Swagger.Annotations;
 using Xlent.Lever.Libraries2.Core.Assert;
 using Xlent.Lever.Libraries2.Core.Crud.Interfaces;
 using Xlent.Lever.Libraries2.Core.Error.Logic;
+using Xlent.Lever.Libraries2.WebApi.Annotations;
 
 namespace Xlent.Lever.Libraries2.WebApi.Crud.ApiControllers
 {
@@ -20,6 +22,9 @@ namespace Xlent.Lever.Libraries2.WebApi.Crud.ApiControllers
         }
 
         /// <inheritdoc />
+        [SwaggerResponseRemoveDefaults]
+        [SwaggerBadRequestResponse]
+        [SwaggerInternalServerErrorResponse]
         public virtual async Task DeleteAsync(TId id, CancellationToken token = default(CancellationToken))
         {
             ServiceContract.RequireNotDefaultValue(id, nameof(id));
@@ -27,12 +32,18 @@ namespace Xlent.Lever.Libraries2.WebApi.Crud.ApiControllers
         }
 
         /// <inheritdoc />
+        [SwaggerResponseRemoveDefaults]
+        [SwaggerBadRequestResponse]
+        [SwaggerInternalServerErrorResponse]
         public virtual async Task DeleteAllAsync(CancellationToken token = default(CancellationToken))
         {
             await _logic.DeleteAllAsync(token);
         }
 
         /// <inheritdoc />
+        [SwaggerResponseRemoveDefaults]
+        [SwaggerBadRequestResponse]
+        [SwaggerInternalServerErrorResponse]
         public virtual async Task<Lock> ClaimLockAsync(TId id, CancellationToken token = new CancellationToken())
         {
             ServiceContract.RequireNotDefaultValue(id, nameof(id));
@@ -43,6 +54,9 @@ namespace Xlent.Lever.Libraries2.WebApi.Crud.ApiControllers
         }
 
         /// <inheritdoc />
+        [SwaggerResponseRemoveDefaults]
+        [SwaggerBadRequestResponse]
+        [SwaggerInternalServerErrorResponse]
         public virtual async Task ReleaseLockAsync(Lock @lock, CancellationToken token = new CancellationToken())
         {
             ServiceContract.RequireNotNull(@lock, nameof(@lock));
@@ -51,6 +65,9 @@ namespace Xlent.Lever.Libraries2.WebApi.Crud.ApiControllers
         }
 
         /// <inheritdoc />
+        [SwaggerResponseRemoveDefaults]
+        [SwaggerBadRequestResponse]
+        [SwaggerInternalServerErrorResponse]
         public virtual async Task UpdateAsync(TId id, TModel item, CancellationToken token = new CancellationToken())
         {
             ServiceContract.RequireNotDefaultValue(id, nameof(id));
@@ -60,6 +77,9 @@ namespace Xlent.Lever.Libraries2.WebApi.Crud.ApiControllers
         }
 
         /// <inheritdoc />
+        [SwaggerResponseRemoveDefaults]
+        [SwaggerBadRequestResponse]
+        [SwaggerInternalServerErrorResponse]
         public virtual async Task<TModel> UpdateAndReturnAsync(TId id, TModel item, CancellationToken token = new CancellationToken())
         {
             ServiceContract.RequireNotDefaultValue(id, nameof(id));
