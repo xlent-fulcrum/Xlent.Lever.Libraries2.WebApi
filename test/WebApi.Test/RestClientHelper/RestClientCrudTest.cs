@@ -7,6 +7,7 @@ using Moq;
 using Xlent.Lever.Libraries2.Core.Application;
 using Xlent.Lever.Libraries2.Core.Context;
 using Xlent.Lever.Libraries2.Core.Crud.Interfaces;
+using Xlent.Lever.Libraries2.WebApi.Crud.RestClient;
 using Xlent.Lever.Libraries2.WebApi.RestClientHelper;
 using Xlent.Lever.Libraries2.WebApi.Test.Support.Models;
 

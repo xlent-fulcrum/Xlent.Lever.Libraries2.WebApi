@@ -21,6 +21,7 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
     /// </summary>
     public class RestClient : IRestClient
     {
+        public bool WithLogging { get; }
         private readonly JsonSerializerSettings _serializationSettings;
         private readonly JsonSerializerSettings _deserializationSettings;
 
@@ -64,6 +65,7 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
         /// <param name="withLogging">Should logging handlers be used in outbound pipe?</param>
         public RestClient(string baseUri, bool withLogging)
         {
+            WithLogging = withLogging;
             BaseUri = new Uri(baseUri);
             lock (LockClass)
             {
@@ -103,36 +105,6 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
                 }
             };
             #endregion
-        }
-
-
-        /// <summary></summary>
-        /// <param name="baseUri">The base URL that all HTTP calls methods will refer to.</param>
-        /// <param name="valueProvider"></param>
-        [Obsolete("Use the overload that only accepts a string", true)]
-        // ReSharper disable once UnusedParameter.Local
-        public RestClient(string baseUri, IValueProvider valueProvider) : this(baseUri)
-        {
-        }
-
-        /// <summary></summary>
-        /// <param name="baseUri">The base URL that all HTTP calls methods will refer to.</param>
-        /// <param name="credentials">The credentials used when making the HTTP calls.</param>
-        [Obsolete("Use (string, credentials) overload", true)]
-        [SuppressMessage("ReSharper", "UnusedParameter.Local")]
-        public RestClient(Uri baseUri, ServiceClientCredentials credentials) : this(baseUri.AbsoluteUri, credentials)
-        {
-        }
-
-        /// <summary></summary>
-        /// <param name="baseUri">The base URL that all HTTP calls methods will refer to.</param>
-        /// <param name="valueProvider"></param>
-        /// <param name="credentials">The credentials used when making the HTTP calls.</param>
-        [Obsolete("Use (string, credentials) overload", true)]
-        // ReSharper disable once UnusedParameter.Local
-        public RestClient(Uri baseUri, IValueProvider valueProvider, ServiceClientCredentials credentials) : this(baseUri.AbsoluteUri, credentials)
-        {
-            Credentials = credentials;
         }
 
         /// <summary></summary>

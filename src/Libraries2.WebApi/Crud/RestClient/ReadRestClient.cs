@@ -8,18 +8,18 @@ using Xlent.Lever.Libraries2.Core.Platform.Authentication;
 using Xlent.Lever.Libraries2.Core.Storage.Logic;
 using Xlent.Lever.Libraries2.Core.Storage.Model;
 
-namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
+namespace Xlent.Lever.Libraries2.WebApi.Crud.RestClient
 {
     /// <summary>
     /// Convenience client for making REST calls
     /// </summary>
-    public class RestClientRead<TModel, TId> : RestClient, IRead<TModel, TId>
+    public class ReadRestClient<TModel, TId> : RestClientHelper.RestClient, IRead<TModel, TId>
     {
 
         /// <summary></summary>
         /// <param name="baseUri">The base URL that all HTTP calls methods will refer to.</param>
         /// <param name="withLogging">Should logging handlers be used in outbound pipe?</param>
-        public RestClientRead(string baseUri, bool withLogging = true)
+        public ReadRestClient(string baseUri, bool withLogging = true)
             : base(baseUri, withLogging)
         {
         }
@@ -28,7 +28,7 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
         /// <param name="baseUri">The base URL that all HTTP calls methods will refer to.</param>
         /// <param name="credentials">The credentials used when making the HTTP calls.</param>
         /// <param name="withLogging">Should logging handlers be used in outbound pipe?</param>
-        public RestClientRead(string baseUri, ServiceClientCredentials credentials, bool withLogging = true)
+        public ReadRestClient(string baseUri, ServiceClientCredentials credentials, bool withLogging = true)
             : base(baseUri, credentials, withLogging)
         {
         }
@@ -37,7 +37,7 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
         /// <param name="baseUri">The base URL that all HTTP calls methods will refer to.</param>
         /// <param name="authenticationToken">The token used when making the HTTP calls.</param>
         /// <param name="withLogging">Should logging handlers be used in outbound pipe?</param>
-        public RestClientRead(string baseUri, AuthenticationToken authenticationToken, bool withLogging)
+        public ReadRestClient(string baseUri, AuthenticationToken authenticationToken, bool withLogging)
             : base(baseUri, authenticationToken, withLogging)
         {
         }

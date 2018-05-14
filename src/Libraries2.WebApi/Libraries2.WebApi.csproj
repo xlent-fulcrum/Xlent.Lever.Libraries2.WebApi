@@ -101,6 +101,7 @@
     <Compile Include="Crud\ApiControllers\ReadApiController.cs" />
     <Compile Include="Crud\DefaultControllers\SlaveToMasterCompleteDefaultController.cs" />
     <Compile Include="Crud\DefaultControllers\SlaveToMasterDefaultController.cs" />
+    <Compile Include="Crud\RestClient\SlaveToMasterRestClient.cs" />
     <Compile Include="Error\Logic\Converter.cs" />
     <Compile Include="Logging\LoggableWebApiExtensions.cs" />
     <Compile Include="Misc\HttpHelper.cs" />
@@ -108,11 +109,11 @@
     <Compile Include="Pipe\LogRequestAndResponse.cs" />
     <Compile Include="Pipe\Outbound\LogRequestAndResponse.cs" />
     <Compile Include="RestClientHelper\ClientCredentials.cs" />
-    <Compile Include="RestClientHelper\RestClientManyToOne.cs" />
-    <Compile Include="RestClientHelper\RestClientManyToOneComplete.cs" />
-    <Compile Include="RestClientHelper\RestClientCrud.cs" />
-    <Compile Include="RestClientHelper\RestClientCrd.cs" />
-    <Compile Include="RestClientHelper\RestClientRead.cs" />
+    <Compile Include="Crud\RestClient\ManyToOneRestClient.cs" />
+    <Compile Include="Crud\RestClient\ManyToOneCompleteRestClient.cs" />
+    <Compile Include="Crud\RestClient\CrudRestClient.cs" />
+    <Compile Include="Crud\RestClient\CrdRestClient.cs" />
+    <Compile Include="Crud\RestClient\ReadRestClient.cs" />
     <Compile Include="Threads\HostingThreads.cs" />
     <Compile Include="Pipe\Inbound\LogRequestAndResponse.cs" />
     <Compile Include="Pipe\Outbound\OutboundPipeFactory.cs" />

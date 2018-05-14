@@ -4,16 +4,16 @@ using Microsoft.Rest;
 using Xlent.Lever.Libraries2.Core.Crud.Interfaces;
 using Xlent.Lever.Libraries2.Core.Platform.Authentication;
 
-namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
+namespace Xlent.Lever.Libraries2.WebApi.Crud.RestClient
 {
-    /// <inheritdoc cref="RestClientCrd{TModelCreate,TModel,TId}" />
-    public class RestClientCrd<TModel, TId> : RestClientCrd<TModel, TModel, TId>, ICrd<TModel, TId>
+    /// <inheritdoc cref="CrdRestClient{TModel,TId}" />
+    public class CrdRestClient<TModel, TId> : CrdRestClient<TModel, TModel, TId>, ICrd<TModel, TId>
     {
 
         /// <summary></summary>
         /// <param name="baseUri">The base URL that all HTTP calls methods will refer to.</param>
         /// <param name="withLogging">Should logging handlers be used in outbound pipe?</param>
-        public RestClientCrd(string baseUri, bool withLogging = true)
+        public CrdRestClient(string baseUri, bool withLogging = true)
             : base(baseUri, withLogging)
         {
         }
@@ -22,7 +22,7 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
         /// <param name="baseUri">The base URL that all HTTP calls methods will refer to.</param>
         /// <param name="credentials">The credentials used when making the HTTP calls.</param>
         /// <param name="withLogging">Should logging handlers be used in outbound pipe?</param>
-        public RestClientCrd(string baseUri, ServiceClientCredentials credentials, bool withLogging = true)
+        public CrdRestClient(string baseUri, ServiceClientCredentials credentials, bool withLogging = true)
             : base(baseUri, credentials, withLogging)
         {
         }
@@ -31,7 +31,7 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
         /// <param name="baseUri">The base URL that all HTTP calls methods will refer to.</param>
         /// <param name="authenticationToken">The token used when making the HTTP calls.</param>
         /// <param name="withLogging">Should logging handlers be used in outbound pipe?</param>
-        public RestClientCrd(string baseUri, AuthenticationToken authenticationToken, bool withLogging)
+        public CrdRestClient(string baseUri, AuthenticationToken authenticationToken, bool withLogging)
             : base(baseUri, authenticationToken, withLogging)
         {
         }
@@ -40,13 +40,13 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
     /// <summary>
     /// Convenience client for making REST calls
     /// </summary>
-    public class RestClientCrd<TModelCreate, TModel, TId> : RestClientRead<TModel, TId>, ICrd<TModelCreate, TModel, TId> where TModel : TModelCreate
+    public class CrdRestClient<TModelCreate, TModel, TId> : ReadRestClient<TModel, TId>, ICrd<TModelCreate, TModel, TId> where TModel : TModelCreate
     {
 
         /// <summary></summary>
         /// <param name="baseUri">The base URL that all HTTP calls methods will refer to.</param>
         /// <param name="withLogging">Should logging handlers be used in outbound pipe?</param>
-        public RestClientCrd(string baseUri, bool withLogging = true)
+        public CrdRestClient(string baseUri, bool withLogging = true)
             : base(baseUri, withLogging)
         {
         }
@@ -55,7 +55,7 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
         /// <param name="baseUri">The base URL that all HTTP calls methods will refer to.</param>
         /// <param name="credentials">The credentials used when making the HTTP calls.</param>
         /// <param name="withLogging">Should logging handlers be used in outbound pipe?</param>
-        public RestClientCrd(string baseUri, ServiceClientCredentials credentials, bool withLogging = true)
+        public CrdRestClient(string baseUri, ServiceClientCredentials credentials, bool withLogging = true)
             : base(baseUri, credentials, withLogging)
         {
         }
@@ -64,7 +64,7 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
         /// <param name="baseUri">The base URL that all HTTP calls methods will refer to.</param>
         /// <param name="authenticationToken">The token used when making the HTTP calls.</param>
         /// <param name="withLogging">Should logging handlers be used in outbound pipe?</param>
-        public RestClientCrd(string baseUri, AuthenticationToken authenticationToken, bool withLogging)
+        public CrdRestClient(string baseUri, AuthenticationToken authenticationToken, bool withLogging)
             : base(baseUri, authenticationToken, withLogging)
         {
         }
