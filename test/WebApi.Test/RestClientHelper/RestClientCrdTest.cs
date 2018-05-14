@@ -28,7 +28,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Test.RestClientHelper
             FulcrumApplication.Setup.ContextValueProvider = new SingleThreadValueProvider();
             HttpClientMock = new Mock<IHttpClient>();
             RestClient.HttpClient = HttpClientMock.Object;
-            _client = new RestClientCrd<Person, Guid>(ResourcePath);
+            _client = new CrdRestClient<Person, Guid>(ResourcePath);
             _person = new Person()
             {
                 GivenName = "Kalle",
