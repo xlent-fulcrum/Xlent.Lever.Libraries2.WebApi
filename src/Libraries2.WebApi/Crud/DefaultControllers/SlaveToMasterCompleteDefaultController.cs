@@ -42,7 +42,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Crud.DefaultControllers
 
         /// <inheritdoc />
         [HttpGet]
-        [Route("{masterId}/Children/WithPaging")]
+        [Route("{masterId}/Children?offset={offset}")]
         public override Task<PageEnvelope<TModel>> ReadChildrenWithPagingAsync(string masterId, int offset, int? limit = null, CancellationToken token = default(CancellationToken))
         {
             return base.ReadChildrenWithPagingAsync(masterId, offset, limit, token);

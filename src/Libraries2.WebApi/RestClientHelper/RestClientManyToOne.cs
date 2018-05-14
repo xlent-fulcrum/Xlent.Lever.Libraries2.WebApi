@@ -132,7 +132,7 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
                 InternalContract.RequireGreaterThan(0, limit.Value, nameof(limit));
                 limitParameter = $"&limit={limit}";
             }
-            return await GetAsync<PageEnvelope<TManyModel>>($"{parentId}/{ChildrenName}/WithPaging?offset={offset}{limitParameter}", cancellationToken: token);
+            return await GetAsync<PageEnvelope<TManyModel>>($"{parentId}/{ChildrenName}?offset={offset}{limitParameter}", cancellationToken: token);
         }
     }
 }

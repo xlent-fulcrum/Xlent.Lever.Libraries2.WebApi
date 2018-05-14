@@ -43,7 +43,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Test.RestClientHelper
             var parentId = Guid.NewGuid();
             var expectedUri = $"{ResourcePath}/{parentId}/Addresses?limit={int.MaxValue}";
             HttpClientMock.Setup(client => client.SendAsync(
-                    It.Is<HttpRequestMessage>(request => request.RequestUri.AbsoluteUri == expectedUri && request.Method == HttpMethod.Get),
+                    It.Is<HttpRequestMessage>(request => IsExpectedRequest(request, expectedUri, HttpMethod.Get)),
                     CancellationToken.None))
                 .ReturnsAsync((HttpRequestMessage r, CancellationToken c) => CreateResponseMessage(r, new[] { _address }))
                 .Verifiable();
@@ -59,10 +59,10 @@ namespace Xlent.Lever.Libraries2.WebApi.Test.RestClientHelper
         public async Task ReadChildrenWithPagingTest()
         {
             var parentId = Guid.NewGuid();
-            var expectedUri = $"{ResourcePath}/{parentId}/Addresses/WithPaging?offset=0";
+            var expectedUri = $"{ResourcePath}/{parentId}/Addresses?offset=0";
             var pageEnvelope = new PageEnvelope<Address>(0, PageInfo.DefaultLimit, null, new[] { _address });
             HttpClientMock.Setup(client => client.SendAsync(
-                    It.Is<HttpRequestMessage>(request => request.RequestUri.AbsoluteUri == expectedUri && request.Method == HttpMethod.Get),
+                    It.Is<HttpRequestMessage>(request => IsExpectedRequest(request, expectedUri, HttpMethod.Get)),
                     CancellationToken.None))
                 .ReturnsAsync((HttpRequestMessage r, CancellationToken c) => CreateResponseMessage(r, pageEnvelope))
                 .Verifiable();
@@ -71,6 +71,12 @@ namespace Xlent.Lever.Libraries2.WebApi.Test.RestClientHelper
             Assert.AreEqual(1, readPage.Data.Count());
             Assert.AreEqual(_address, readPage.Data.FirstOrDefault());
             HttpClientMock.Verify();
+        }
+
+        private static bool IsExpectedRequest(HttpRequestMessage request, string expectedUri, HttpMethod expectedMethod)
+        {
+            Assert.AreEqual(expectedUri, request.RequestUri.AbsoluteUri);
+            return request.RequestUri.AbsoluteUri == expectedUri && request.Method == HttpMethod.Get;
         }
     }
 }

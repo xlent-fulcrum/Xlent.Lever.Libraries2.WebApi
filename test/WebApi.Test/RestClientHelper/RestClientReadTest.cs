@@ -72,7 +72,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Test.RestClientHelper
         [TestMethod]
         public async Task ReadAllWithPagingTest()
         {
-            var expectedUri = $"{ResourcePath}/WithPaging?offset=0";
+            var expectedUri = $"{ResourcePath}?offset=0";
             var pageEnvelope = new PageEnvelope<Person>(0, PageInfo.DefaultLimit, null, new[] { _person });
             HttpClientMock.Setup(client => client.SendAsync(
                     It.Is<HttpRequestMessage>(request => request.RequestUri.AbsoluteUri == expectedUri && request.Method == HttpMethod.Get),
