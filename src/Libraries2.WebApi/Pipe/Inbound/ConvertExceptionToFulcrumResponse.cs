@@ -27,23 +27,6 @@ namespace Xlent.Lever.Libraries2.WebApi.Pipe.Inbound
             _correlationIdProvider = new CorrelationIdValueProvider();
         }
 
-        /// <summary></summary>
-        [Obsolete("No need for the valueProvider argument any longer. Use ConvertExceptionToFulcrumResponse().", true)]
-        // ReSharper disable once UnusedParameter.Local
-        public ConvertExceptionToFulcrumResponse(IValueProvider valueProvider) 
-            : this()
-        {
-        }
-
-        /// <summary></summary>
-        [Obsolete("No need for these arguments any longer. Use ConvertExceptionToFulcrumResponse().", true)]
-        // ReSharper disable UnusedParameter.Local
-        public ConvertExceptionToFulcrumResponse(IValueProvider valueProvider, IFulcrumLogger logHandler)
-            // ReSharper restore UnusedParameter.Local
-            :this()
-        {
-        }
-
         /// <summary>Converts the exception into a response with the corresponding <see cref="FulcrumError"/>.</summary>
         /// <returns>A task representing the asynchronous exception handling operation.</returns>
         /// <param name="context">The exception handler context.</param>

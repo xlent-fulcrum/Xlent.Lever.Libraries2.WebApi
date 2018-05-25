@@ -1,43 +1,41 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Xlent.Lever.Libraries2.Core.Application;
+using Xlent.Lever.Libraries2.Core.Logging;
 using Xlent.Lever.Libraries2.Core.MultiTenant.Context;
 using Xlent.Lever.Libraries2.Core.MultiTenant.Model;
 using Xlent.Lever.Libraries2.Core.Platform.Configurations;
 using Xlent.Lever.Libraries2.WebApi.Pipe.Inbound;
+using Xlent.Lever.Libraries2.WebApi.Test.Support;
 
 namespace Xlent.Lever.Libraries2.WebApi.Test
 {
     [TestClass]
     public class InboundPipeTests
     {
-        private Mock<ILeverServiceConfiguration> _leverConfig;
-        private SaveConfiguration _saveConfigHandler;
-        private TenantConfigurationValueProvider _tenantProvider;
-        private HttpMessageInvoker _invoker;
-
         [TestInitialize]
         public void TestCaseInitialize()
         {
             FulcrumApplicationHelper.UnitTestSetup(typeof(LogRequestAndResponseTest).FullName);
-
-            _leverConfig = new Mock<ILeverServiceConfiguration>();
-            _saveConfigHandler = new SaveConfiguration(_leverConfig.Object)
-            {
-                InnerHandler = new Mock<HttpMessageHandler>().Object
-            };
-            _tenantProvider = new TenantConfigurationValueProvider();
-            _invoker = new HttpMessageInvoker(_saveConfigHandler);
 
         }
 
         [TestMethod]
         public async Task SaveConfigurationSuccess()
         {
+            var leverConfig = new Mock<ILeverServiceConfiguration>();
+            var saveConfigHandler = new SaveConfiguration(leverConfig.Object)
+            {
+                InnerHandler = new Mock<HttpMessageHandler>().Object
+            };
+            var tenantProvider = new TenantConfigurationValueProvider();
+            var invoker = new HttpMessageInvoker(saveConfigHandler);
+
             foreach (var entry in new Dictionary<Tenant, string>
             {
                 { new Tenant("smoke-testing-company", "ver"), "https://v-mock.org/v2/smoke-testing-company/ver/" },
@@ -47,25 +45,52 @@ namespace Xlent.Lever.Libraries2.WebApi.Test
             })
             {
                 var request = new HttpRequestMessage(HttpMethod.Get, entry.Value);
-                await _invoker.SendAsync(request, CancellationToken.None);
-                Assert.AreEqual(entry.Key, _tenantProvider.Tenant, $"Could not find tenant '{entry.Key}' from url '{entry.Value}'");
+                await invoker.SendAsync(request, CancellationToken.None);
+                Assert.AreEqual(entry.Key, tenantProvider.Tenant, $"Could not find tenant '{entry.Key}' from url '{entry.Value}'");
             }
         }
 
         [TestMethod]
         public async Task SaveConfigurationFail()
         {
-            _tenantProvider.Tenant = null;
-            foreach (var url in new []
+            var leverConfig = new Mock<ILeverServiceConfiguration>();
+            var saveConfigHandler = new SaveConfiguration(leverConfig.Object)
+            {
+                InnerHandler = new Mock<HttpMessageHandler>().Object
+            };
+            var tenantProvider = new TenantConfigurationValueProvider();
+            var invoker = new HttpMessageInvoker(saveConfigHandler);
+            tenantProvider.Tenant = null;
+            foreach (var url in new[]
             {
                 "http://gooogle.com/",
                 "https://anywhere.org/api/v1/eels"
             })
             {
                 var request = new HttpRequestMessage(HttpMethod.Get, url);
-                await _invoker.SendAsync(request, CancellationToken.None);
-                Assert.IsNull(_tenantProvider.Tenant);
+                await invoker.SendAsync(request, CancellationToken.None);
+                Assert.IsNull(tenantProvider.Tenant);
             }
+        }
+
+        [TestMethod]
+        public async Task BatchLogs()
+        {
+            var mockLogger = new Mock<IFulcrumFullLogger>();
+            mockLogger.Setup(logger =>
+                logger.LogAsync(It.Is<LogBatch>(logBatch => logBatch.Records != null && logBatch.Records.Count == 5))).Returns(Task.CompletedTask);
+            FulcrumApplication.Setup.FullLogger = mockLogger.Object;
+            var handler = new BatchLogs()
+            {
+                InnerHandler = new LogFiveTimesHandler()
+            };
+            var invoker = new HttpMessageInvoker(handler);
+
+            var request = new HttpRequestMessage(HttpMethod.Get, "https://v-mock.org/v2/smoke-testing-company/ver");
+            await invoker.SendAsync(request, CancellationToken.None);
+
+            while (Log.OnlyForUnitTest_HasBackgroundWorkerForLogging) Thread.Sleep(TimeSpan.FromMilliseconds(100));
+            mockLogger.Verify();
         }
     }
 }

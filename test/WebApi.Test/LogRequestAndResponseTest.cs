@@ -114,12 +114,16 @@ namespace Xlent.Lever.Libraries2.WebApi.Test
             throw new NotImplementedException();
         }
 
-        public async Task LogAsync(LogInstanceInformation message)
+        public Task LogAsync(LogBatch logBatch)
         {
-            _lastMessageDictionary[message.SeverityLevel] = message.Message;
-            Console.WriteLine($"\r{message.ToLogString(true)}\r");
-            await Task.Yield();
-            _numberOfLogs++;
+            foreach (var log in logBatch.Records)
+            {
+                Console.WriteLine($"\r{log.ToLogString(true)}\r");
+                _lastMessageDictionary[log.SeverityLevel] = log.Message;
+                _numberOfLogs++;
+            }
+
+            return Task.CompletedTask;
         }
     }
 }

@@ -21,6 +21,9 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
     /// </summary>
     public class RestClient : IRestClient
     {
+        /// <summary>
+        /// True if the restclient logs all outgoing requests.
+        /// </summary>
         public bool WithLogging { get; }
         private readonly JsonSerializerSettings _serializationSettings;
         private readonly JsonSerializerSettings _deserializationSettings;

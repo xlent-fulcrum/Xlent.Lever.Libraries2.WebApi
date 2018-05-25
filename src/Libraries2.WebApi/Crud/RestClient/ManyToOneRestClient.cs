@@ -7,6 +7,7 @@ using Xlent.Lever.Libraries2.Core.Crud.Interfaces;
 using Xlent.Lever.Libraries2.Core.Platform.Authentication;
 using Xlent.Lever.Libraries2.Core.Storage.Logic;
 using Xlent.Lever.Libraries2.Core.Storage.Model;
+using Xlent.Lever.Libraries2.WebApi.RestClientHelper;
 
 namespace Xlent.Lever.Libraries2.WebApi.Crud.RestClient
 {
@@ -74,7 +75,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Crud.RestClient
         /// </summary>
         /// <param name="parentId">The id of the parent to the children to be deleted.</param>
         /// <param name="token">Propagates notification that operations should be canceled</param>
-        /// <remarks>Calls the method <see cref="ReadChildrenAsync"/> and then (for each child) calls the <see cref="CrdRestClient{TModel,TId}.DeleteAsync(TId,System.Threading.CancellationToken)"/> method. Can potentially mean a lot of remote calls.</remarks>
+        /// <remarks>Calls the method <see cref="ReadChildrenAsync"/> and then (for each child) calls the DeleteAsync method. Can potentially mean a lot of remote calls.</remarks>
         protected virtual async Task SimulateDeleteChildrenAsync(TId parentId, CancellationToken token = default(CancellationToken))
         {
             InternalContract.RequireNotDefaultValue(parentId, nameof(parentId));
