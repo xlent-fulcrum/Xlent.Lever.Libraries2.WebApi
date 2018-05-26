@@ -73,7 +73,10 @@
       <HintPath>..\..\packages\WebActivatorEx.2.0\lib\net40\WebActivatorEx.dll</HintPath>
     </Reference>
     <Reference Include="Xlent.Lever.Libraries2.Core.NetFramework, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Xlent.Lever.Libraries2.Core.NetFramework.2.0.1\lib\net46\Xlent.Lever.Libraries2.Core.NetFramework.dll</HintPath>
+      <HintPath>..\..\packages\Xlent.Lever.Libraries2.Core.NetFramework.2.1.0-rc\lib\net46\Xlent.Lever.Libraries2.Core.NetFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="Xlent.Lever.Libraries2.Crud.NetFramework, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Xlent.Lever.Libraries2.Crud.NetFramework.1.0.1-rc\lib\net46\Xlent.Lever.Libraries2.Crud.NetFramework.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -86,22 +89,14 @@
     <Compile Include="Context\ContextValueProvider.cs" />
     <Compile Include="Context\HttpContextValueProvider.cs" />
     <Compile Include="Crud\ApiControllers\RudApiController.cs" />
-    <Compile Include="Crud\ApiControllers\SlaveToMasterApiController.cs" />
-    <Compile Include="Crud\ApiControllers\SlaveToMasterCompleteApiController.cs" />
     <Compile Include="Crud\DefaultControllers\RudDefaultController.cs" />
     <Compile Include="Crud\DefaultControllers\CrdDefaultController.cs" />
     <Compile Include="Crud\DefaultControllers\CrudDefaultController.cs" />
-    <Compile Include="Crud\DefaultControllers\ManyToOneDefaultController.cs" />
     <Compile Include="Crud\DefaultControllers\ReadDefaultController.cs" />
     <Compile Include="Crud\ApiControllers\CrdApiController.cs" />
     <Compile Include="Crud\ApiControllers\CrudApiController.cs" />
-    <Compile Include="Crud\ApiControllers\ManyToOneCompleteApiController.cs" />
-    <Compile Include="Crud\ApiControllers\ManyToOneApiController.cs" />
     <Compile Include="Crud\ApiControllers\ApiControllerBase.cs" />
     <Compile Include="Crud\ApiControllers\ReadApiController.cs" />
-    <Compile Include="Crud\DefaultControllers\SlaveToMasterCompleteDefaultController.cs" />
-    <Compile Include="Crud\DefaultControllers\SlaveToMasterDefaultController.cs" />
-    <Compile Include="Crud\RestClient\SlaveToMasterRestClient.cs" />
     <Compile Include="Error\Logic\Converter.cs" />
     <Compile Include="Logging\LoggableWebApiExtensions.cs" />
     <Compile Include="Misc\HttpHelper.cs" />
@@ -110,8 +105,6 @@
     <Compile Include="Pipe\LogRequestAndResponse.cs" />
     <Compile Include="Pipe\Outbound\LogRequestAndResponse.cs" />
     <Compile Include="RestClientHelper\ClientCredentials.cs" />
-    <Compile Include="Crud\RestClient\ManyToOneRestClient.cs" />
-    <Compile Include="Crud\RestClient\ManyToOneCompleteRestClient.cs" />
     <Compile Include="Crud\RestClient\CrudRestClient.cs" />
     <Compile Include="Crud\RestClient\CrdRestClient.cs" />
     <Compile Include="Crud\RestClient\ReadRestClient.cs" />
