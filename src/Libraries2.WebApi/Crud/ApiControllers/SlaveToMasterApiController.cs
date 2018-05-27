@@ -1,45 +1,47 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Web.Http;
 using Swashbuckle.Swagger.Annotations;
 using Xlent.Lever.Libraries2.Core.Assert;
-using Xlent.Lever.Libraries2.Core.Crud.Interfaces;
+using Xlent.Lever.Libraries2.Crud.Interfaces;
 using Xlent.Lever.Libraries2.Core.Crud.Model;
 using Xlent.Lever.Libraries2.Core.Storage.Model;
+using Xlent.Lever.Libraries2.Crud.PassThrough;
 using Xlent.Lever.Libraries2.WebApi.Annotations;
 
 namespace Xlent.Lever.Libraries2.WebApi.Crud.ApiControllers
 {
-    /// <summary>
-    /// ApiController with CRUD-support
-    /// </summary>
+    /// <inheritdoc cref="SlaveToMasterApiController{TModelCreate,TModel}" />
     public abstract class SlaveToMasterApiController<TModel> :
-        SlaveToMasterApiController<TModel, TModel>, ISlaveToMaster<TModel, string>
+        SlaveToMasterApiController<TModel, TModel>, 
+        ICrudSlaveToMaster<TModel, string>
     {
         /// <summary>
         /// Constructor
         /// </summary>
-        protected SlaveToMasterApiController(ISlaveToMaster<TModel, string> logic)
+        protected SlaveToMasterApiController(ICrudable logic)
             : base(logic)
         {
         }
     }
 
-    /// <summary>
-    /// ApiController with CRUD-support
-    /// </summary>
-    public abstract class SlaveToMasterApiController<TModelCreate, TModel> : ApiControllerBase<TModel>, ISlaveToMaster<TModelCreate, TModel, string>
+    /// <inheritdoc cref="ApiControllerBase{TModel}" />
+    public abstract class SlaveToMasterApiController<TModelCreate, TModel> : 
+        ApiControllerBase<TModel>, 
+        ICrudSlaveToMaster<TModelCreate, TModel, string>
         where TModel : TModelCreate
     {
-        private readonly ISlaveToMaster<TModelCreate, TModel, string> _logic;
+        /// <summary>
+        /// The logic to be used
+        /// </summary>
+        protected readonly ICrudSlaveToMaster<TModelCreate, TModel, string> Logic;
 
         /// <summary>
         /// Constructor
         /// </summary>
-        protected SlaveToMasterApiController(ISlaveToMaster<TModelCreate, TModel, string> logic)
+        protected SlaveToMasterApiController(ICrudable logic)
         {
-            _logic = logic;
+            Logic = new SlaveToMasterPassThrough<TModelCreate, TModel, string>(logic);
         }
 
         /// <inheritdoc />
@@ -55,9 +57,9 @@ namespace Xlent.Lever.Libraries2.WebApi.Crud.ApiControllers
                 ServiceContract.RequireGreaterThan(0, limit.Value, nameof(limit));
             }
 
-            var page = await _logic.ReadChildrenWithPagingAsync(masterId, offset, limit, token);
+            var page = await Logic.ReadChildrenWithPagingAsync(masterId, offset, limit, token);
             FulcrumAssert.IsNotNull(page?.Data);
-            MaybeAssertIsValidated(page?.Data);
+            FulcrumAssert.IsValidated(page?.Data);
             return page;
         }
 
@@ -69,9 +71,9 @@ namespace Xlent.Lever.Libraries2.WebApi.Crud.ApiControllers
         {
             ServiceContract.RequireNotNullOrWhitespace(parentId, nameof(parentId));
             ServiceContract.RequireGreaterThan(0, limit, nameof(limit));
-            var items = await _logic.ReadChildrenAsync(parentId, limit, token);
+            var items = await Logic.ReadChildrenAsync(parentId, limit, token);
             FulcrumAssert.IsNotNull(items);
-            MaybeAssertIsValidated(items);
+            FulcrumAssert.IsValidated(items);
             return items;
         }
 
@@ -79,12 +81,12 @@ namespace Xlent.Lever.Libraries2.WebApi.Crud.ApiControllers
         [SwaggerResponseRemoveDefaults]
         [SwaggerBadRequestResponse]
         [SwaggerInternalServerErrorResponse]
-        public virtual async Task<SlaveToMasterId<string>> CreateAsync(string masterId, TModelCreate item, CancellationToken token = new CancellationToken())
+        public virtual async Task<string> CreateAsync(string masterId, TModelCreate item, CancellationToken token = new CancellationToken())
         {
             ServiceContract.RequireNotNullOrWhitespace(masterId, nameof(masterId));
-            ServiceContract.RequireNotNull(item, nameof(item));
-            MaybeRequireValidated(item, nameof(item));
-            return await _logic.CreateAsync(masterId, item, token);
+            ServiceContract.RequireNotDefaultValue(item, nameof(item));
+            ServiceContract.RequireValidated(item, nameof(item));
+            return await Logic.CreateAsync(masterId, item, token);
         }
 
         /// <inheritdoc />
@@ -94,11 +96,11 @@ namespace Xlent.Lever.Libraries2.WebApi.Crud.ApiControllers
         public virtual async Task<TModel> CreateAndReturnAsync(string masterId, TModelCreate item, CancellationToken token = new CancellationToken())
         {
             ServiceContract.RequireNotNullOrWhitespace(masterId, nameof(masterId));
-            ServiceContract.RequireNotNull(item, nameof(item));
-            MaybeRequireValidated(item, nameof(item));
-            var createdItem = await _logic.CreateAndReturnAsync(masterId, item, token);
+            ServiceContract.RequireNotDefaultValue(item, nameof(item));
+            ServiceContract.RequireValidated(item, nameof(item));
+            var createdItem = await Logic.CreateAndReturnAsync(masterId, item, token);
             FulcrumAssert.IsNotNull(createdItem);
-            MaybeAssertIsValidated(createdItem);
+            FulcrumAssert.IsValidated(createdItem);
             return createdItem;
         }
 
@@ -106,31 +108,97 @@ namespace Xlent.Lever.Libraries2.WebApi.Crud.ApiControllers
         [SwaggerResponseRemoveDefaults]
         [SwaggerBadRequestResponse]
         [SwaggerInternalServerErrorResponse]
-        public virtual async Task CreateWithSpecifiedIdAsync(SlaveToMasterId<string> id, TModelCreate item,
+        public virtual async Task CreateWithSpecifiedIdAsync(string masterId, string slaveId, TModelCreate item,
             CancellationToken token = new CancellationToken())
         {
-            ServiceContract.RequireNotNull(id, nameof(id));
-            ServiceContract.RequireValidated(id, nameof(id));
-            ServiceContract.RequireNotNull(item, nameof(item));
-            MaybeRequireValidated(item, nameof(item));
-            await _logic.CreateWithSpecifiedIdAsync(id, item, token);
+            ServiceContract.RequireNotNullOrWhitespace(masterId, nameof(masterId));
+            ServiceContract.RequireNotNullOrWhitespace(slaveId, nameof(slaveId));
+            ServiceContract.RequireNotDefaultValue(item, nameof(item));
+            ServiceContract.RequireValidated(item, nameof(item));
+            await Logic.CreateWithSpecifiedIdAsync(masterId, slaveId, item, token);
         }
 
         /// <inheritdoc />
         [SwaggerResponseRemoveDefaults]
         [SwaggerBadRequestResponse]
         [SwaggerInternalServerErrorResponse]
-        public virtual async Task<TModel> CreateWithSpecifiedIdAndReturnAsync(SlaveToMasterId<string> id, TModelCreate item,
+        public virtual async Task<TModel> CreateWithSpecifiedIdAndReturnAsync(string masterId, string slaveId, TModelCreate item,
             CancellationToken token = new CancellationToken())
+        {
+            ServiceContract.RequireNotNullOrWhitespace(masterId, nameof(masterId));
+            ServiceContract.RequireNotNullOrWhitespace(slaveId, nameof(slaveId));
+            ServiceContract.RequireNotDefaultValue(item, nameof(item));
+            ServiceContract.RequireValidated(item, nameof(item));
+            var createdItem = await Logic.CreateWithSpecifiedIdAndReturnAsync(masterId, slaveId, item, token);
+            FulcrumAssert.IsNotNull(createdItem);
+            FulcrumAssert.IsValidated(createdItem);
+            return createdItem;
+        }
+
+        /// <inheritdoc />
+        [SwaggerResponseRemoveDefaults]
+        [SwaggerBadRequestResponse]
+        [SwaggerInternalServerErrorResponse]
+        public virtual async Task<TModel> ReadAsync(string masterId, string slaveId, CancellationToken token = new CancellationToken())
+        {
+            ServiceContract.RequireNotNullOrWhitespace(masterId, nameof(masterId));
+            ServiceContract.RequireNotNullOrWhitespace(slaveId, nameof(slaveId));
+            var item = await Logic.ReadAsync(masterId, slaveId, token);
+            FulcrumAssert.IsNotNull(item);
+            FulcrumAssert.IsValidated(item);
+            return item;
+        }
+
+        /// <inheritdoc />
+        [SwaggerResponseRemoveDefaults]
+        [SwaggerBadRequestResponse]
+        [SwaggerInternalServerErrorResponse]
+        public virtual Task<TModel> ReadAsync(SlaveToMasterId<string> id, CancellationToken token = new CancellationToken())
         {
             ServiceContract.RequireNotNull(id, nameof(id));
             ServiceContract.RequireValidated(id, nameof(id));
-            ServiceContract.RequireNotNull(item, nameof(item));
-            MaybeRequireValidated(item, nameof(item));
-            var createdItem = await _logic.CreateWithSpecifiedIdAndReturnAsync(id, item, token);
+            return ReadAsync(id.MasterId, id.SlaveId, token);
+        }
+
+        /// <inheritdoc />
+        [SwaggerResponseRemoveDefaults]
+        [SwaggerBadRequestResponse]
+        [SwaggerInternalServerErrorResponse]
+        public virtual async Task UpdateAsync(string masterId, string slaveId, TModel item, CancellationToken token = new CancellationToken())
+        {
+            ServiceContract.RequireNotNullOrWhitespace(masterId, nameof(masterId));
+            ServiceContract.RequireNotNullOrWhitespace(slaveId, nameof(slaveId));
+            ServiceContract.RequireNotDefaultValue(item, nameof(item));
+            ServiceContract.RequireValidated(item, nameof(item));
+            await Logic.UpdateAsync(masterId, slaveId, item, token);
+        }
+
+        /// <inheritdoc />
+        [SwaggerResponseRemoveDefaults]
+        [SwaggerBadRequestResponse]
+        [SwaggerInternalServerErrorResponse]
+        public virtual async Task<TModel> UpdateAndReturnAsync(string masterId, string slaveId, TModel item,
+            CancellationToken token = new CancellationToken())
+        {
+            ServiceContract.RequireNotNullOrWhitespace(masterId, nameof(masterId));
+            ServiceContract.RequireNotNullOrWhitespace(slaveId, nameof(slaveId));
+            ServiceContract.RequireNotDefaultValue(item, nameof(item));
+            ServiceContract.RequireValidated(item, nameof(item));
+            var createdItem = await Logic.UpdateAndReturnAsync(masterId, slaveId, item, token);
             FulcrumAssert.IsNotNull(createdItem);
-            MaybeAssertIsValidated(createdItem);
+            FulcrumAssert.IsValidated(createdItem);
             return createdItem;
+        }
+
+        /// <inheritdoc />
+        [SwaggerResponseRemoveDefaults]
+        [SwaggerBadRequestResponse]
+        [SwaggerInternalServerErrorResponse]
+        public virtual Task DeleteAsync(string masterId, string slaveId, CancellationToken token = new CancellationToken())
+        {
+            ServiceContract.RequireNotNullOrWhitespace(masterId, nameof(masterId));
+            ServiceContract.RequireNotNullOrWhitespace(slaveId, nameof(slaveId));
+            return Logic.DeleteAsync(masterId, slaveId, token);
         }
 
         /// <inheritdoc />
@@ -140,17 +208,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Crud.ApiControllers
         public virtual async Task DeleteChildrenAsync(string masterId, CancellationToken token = new CancellationToken())
         {
             ServiceContract.RequireNotNullOrWhitespace(masterId, nameof(masterId));
-            await _logic.DeleteChildrenAsync(masterId, token);
-        }
-
-        /// <summary>
-        /// Validate <paramref name="item"/> if it implements <see cref="IValidatable"/>.
-        /// </summary>
-        protected void MaybeRequireValidated(TModelCreate item, string parameterName)
-        {
-            if (item == null) return;
-            if (!typeof(IValidatable).IsAssignableFrom(typeof(TModel))) return;
-            if (item is IValidatable validatable) ServiceContract.RequireValidated(validatable, parameterName);
+            await Logic.DeleteChildrenAsync(masterId, token);
         }
     }
 }

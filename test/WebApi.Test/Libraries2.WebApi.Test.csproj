@@ -75,16 +75,15 @@
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="Xlent.Lever.Libraries2.Core.NetFramework, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Xlent.Lever.Libraries2.Core.NetFramework.2.0.1\lib\net46\Xlent.Lever.Libraries2.Core.NetFramework.dll</HintPath>
+      <HintPath>..\..\packages\Xlent.Lever.Libraries2.Core.NetFramework.2.1.3\lib\net46\Xlent.Lever.Libraries2.Core.NetFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="Xlent.Lever.Libraries2.Crud.NetFramework, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Xlent.Lever.Libraries2.Crud.NetFramework.1.0.3\lib\net46\Xlent.Lever.Libraries2.Crud.NetFramework.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ConverterTests.cs" />
-    <Compile Include="RestClientHelper\RestClientManyToOneTest.cs" />
-    <Compile Include="RestClientHelper\RestClientManyToOneRecursiveTest.cs" />
     <Compile Include="RestClientHelper\RestClientCrudTest.cs" />
-    <Compile Include="RestClientHelper\RestClientCrdTest.cs" />
-    <Compile Include="RestClientHelper\RestClientReadTest.cs" />
     <Compile Include="RestClientHelper\TestBase.cs" />
     <Compile Include="RestClientHelper\RestClientTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

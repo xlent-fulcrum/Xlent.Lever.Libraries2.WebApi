@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -6,7 +8,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Xlent.Lever.Libraries2.Core.Application;
 using Xlent.Lever.Libraries2.Core.Context;
-using Xlent.Lever.Libraries2.Core.Crud.Interfaces;
+using Xlent.Lever.Libraries2.Core.Storage.Model;
+using Xlent.Lever.Libraries2.Crud.Interfaces;
 using Xlent.Lever.Libraries2.WebApi.Crud.RestClient;
 using Xlent.Lever.Libraries2.WebApi.RestClientHelper;
 using Xlent.Lever.Libraries2.WebApi.Test.Support.Models;
@@ -37,6 +40,84 @@ namespace Xlent.Lever.Libraries2.WebApi.Test.RestClientHelper
         }
 
         [TestMethod]
+        public async Task CreateAndReturnTest()
+        {
+            var expectedUri = $"{ResourcePath}/ReturnCreated";
+            HttpClientMock.Setup(client => client.SendAsync(
+                    It.Is<HttpRequestMessage>(request => request.RequestUri.AbsoluteUri == expectedUri && request.Method == HttpMethod.Post),
+                    CancellationToken.None))
+                .ReturnsAsync((HttpRequestMessage r, CancellationToken c) => CreateResponseMessage(r, _person))
+                .Verifiable();
+            var person = await _client.CreateAndReturnAsync(_person);
+            Assert.AreEqual(_person, person);
+            HttpClientMock.Verify();
+        }
+
+        [TestMethod]
+        public async Task CreateTest()
+        {
+            var id = Guid.NewGuid();
+            var expectedUri = $"{ResourcePath}";
+            HttpClientMock.Setup(client => client.SendAsync(
+                    It.Is<HttpRequestMessage>(request => request.RequestUri.AbsoluteUri == expectedUri && request.Method == HttpMethod.Post),
+                    CancellationToken.None))
+                .ReturnsAsync((HttpRequestMessage r, CancellationToken c) => CreateResponseMessage(r, id))
+                .Verifiable();
+            var createdId = await _client.CreateAsync(_person);
+            Assert.AreEqual(id, createdId);
+            HttpClientMock.Verify();
+        }
+
+        [TestMethod]
+        public async Task ReadTest()
+        {
+            var id = Guid.NewGuid();
+            var expectedUri = $"{ResourcePath}/{id}";
+            HttpClientMock.Setup(client => client.SendAsync(
+                    It.Is<HttpRequestMessage>(request => request.RequestUri.AbsoluteUri == expectedUri && request.Method == HttpMethod.Get),
+                    CancellationToken.None))
+                .ReturnsAsync((HttpRequestMessage r, CancellationToken c) => CreateResponseMessage(r, _person))
+                .Verifiable();
+            var person = await _client.ReadAsync(id);
+            Assert.AreEqual(_person, person);
+            HttpClientMock.Verify();
+        }
+
+        [TestMethod]
+        public async Task ReadAllTest()
+        {
+            var expectedUri = $"{ResourcePath}?limit={int.MaxValue}";
+            HttpClientMock.Setup(client => client.SendAsync(
+                    It.Is<HttpRequestMessage>(request => request.RequestUri.AbsoluteUri == expectedUri && request.Method == HttpMethod.Get),
+                    CancellationToken.None))
+                .ReturnsAsync((HttpRequestMessage r, CancellationToken c) => CreateResponseMessage(r, new[] { _person }))
+                .Verifiable();
+            var persons = await _client.ReadAllAsync();
+            Assert.IsNotNull(persons);
+            var personArray = persons as Person[] ?? persons.ToArray();
+            Assert.AreEqual(1, personArray.Length);
+            Assert.AreEqual(_person, personArray.FirstOrDefault());
+            HttpClientMock.Verify();
+        }
+
+        [TestMethod]
+        public async Task ReadAllWithPagingTest()
+        {
+            var expectedUri = $"{ResourcePath}?offset=0";
+            var pageEnvelope = new PageEnvelope<Person>(0, PageInfo.DefaultLimit, null, new[] { _person });
+            HttpClientMock.Setup(client => client.SendAsync(
+                    It.Is<HttpRequestMessage>(request => request.RequestUri.AbsoluteUri == expectedUri && request.Method == HttpMethod.Get),
+                    CancellationToken.None))
+                .ReturnsAsync((HttpRequestMessage r, CancellationToken c) => CreateResponseMessage(r, pageEnvelope))
+                .Verifiable();
+            var page = await _client.ReadAllWithPagingAsync(0);
+            Assert.IsNotNull(page?.Data);
+            Assert.AreEqual(1, page.Data.Count());
+            Assert.AreEqual(_person, page.Data.FirstOrDefault());
+            HttpClientMock.Verify();
+        }
+
+        [TestMethod]
         public async Task UpdateAndReturnTest()
         {
             var id = Guid.NewGuid();
@@ -62,6 +143,33 @@ namespace Xlent.Lever.Libraries2.WebApi.Test.RestClientHelper
                 .ReturnsAsync((HttpRequestMessage r, CancellationToken c) => CreateResponseMessage(r))
                 .Verifiable();
             await _client.UpdateAsync(id, _person);
+            HttpClientMock.Verify();
+        }
+
+        [TestMethod]
+        public async Task DeleteTest()
+        {
+            var id = Guid.NewGuid();
+            var expectedUri = $"{ResourcePath}/{id}";
+            HttpClientMock.Setup(client => client.SendAsync(
+                    It.Is<HttpRequestMessage>(request => request.RequestUri.AbsoluteUri == expectedUri && request.Method == HttpMethod.Delete),
+                    CancellationToken.None))
+                .ReturnsAsync((HttpRequestMessage r, CancellationToken c) => CreateResponseMessage(r))
+                .Verifiable();
+            await _client.DeleteAsync(id);
+            HttpClientMock.Verify();
+        }
+
+        [TestMethod]
+        public async Task DeleteAllTest()
+        {
+            var expectedUri = $"{ResourcePath}";
+            HttpClientMock.Setup(client => client.SendAsync(
+                    It.Is<HttpRequestMessage>(request => request.RequestUri.AbsoluteUri == expectedUri && request.Method == HttpMethod.Delete),
+                    CancellationToken.None))
+                .ReturnsAsync((HttpRequestMessage r, CancellationToken c) => CreateResponseMessage(r, HttpStatusCode.NoContent, null))
+                .Verifiable();
+            await _client.DeleteAllAsync();
             HttpClientMock.Verify();
         }
     }

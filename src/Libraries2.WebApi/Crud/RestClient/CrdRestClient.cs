@@ -1,8 +1,9 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Rest;
-using Xlent.Lever.Libraries2.Core.Crud.Interfaces;
+using Xlent.Lever.Libraries2.Crud.Interfaces;
 using Xlent.Lever.Libraries2.Core.Platform.Authentication;
+using Xlent.Lever.Libraries2.Crud.Model;
 
 namespace Xlent.Lever.Libraries2.WebApi.Crud.RestClient
 {

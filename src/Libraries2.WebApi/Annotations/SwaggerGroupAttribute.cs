@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Net;
 using Swashbuckle.Swagger.Annotations;
 
 namespace Xlent.Lever.Libraries2.WebApi.Annotations
