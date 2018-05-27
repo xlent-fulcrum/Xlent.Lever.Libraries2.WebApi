@@ -1,9 +1,8 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using System.Web.Http;
-using Xlent.Lever.Libraries2.Core.Crud.Interfaces;
-using Xlent.Lever.Libraries2.Core.Crud.Model;
 using Xlent.Lever.Libraries2.Core.Storage.Model;
+using Xlent.Lever.Libraries2.Crud.Interfaces;
 using Xlent.Lever.Libraries2.WebApi.Crud.ApiControllers;
 
 namespace Xlent.Lever.Libraries2.WebApi.Crud.DefaultControllers
@@ -12,32 +11,30 @@ namespace Xlent.Lever.Libraries2.WebApi.Crud.DefaultControllers
     /// ApiController with CRUD-support
     /// </summary>
     public abstract class SlaveToMasterDefaultController<TModel> :
-        SlaveToMasterDefaultController<TModel, TModel>, ISlaveToMaster<TModel, string>
+        SlaveToMasterDefaultController<TModel, TModel>, 
+        ICrudSlaveToMaster<TModel, string>
     {
         /// <summary>
         /// Constructor
         /// </summary>
-        protected SlaveToMasterDefaultController(ISlaveToMaster<TModel, string> logic)
+        protected SlaveToMasterDefaultController(ICrudable logic)
             : base(logic)
         {
         }
     }
 
-    /// <summary>
-    /// ApiController with CRUD-support
-    /// </summary>
-    public abstract class SlaveToMasterDefaultController<TModelCreate, TModel> : SlaveToMasterApiController<TModelCreate, TModel>, ISlaveToMaster<TModelCreate, TModel, string>
+    /// <inheritdoc cref="SlaveToMasterApiController{TModelCreate, TModel}" />
+    public abstract class SlaveToMasterDefaultController<TModelCreate, TModel> : 
+        SlaveToMasterApiController<TModelCreate, TModel>,
+        ICrudSlaveToMaster<TModelCreate, TModel, string>
         where TModel : TModelCreate
     {
-        private readonly ISlaveToMaster<TModelCreate, TModel, string> _logic;
-
         /// <summary>
         /// Constructor
         /// </summary>
-        protected SlaveToMasterDefaultController(ISlaveToMaster<TModelCreate, TModel, string> logic)
+        protected SlaveToMasterDefaultController(ICrudable logic)
             : base(logic)
         {
-            _logic = logic;
         }
 
         /// <inheritdoc />
@@ -51,7 +48,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Crud.DefaultControllers
         /// <inheritdoc />
         [HttpPost]
         [Route("{masterId}/Children")]
-        public override Task<SlaveToMasterId<string>> CreateAsync(string masterId, TModelCreate item, CancellationToken token = new CancellationToken())
+        public override Task<string> CreateAsync(string masterId, TModelCreate item, CancellationToken token = new CancellationToken())
         {
             return base.CreateAsync(masterId, item, token);
         }
@@ -62,6 +59,30 @@ namespace Xlent.Lever.Libraries2.WebApi.Crud.DefaultControllers
         public override Task DeleteChildrenAsync(string masterId, CancellationToken token = new CancellationToken())
         {
             return base.DeleteChildrenAsync(masterId, token);
+        }
+
+        /// <inheritdoc cref="ICrudSlaveToMaster{TModel,TId}" />
+        [HttpGet]
+        [Route("{masterId}/Children/{slaveId}")]
+        public override Task<TModel> ReadAsync(string masterId, string slaveId, CancellationToken token = new CancellationToken())
+        {
+            return base.ReadAsync(masterId, slaveId, token);
+        }
+
+        /// <inheritdoc cref="ICrudSlaveToMaster{TModel,TId}" />
+        [HttpPut]
+        [Route("{masterId}/Children/{slaveId}")]
+        public override Task UpdateAsync(string masterId, string slaveId, TModel item, CancellationToken token = new CancellationToken())
+        {
+            return base.UpdateAsync(masterId, slaveId, item, token);
+        }
+
+        /// <inheritdoc cref="ICrudSlaveToMaster{TModel,TId}" />
+        [HttpDelete]
+        [Route("{masterId}/Children/{slaveId}")]
+        public override Task DeleteAsync(string masterId, string slaveId, CancellationToken token = new CancellationToken())
+        {
+            return base.DeleteAsync(masterId, slaveId, token);
         }
     }
 }

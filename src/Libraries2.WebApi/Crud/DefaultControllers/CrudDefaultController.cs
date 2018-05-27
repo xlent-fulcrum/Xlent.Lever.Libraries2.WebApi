@@ -7,7 +7,7 @@ using Xlent.Lever.Libraries2.WebApi.Crud.ApiControllers;
 
 namespace Xlent.Lever.Libraries2.WebApi.Crud.DefaultControllers
 {
-    /// <inheritdoc cref="CrdDefaultController{TModel}" />
+    /// <inheritdoc cref="CrudDefaultController{TModelCreate, TModel}" />
     public abstract class CrudDefaultController<TModel> : CrudDefaultController<TModel, TModel>, ICrud<TModel, string>
     {
         /// <inheritdoc />
@@ -17,12 +17,14 @@ namespace Xlent.Lever.Libraries2.WebApi.Crud.DefaultControllers
         }
     }
 
-    /// <inheritdoc cref="CrdDefaultController{TModel}" />
-    public abstract class CrudDefaultController<TModelCreate, TModel> : CrudApiController<TModelCreate, TModel>, ICrud<TModelCreate, TModel, string>
+    /// <inheritdoc cref="CrudApiController{TModel}" />
+    public abstract class CrudDefaultController<TModelCreate, TModel> :
+        CrudApiController<TModelCreate, TModel>,
+        ICrud<TModelCreate, TModel, string>
         where TModel : TModelCreate
     {
         /// <inheritdoc />
-        protected CrudDefaultController(ICrud<TModelCreate, TModel, string> logic)
+        protected CrudDefaultController(ICrudable logic)
             : base(logic)
         {
         }
