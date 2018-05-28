@@ -151,15 +151,15 @@ namespace Xlent.Lever.Libraries2.WebApi.Crud.RestClient
         }
 
         /// <inheritdoc />
-        public async Task<Lock> ClaimLockAsync(TId id, CancellationToken token = new CancellationToken())
+        public async Task<Lock<TId>> ClaimLockAsync(TId id, CancellationToken token = new CancellationToken())
         {
-            return await PostAsync<Lock>($"{id}/ClaimLock", cancellationToken: token);
+            return await PostAsync<Lock<TId>>($"{id}/Locks", cancellationToken: token);
         }
 
         /// <inheritdoc />
-        public async Task ReleaseLockAsync(Lock @lock, CancellationToken token = new CancellationToken())
+        public async Task ReleaseLockAsync(TId id, TId lockId, CancellationToken token = new CancellationToken())
         {
-            await PostNoResponseContentAsync($"ReleaseLock", cancellationToken: token);
+            await PostNoResponseContentAsync($"{id}/Locks/{lockId}", cancellationToken: token);
         }
     }
 }

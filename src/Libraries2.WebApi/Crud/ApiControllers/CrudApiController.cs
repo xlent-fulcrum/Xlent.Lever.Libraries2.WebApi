@@ -186,7 +186,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Crud.ApiControllers
         [SwaggerResponseRemoveDefaults]
         [SwaggerBadRequestResponse]
         [SwaggerInternalServerErrorResponse]
-        public virtual async Task<Lock> ClaimLockAsync(string id, CancellationToken token = new CancellationToken())
+        public virtual async Task<Lock<string>> ClaimLockAsync(string id, CancellationToken token = new CancellationToken())
         {
             ServiceContract.RequireNotNullOrWhitespace(id, nameof(id));
             var @lock = await Logic.ClaimLockAsync(id, token);
@@ -199,11 +199,11 @@ namespace Xlent.Lever.Libraries2.WebApi.Crud.ApiControllers
         [SwaggerResponseRemoveDefaults]
         [SwaggerBadRequestResponse]
         [SwaggerInternalServerErrorResponse]
-        public virtual async Task ReleaseLockAsync(Lock @lock, CancellationToken token = new CancellationToken())
+        public virtual async Task ReleaseLockAsync(string id, string lockId, CancellationToken token = new CancellationToken())
         {
-            ServiceContract.RequireNotNull(@lock, nameof(@lock));
-            ServiceContract.RequireValidated(@lock, nameof(@lock));
-            await Logic.ReleaseLockAsync(@lock, token);
+            ServiceContract.RequireNotNullOrWhitespace(id, nameof(id));
+            ServiceContract.RequireNotNullOrWhitespace(lockId, nameof(lockId));
+            await Logic.ReleaseLockAsync(id, lockId, token);
         }
     }
 }
