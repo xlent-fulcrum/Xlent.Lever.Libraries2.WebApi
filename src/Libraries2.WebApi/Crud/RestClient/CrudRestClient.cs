@@ -43,9 +43,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Crud.RestClient
         }
     }
 
-    /// <summary>
-    /// Convenience client for making REST calls
-    /// </summary>
+    /// <inheritdoc cref="RestClientHelper.RestClient" />
     public class CrudRestClient<TModelCreate, TModel, TId> : 
         RestClientHelper.RestClient,
         ICrud<TModelCreate, TModel, TId> where TModel : TModelCreate

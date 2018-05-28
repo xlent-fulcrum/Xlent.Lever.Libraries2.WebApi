@@ -3,15 +3,18 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Rest;
 using Xlent.Lever.Libraries2.Core.Assert;
+using Xlent.Lever.Libraries2.Core.Crud.Model;
 using Xlent.Lever.Libraries2.Core.Platform.Authentication;
 using Xlent.Lever.Libraries2.Core.Storage.Model;
+using Xlent.Lever.Libraries2.Crud.Interfaces;
 
 namespace Xlent.Lever.Libraries2.WebApi.Crud.RestClient
 {
-    /// <summary>
-    /// Convenience client for making REST calls
-    /// </summary>
-    public class SlaveToMasterRestClient<TManyModelCreate, TManyModel, TId> : RestClientHelper.RestClient, ISlaveToMaster<TManyModelCreate, TManyModel, TId> 
+
+    /// <inheritdoc cref="RestClientHelper.RestClient" />
+    public class SlaveToMasterRestClient<TManyModelCreate, TManyModel, TId> : 
+        RestClientHelper.RestClient, 
+        ICrudSlaveToMaster<TManyModelCreate, TManyModel, TId> 
         where TManyModel : TManyModelCreate
     {
         /// <summary>
@@ -62,22 +65,62 @@ namespace Xlent.Lever.Libraries2.WebApi.Crud.RestClient
         }
 
         /// <inheritdoc />
-        public virtual async Task DeleteChildrenAsync(TId parentId, CancellationToken token = default(CancellationToken))
+        public Task<TId> CreateAsync(TId masterId, TManyModelCreate item, CancellationToken token = new CancellationToken())
         {
-            InternalContract.RequireNotDefaultValue(parentId, nameof(parentId));
-            await DeleteAsync($"{parentId}/{ChildrenName}", cancellationToken: token);
+            InternalContract.RequireNotDefaultValue(masterId, nameof(masterId));
+            return PostAsync<TId, TManyModelCreate>($"{masterId}/{ChildrenName}", item, cancellationToken: token);
         }
 
         /// <inheritdoc />
-        public virtual async Task<IEnumerable<TManyModel>> ReadChildrenAsync(TId parentId, int limit = int.MaxValue, CancellationToken token = default(CancellationToken))
+        public Task<TManyModel> CreateAndReturnAsync(TId masterId, TManyModelCreate item, CancellationToken token = new CancellationToken())
+        {
+            InternalContract.RequireNotDefaultValue(masterId, nameof(masterId));
+            return PostAsync<TManyModel, TManyModelCreate>($"{masterId}/{ChildrenName}/ReturnCreated", item, cancellationToken: token);
+        }
+
+        /// <inheritdoc />
+        public Task CreateWithSpecifiedIdAsync(TId masterId, TId slaveId, TManyModelCreate item, CancellationToken token = new CancellationToken())
+        {
+            InternalContract.RequireNotDefaultValue(masterId, nameof(masterId));
+            InternalContract.RequireNotDefaultValue(slaveId, nameof(slaveId));
+            return PostNoResponseContentAsync($"{masterId}/{ChildrenName}/{slaveId}", item, cancellationToken: token);
+        }
+
+        /// <inheritdoc />
+        public Task<TManyModel> CreateWithSpecifiedIdAndReturnAsync(TId masterId, TId slaveId, TManyModelCreate item,
+            CancellationToken token = new CancellationToken())
+        {
+            InternalContract.RequireNotDefaultValue(masterId, nameof(masterId));
+            InternalContract.RequireNotDefaultValue(slaveId, nameof(slaveId));
+            return PostAsync<TManyModel, TManyModelCreate>($"{masterId}/{ChildrenName}/{slaveId}/ReturnCreated", item, cancellationToken: token);
+        }
+
+        /// <inheritdoc />
+        public Task<TManyModel> ReadAsync(TId masterId, TId slaveId, CancellationToken token = new CancellationToken())
+        {
+            InternalContract.RequireNotDefaultValue(masterId, nameof(masterId));
+            InternalContract.RequireNotDefaultValue(slaveId, nameof(slaveId));
+            return GetAsync<TManyModel>($"{masterId}/{ChildrenName}/{slaveId}", cancellationToken: token);
+        }
+
+        /// <inheritdoc />
+        public Task<TManyModel> ReadAsync(SlaveToMasterId<TId> id, CancellationToken token = new CancellationToken())
+        {
+            InternalContract.RequireNotNull(id, nameof(id));
+            InternalContract.RequireValidated(id, nameof(id));
+            return ReadAsync(id.MasterId, id.SlaveId, token);
+        }
+
+        /// <inheritdoc />
+        public Task<IEnumerable<TManyModel>> ReadChildrenAsync(TId parentId, int limit = int.MaxValue, CancellationToken token = default(CancellationToken))
         {
             InternalContract.RequireNotDefaultValue(parentId, nameof(parentId));
             InternalContract.RequireGreaterThan(0, limit, nameof(limit));
-            return await GetAsync<IEnumerable<TManyModel>>($"{parentId}/{ChildrenName}?limit={limit}", cancellationToken: token);
+            return GetAsync<IEnumerable<TManyModel>>($"{parentId}/{ChildrenName}?limit={limit}", cancellationToken: token);
         }
 
         /// <inheritdoc />
-        public virtual async Task<PageEnvelope<TManyModel>> ReadChildrenWithPagingAsync(TId parentId, int offset = 0, int? limit = null, CancellationToken token = default(CancellationToken))
+        public Task<PageEnvelope<TManyModel>> ReadChildrenWithPagingAsync(TId parentId, int offset = 0, int? limit = null, CancellationToken token = default(CancellationToken))
         {
             InternalContract.RequireGreaterThanOrEqualTo(0, offset, nameof(offset));
             var limitParameter = "";
@@ -86,32 +129,39 @@ namespace Xlent.Lever.Libraries2.WebApi.Crud.RestClient
                 InternalContract.RequireGreaterThan(0, limit.Value, nameof(limit));
                 limitParameter = $"&limit={limit}";
             }
-            return await GetAsync<PageEnvelope<TManyModel>>($"{parentId}/{ChildrenName}?offset={offset}{limitParameter}", cancellationToken: token);
+            return GetAsync<PageEnvelope<TManyModel>>($"{parentId}/{ChildrenName}?offset={offset}{limitParameter}", cancellationToken: token);
         }
 
         /// <inheritdoc />
-        public async Task<SlaveToMasterId<TId>> CreateAsync(TId masterId, TManyModelCreate item, CancellationToken token = new CancellationToken())
+        public Task UpdateAsync(TId masterId, TId slaveId, TManyModel item, CancellationToken token = new CancellationToken())
         {
-            return await PostAsync<SlaveToMasterId<TId>, TManyModelCreate>($"{masterId}/{ChildrenName}", item, cancellationToken: token);
+            InternalContract.RequireNotDefaultValue(masterId, nameof(masterId));
+            InternalContract.RequireNotDefaultValue(slaveId, nameof(slaveId));
+            return PutNoResponseContentAsync($"{masterId}/{ChildrenName}/{slaveId}", item, cancellationToken: token);
         }
 
         /// <inheritdoc />
-        public async Task<TManyModel> CreateAndReturnAsync(TId masterId, TManyModelCreate item, CancellationToken token = new CancellationToken())
-        {
-            return await PostAsync<TManyModel, TManyModelCreate>($"{masterId}/{ChildrenName}/ReturnCreated", item, cancellationToken: token);
-        }
-
-        /// <inheritdoc />
-        public async Task CreateWithSpecifiedIdAsync(SlaveToMasterId<TId> id, TManyModelCreate item, CancellationToken token = new CancellationToken())
-        {
-            await PostNoResponseContentAsync($"{id.MasterId}/{ChildrenName}/{id.SlaveId}", item, cancellationToken: token);
-        }
-
-        /// <inheritdoc />
-        public async Task<TManyModel> CreateWithSpecifiedIdAndReturnAsync(SlaveToMasterId<TId> id, TManyModelCreate item,
+        public Task<TManyModel> UpdateAndReturnAsync(TId masterId, TId slaveId, TManyModel item,
             CancellationToken token = new CancellationToken())
         {
-            return await PostAsync<TManyModel, TManyModelCreate>($"{id.MasterId}/{ChildrenName}/{id.SlaveId}/ReturnCreated", item, cancellationToken: token);
+            InternalContract.RequireNotDefaultValue(masterId, nameof(masterId));
+            InternalContract.RequireNotDefaultValue(slaveId, nameof(slaveId));
+            return PostAsync<TManyModel, TManyModelCreate>($"{masterId}/{ChildrenName}/{slaveId}/ReturnCreated", item, cancellationToken: token);
+        }
+
+        /// <inheritdoc />
+        public Task DeleteAsync(TId masterId, TId slaveId, CancellationToken token = new CancellationToken())
+        {
+            InternalContract.RequireNotDefaultValue(masterId, nameof(masterId));
+            InternalContract.RequireNotDefaultValue(slaveId, nameof(slaveId));
+            return DeleteAsync($"{masterId}/{ChildrenName}/{slaveId}", cancellationToken: token);
+        }
+
+        /// <inheritdoc />
+        public Task DeleteChildrenAsync(TId parentId, CancellationToken token = default(CancellationToken))
+        {
+            InternalContract.RequireNotDefaultValue(parentId, nameof(parentId));
+            return DeleteAsync($"{parentId}/{ChildrenName}", cancellationToken: token);
         }
     }
 }

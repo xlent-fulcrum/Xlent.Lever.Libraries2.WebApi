@@ -95,6 +95,8 @@
     <Compile Include="Crud\ApiControllers\ApiControllerBase.cs" />
     <Compile Include="Crud\DefaultControllers\ManyToOneDefaultController.cs" />
     <Compile Include="Crud\DefaultControllers\SlaveToMasterDefaultController.cs" />
+    <Compile Include="Crud\RestClient\ManyToOneRestClient.cs" />
+    <Compile Include="Crud\RestClient\SlaveToMasterRestClient.cs" />
     <Compile Include="Error\Logic\Converter.cs" />
     <Compile Include="Logging\LoggableWebApiExtensions.cs" />
     <Compile Include="Misc\HttpHelper.cs" />
