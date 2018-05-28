@@ -1,13 +1,18 @@
-﻿using System.Threading;
+﻿using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Rest;
+using Xlent.Lever.Libraries2.Core.Assert;
 using Xlent.Lever.Libraries2.Crud.Interfaces;
 using Xlent.Lever.Libraries2.Core.Platform.Authentication;
+using Xlent.Lever.Libraries2.Core.Storage.Model;
+using Xlent.Lever.Libraries2.Crud.Model;
 
 namespace Xlent.Lever.Libraries2.WebApi.Crud.RestClient
 {
     /// <inheritdoc cref="CrudRestClient{TModelCreate,TModel,TId}" />
-    public class CrudRestClient<TModel, TId> : CrudRestClient<TModel, TModel, TId>,
+    public class CrudRestClient<TModel, TId> : 
+        CrudRestClient<TModel, TModel, TId>,
         ICrud<TModel, TId>
     {
 
@@ -41,7 +46,9 @@ namespace Xlent.Lever.Libraries2.WebApi.Crud.RestClient
     /// <summary>
     /// Convenience client for making REST calls
     /// </summary>
-    public class CrudRestClient<TModelCreate, TModel, TId> : CrdRestClient<TModelCreate, TModel, TId>, ICrud<TModelCreate, TModel, TId> where TModel : TModelCreate
+    public class CrudRestClient<TModelCreate, TModel, TId> : 
+        RestClientHelper.RestClient,
+        ICrud<TModelCreate, TModel, TId> where TModel : TModelCreate
     {
 
         /// <summary></summary>
@@ -71,6 +78,57 @@ namespace Xlent.Lever.Libraries2.WebApi.Crud.RestClient
         }
 
         /// <inheritdoc />
+        public virtual async Task<TId> CreateAsync(TModelCreate item, CancellationToken token = default(CancellationToken))
+        {
+            return await PostAsync<TId, TModelCreate>("", item, cancellationToken: token);
+        }
+
+        /// <inheritdoc />
+        public virtual async Task<TModel> CreateAndReturnAsync(TModelCreate item, CancellationToken token = default(CancellationToken))
+        {
+            return await PostAsync<TModel, TModelCreate>("ReturnCreated", item, cancellationToken: token);
+        }
+
+        /// <inheritdoc />
+        public virtual async Task CreateWithSpecifiedIdAsync(TId id, TModelCreate item, CancellationToken token = default(CancellationToken))
+        {
+            await PostNoResponseContentAsync($"{id}", item, cancellationToken: token);
+        }
+
+        /// <inheritdoc />
+        public virtual async Task<TModel> CreateWithSpecifiedIdAndReturnAsync(TId id, TModelCreate item, CancellationToken token = default(CancellationToken))
+        {
+            return await PostAsync<TModel, TModelCreate>($"{id}/ReturnCreated", item, cancellationToken: token);
+        }
+
+        /// <inheritdoc />
+        public virtual async Task<TModel> ReadAsync(TId id, CancellationToken token = default(CancellationToken))
+        {
+            InternalContract.RequireNotDefaultValue(id, nameof(id));
+            return await GetAsync<TModel>($"{id}", cancellationToken: token);
+        }
+
+        /// <inheritdoc />
+        public virtual async Task<PageEnvelope<TModel>> ReadAllWithPagingAsync(int offset = 0, int? limit = null, CancellationToken token = default(CancellationToken))
+        {
+            InternalContract.RequireGreaterThanOrEqualTo(0, offset, nameof(offset));
+            var limitParameter = "";
+            if (limit != null)
+            {
+                InternalContract.RequireGreaterThan(0, limit.Value, nameof(limit));
+                limitParameter = $"&limit={limit}";
+            }
+            return await GetAsync<PageEnvelope<TModel>>($"?offset={offset}{limitParameter}", cancellationToken: token);
+        }
+
+        /// <inheritdoc />
+        public virtual async Task<IEnumerable<TModel>> ReadAllAsync(int limit = int.MaxValue, CancellationToken token = default(CancellationToken))
+        {
+            InternalContract.RequireGreaterThan(0, limit, nameof(limit));
+            return await GetAsync<IEnumerable<TModel>>($"?limit={limit}", cancellationToken: token);
+        }
+
+        /// <inheritdoc />
         public virtual async Task UpdateAsync(TId id, TModel item, CancellationToken token = default(CancellationToken))
         {
             await PutNoResponseContentAsync($"{id}", item, cancellationToken: token);
@@ -82,17 +140,28 @@ namespace Xlent.Lever.Libraries2.WebApi.Crud.RestClient
             return await PutAndReturnUpdatedObjectAsync($"{id}/ReturnUpdated", item, cancellationToken: token);
         }
 
-        /// <summary>
-        /// Use this method to simulate the <see cref="UpdateAndReturnAsync"/> method if that method is not implemented in the service.
-        /// </summary>
-        /// <param name="id">How the object to be updated is identified.</param>
-        /// <param name="item">The new version of the item. </param>
-        /// <param name="token">Propagates notification that operations should be canceled</param>
-        /// <remarks>Calls the method <see cref="UpdateAsync"/> and then the ReadAsync method.</remarks>
-        protected virtual async Task<TModel> SimulateUpdateAndReturnAsync(TId id, TModel item, CancellationToken token = default(CancellationToken))
+        /// <inheritdoc />
+        public virtual async Task DeleteAsync(TId id, CancellationToken token = default(CancellationToken))
         {
-            await PutNoResponseContentAsync($"{id}", item, cancellationToken: token);
-            return await ReadAsync(id, token);
+            await DeleteAsync($"{id}", cancellationToken: token);
+        }
+
+        /// <inheritdoc />
+        public virtual async Task DeleteAllAsync(CancellationToken token = default(CancellationToken))
+        {
+            await DeleteAsync("", cancellationToken: token);
+        }
+
+        /// <inheritdoc />
+        public async Task<Lock> ClaimLockAsync(TId id, CancellationToken token = new CancellationToken())
+        {
+            return await PostAsync<Lock>($"{id}/ClaimLock", cancellationToken: token);
+        }
+
+        /// <inheritdoc />
+        public async Task ReleaseLockAsync(Lock @lock, CancellationToken token = new CancellationToken())
+        {
+            await PostNoResponseContentAsync($"ReleaseLock", cancellationToken: token);
         }
     }
 }

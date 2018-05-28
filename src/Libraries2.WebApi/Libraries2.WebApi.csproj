@@ -76,7 +76,7 @@
       <HintPath>..\..\packages\Xlent.Lever.Libraries2.Core.NetFramework.2.1.3\lib\net46\Xlent.Lever.Libraries2.Core.NetFramework.dll</HintPath>
     </Reference>
     <Reference Include="Xlent.Lever.Libraries2.Crud.NetFramework, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Xlent.Lever.Libraries2.Crud.NetFramework.1.0.3\lib\net46\Xlent.Lever.Libraries2.Crud.NetFramework.dll</HintPath>
+      <HintPath>..\..\packages\Xlent.Lever.Libraries2.Crud.NetFramework.1.1.0\lib\net46\Xlent.Lever.Libraries2.Crud.NetFramework.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -104,8 +104,6 @@
     <Compile Include="Pipe\Outbound\LogRequestAndResponse.cs" />
     <Compile Include="RestClientHelper\ClientCredentials.cs" />
     <Compile Include="Crud\RestClient\CrudRestClient.cs" />
-    <Compile Include="Crud\RestClient\CrdRestClient.cs" />
-    <Compile Include="Crud\RestClient\ReadRestClient.cs" />
     <Compile Include="Threads\HostingThreads.cs" />
     <Compile Include="Pipe\Inbound\LogRequestAndResponse.cs" />
     <Compile Include="Pipe\Outbound\OutboundPipeFactory.cs" />
