@@ -48,39 +48,6 @@ namespace Xlent.Lever.Libraries2.WebApi.Crud.ApiControllers
         [SwaggerResponseRemoveDefaults]
         [SwaggerBadRequestResponse]
         [SwaggerInternalServerErrorResponse]
-        public virtual async Task<PageEnvelope<TModel>> ReadChildrenWithPagingAsync(string masterId, int offset, int? limit = null, CancellationToken token = default(CancellationToken))
-        {
-            ServiceContract.RequireNotNullOrWhitespace(masterId, nameof(masterId));
-            ServiceContract.RequireGreaterThanOrEqualTo(0, offset, nameof(offset));
-            if (limit != null)
-            {
-                ServiceContract.RequireGreaterThan(0, limit.Value, nameof(limit));
-            }
-
-            var page = await Logic.ReadChildrenWithPagingAsync(masterId, offset, limit, token);
-            FulcrumAssert.IsNotNull(page?.Data);
-            FulcrumAssert.IsValidated(page?.Data);
-            return page;
-        }
-
-        /// <inheritdoc />
-        [SwaggerResponseRemoveDefaults]
-        [SwaggerBadRequestResponse]
-        [SwaggerInternalServerErrorResponse]
-        public virtual async Task<IEnumerable<TModel>> ReadChildrenAsync(string parentId, int limit = int.MaxValue, CancellationToken token = default(CancellationToken))
-        {
-            ServiceContract.RequireNotNullOrWhitespace(parentId, nameof(parentId));
-            ServiceContract.RequireGreaterThan(0, limit, nameof(limit));
-            var items = await Logic.ReadChildrenAsync(parentId, limit, token);
-            FulcrumAssert.IsNotNull(items);
-            FulcrumAssert.IsValidated(items);
-            return items;
-        }
-
-        /// <inheritdoc />
-        [SwaggerResponseRemoveDefaults]
-        [SwaggerBadRequestResponse]
-        [SwaggerInternalServerErrorResponse]
         public virtual async Task<string> CreateAsync(string masterId, TModelCreate item, CancellationToken token = new CancellationToken())
         {
             ServiceContract.RequireNotNullOrWhitespace(masterId, nameof(masterId));
@@ -147,6 +114,39 @@ namespace Xlent.Lever.Libraries2.WebApi.Crud.ApiControllers
             FulcrumAssert.IsNotNull(item);
             FulcrumAssert.IsValidated(item);
             return item;
+        }
+
+        /// <inheritdoc />
+        [SwaggerResponseRemoveDefaults]
+        [SwaggerBadRequestResponse]
+        [SwaggerInternalServerErrorResponse]
+        public virtual async Task<PageEnvelope<TModel>> ReadChildrenWithPagingAsync(string masterId, int offset, int? limit = null, CancellationToken token = default(CancellationToken))
+        {
+            ServiceContract.RequireNotNullOrWhitespace(masterId, nameof(masterId));
+            ServiceContract.RequireGreaterThanOrEqualTo(0, offset, nameof(offset));
+            if (limit != null)
+            {
+                ServiceContract.RequireGreaterThan(0, limit.Value, nameof(limit));
+            }
+
+            var page = await Logic.ReadChildrenWithPagingAsync(masterId, offset, limit, token);
+            FulcrumAssert.IsNotNull(page?.Data);
+            FulcrumAssert.IsValidated(page?.Data);
+            return page;
+        }
+
+        /// <inheritdoc />
+        [SwaggerResponseRemoveDefaults]
+        [SwaggerBadRequestResponse]
+        [SwaggerInternalServerErrorResponse]
+        public virtual async Task<IEnumerable<TModel>> ReadChildrenAsync(string parentId, int limit = int.MaxValue, CancellationToken token = default(CancellationToken))
+        {
+            ServiceContract.RequireNotNullOrWhitespace(parentId, nameof(parentId));
+            ServiceContract.RequireGreaterThan(0, limit, nameof(limit));
+            var items = await Logic.ReadChildrenAsync(parentId, limit, token);
+            FulcrumAssert.IsNotNull(items);
+            FulcrumAssert.IsValidated(items);
+            return items;
         }
 
         /// <inheritdoc />
