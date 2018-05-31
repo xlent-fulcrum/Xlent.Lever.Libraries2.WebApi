@@ -16,7 +16,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Crud.ApiControllers
         ICrudManyToOne<TModel, string>
     {
         /// <inheritdoc />
-        protected ManyToOneApiController(ICrudable logic)
+        protected ManyToOneApiController(ICrudable<TModel, string> logic)
             : base(logic)
         {
         }
@@ -36,7 +36,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Crud.ApiControllers
         /// <summary>
         /// Constructor
         /// </summary>
-        protected ManyToOneApiController(ICrudable logic)
+        protected ManyToOneApiController(ICrudable<TModel, string> logic)
         :base(logic)
         {
             Logic = new ManyToOnePassThrough<TModelCreate, TModel, string>(logic);

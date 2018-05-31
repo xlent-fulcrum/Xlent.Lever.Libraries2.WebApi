@@ -17,7 +17,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Crud.DefaultControllers
         /// <summary>
         /// Constructor
         /// </summary>
-        protected SlaveToMasterDefaultController(ICrudable logic)
+        protected SlaveToMasterDefaultController(ICrudable<TModel, string> logic)
             : base(logic)
         {
         }
@@ -32,7 +32,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Crud.DefaultControllers
         /// <summary>
         /// Constructor
         /// </summary>
-        protected SlaveToMasterDefaultController(ICrudable logic)
+        protected SlaveToMasterDefaultController(ICrudable<TModel, string> logic)
             : base(logic)
         {
         }

@@ -17,7 +17,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Crud.ApiControllers
         ICrud<TModel, string>
     {
         /// <inheritdoc />
-        protected CrudApiController(ICrudable logic)
+        protected CrudApiController(ICrudable<TModel, string> logic)
             : base(logic)
         {
         }
@@ -35,7 +35,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Crud.ApiControllers
         protected readonly ICrud<TModelCreate, TModel, string> Logic;
 
         /// <inheritdoc />
-        protected CrudApiController(ICrudable logic)
+        protected CrudApiController(ICrudable<TModel, string> logic)
         {
             Logic = new CrudPassThrough<TModelCreate, TModel, string>(logic);
         }

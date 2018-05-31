@@ -19,7 +19,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Crud.ApiControllers
         /// <summary>
         /// Constructor
         /// </summary>
-        protected SlaveToMasterApiController(ICrudable logic)
+        protected SlaveToMasterApiController(ICrudable<TModel, string> logic)
             : base(logic)
         {
         }
@@ -39,7 +39,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Crud.ApiControllers
         /// <summary>
         /// Constructor
         /// </summary>
-        protected SlaveToMasterApiController(ICrudable logic)
+        protected SlaveToMasterApiController(ICrudable<TModel, string> logic)
         {
             Logic = new SlaveToMasterPassThrough<TModelCreate, TModel, string>(logic);
         }

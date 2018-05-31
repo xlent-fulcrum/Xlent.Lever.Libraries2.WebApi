@@ -24,7 +24,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Crud.DefaultControllers
         where TModel : TModelCreate
     {
         /// <inheritdoc />
-        protected CrudDefaultController(ICrudable logic)
+        protected CrudDefaultController(ICrudable<TModel, string> logic)
             : base(logic)
         {
         }

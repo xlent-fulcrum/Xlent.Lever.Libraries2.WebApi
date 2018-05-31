@@ -17,7 +17,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Crud.DefaultControllers
         /// <summary>
         /// Constructor
         /// </summary>
-        protected ManyToOneDefaultController(ICrudable logic)
+        protected ManyToOneDefaultController(ICrudable<TModel, string> logic)
             : base(logic)
         {
         }
@@ -34,7 +34,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Crud.DefaultControllers
         /// <summary>
         /// Constructor
         /// </summary>
-        protected ManyToOneDefaultController(ICrudable logic)
+        protected ManyToOneDefaultController(ICrudable<TModel, string> logic)
             : base(logic)
         {
         }
