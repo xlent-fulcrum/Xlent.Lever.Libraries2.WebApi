@@ -1,4 +1,5 @@
-﻿using System.Configuration;
+﻿using System;
+using System.Configuration;
 using Xlent.Lever.Libraries2.Core.Application;
 using Xlent.Lever.Libraries2.Core.Assert;
 using Xlent.Lever.Libraries2.Core.Logging;
@@ -26,6 +27,7 @@ namespace Xlent.Lever.Libraries2.WebApi.Application
             FulcrumApplication.Setup.FullLogger = Log.RecommendedForNetFramework;
             FulcrumApplication.Setup.ContextValueProvider = ContextValueProvider.RecommendedForWebApi;
             FulcrumApplication.AppSettings = new AppSettings(new ConfigurationManagerAppSettings());
+            TrySetLogSeverityLevelFromAppSettings();
         }
 
         /// <summary>
@@ -45,6 +47,19 @@ namespace Xlent.Lever.Libraries2.WebApi.Application
             var runTimeLevel = appSettings.GetEnum<RunTimeLevelEnum>("RunTimeLevel", true);
             WebApiBasicSetup(name, tenant, runTimeLevel);
             FulcrumApplication.AppSettings = new AppSettings(appSettingGetter);
+            TrySetLogSeverityLevelFromAppSettings();
+        }
+
+        private static void TrySetLogSeverityLevelFromAppSettings()
+        {
+            var logSeverityLevelAppSetting = FulcrumApplication.AppSettings.GetString("LogSeverityLevel", false);
+            var logLevelExists = Enum.TryParse(logSeverityLevelAppSetting, out LogSeverityLevel severityLevel);
+
+            if (logLevelExists)
+            {
+                FulcrumApplication.Setup.LogSeverityLevelThreshold = severityLevel;
+                FulcrumApplication.Setup.BatchLogAllSeverityLevelThreshold = severityLevel;
+            }
         }
     }
 }
