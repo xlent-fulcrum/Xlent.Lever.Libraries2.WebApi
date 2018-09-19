@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using Xlent.Lever.Libraries2.Core.Application;
 using Xlent.Lever.Libraries2.Core.Context;
 using Xlent.Lever.Libraries2.Core.Logging;
 using Xlent.Lever.Libraries2.Core.MultiTenant.Context;
@@ -45,7 +46,10 @@ namespace Xlent.Lever.Libraries2.WebApi.Pipe.Outbound
                 if (tenantProvider.CallingClientName != null)
                 {
                     // We should have a gotten a correlation id from the calling client.
-                    Log.LogWarning(
+                    var logLevel = FulcrumApplication.IsInProductionOrProductionSimulation
+                        ? LogSeverityLevel.Verbose
+                        : LogSeverityLevel.Warning;
+                    Log.LogOnLevel(logLevel,
                         $"We have a calling client ({tenantProvider.CallingClientName}), but we are missing a correlation id for an outbound request ({request.ToLogString()}).");
                 }
             }
