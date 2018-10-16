@@ -4,6 +4,8 @@ using System.Threading.Tasks;
 using Microsoft.Rest;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Xlent.Lever.Libraries2.Core.Application;
 using Xlent.Lever.Libraries2.Core.Context;
 using Xlent.Lever.Libraries2.WebApi.RestClientHelper;
@@ -182,5 +184,52 @@ namespace Xlent.Lever.Libraries2.WebApi.Test.RestClientHelper
             }
         }
         #endregion
+
+        [TestMethod]
+        public async Task TestDateParsingWithPoco()
+        {
+            const string dateTime1 = "2018-10-15T18:36:00+02:00";
+            const string dateTime2 = "2018-10-15T12:23:27Z";
+
+            // When using a poco, date parsing handling should be safe
+            var input = new DateParsingPoco { DateTime1 = dateTime1, DateTime2 = dateTime2 };
+            PrepareMockPost(input);
+
+            var client = new RestClient("http://example.se");
+            var result = await client.PostAndReturnCreatedObjectAsync("path", input);
+            Assert.AreEqual(dateTime1, result.DateTime1);
+            Assert.AreEqual(dateTime2, result.DateTime2);
+        }
+
+        [TestMethod]
+        public async Task TestDateParsingWithJObject()
+        {
+            const string dateTime1 = "2018-10-15T18:36:00+02:00";
+            const string dateTime2 = "2018-10-15T12:23:27Z";
+
+            // When using JObject instead of explicit poco, Newtonsoft will try to find dates from strings.
+            var input = JObject.FromObject(new { DateTime1 = dateTime1, DateTime2 = dateTime2 });
+            PrepareMockPost(input);
+
+            // Per default, the RestClient will try to parse dates, so our values will get scrambled a bit
+            // This is our desired default value, so make sure to fail if it doesn't auto parse dates
+            var client = new RestClient("http://example.se");
+            var result = await client.PostAndReturnCreatedObjectAsync("path", input);
+            Assert.AreNotEqual(dateTime1, result.Value<string>("DateTime1"));
+            Assert.AreNotEqual(dateTime2, result.Value<string>("DateTime2"));
+
+            // Make sure we have the possibility to change behaviour to not auto parse dates
+            client.DeserializationSettings.DateParseHandling = DateParseHandling.None;
+            PrepareMockPost(input);
+            result = await client.PostAndReturnCreatedObjectAsync("path", input);
+            Assert.AreEqual(dateTime1, result.Value<string>("DateTime1"));
+            Assert.AreEqual(dateTime2, result.Value<string>("DateTime2"));
+        }
+    }
+
+    internal class DateParsingPoco
+    {
+        public string DateTime1 { get; set; }
+        public string DateTime2 { get; set; }
     }
 }

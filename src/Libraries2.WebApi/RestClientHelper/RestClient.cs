@@ -24,8 +24,16 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
         /// True if the restclient logs all outgoing requests.
         /// </summary>
         public bool WithLogging { get; }
-        private readonly JsonSerializerSettings _serializationSettings;
-        private readonly JsonSerializerSettings _deserializationSettings;
+
+        /// <summary>
+        /// Json settings when serializing to strings
+        /// </summary>
+        public JsonSerializerSettings SerializationSettings { get; set; }
+
+        /// <summary>
+        /// Json settings when de-serializing from strings
+        /// </summary>
+        public JsonSerializerSettings DeserializationSettings { get; set; }
 
         private static readonly object LockClass = new object();
 
@@ -81,7 +89,7 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
 
             #region Settings
             // These settings are the same as in AutoRest
-            _serializationSettings = new JsonSerializerSettings
+            SerializationSettings = new JsonSerializerSettings
             {
                 Formatting = Formatting.Indented,
                 DateFormatHandling = DateFormatHandling.IsoDateFormat,
@@ -94,7 +102,7 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
                     new Microsoft.Rest.Serialization.Iso8601TimeSpanConverter()
                 }
             };
-            _deserializationSettings = new JsonSerializerSettings
+            DeserializationSettings = new JsonSerializerSettings
             {
                 DateFormatHandling = DateFormatHandling.IsoDateFormat,
                 DateTimeZoneHandling = DateTimeZoneHandling.Utc,
@@ -338,7 +346,7 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
                 {
                     result.Body =
                         Microsoft.Rest.Serialization.SafeJsonConvert.DeserializeObject<TResponse>(responseContent,
-                            _deserializationSettings);
+                            DeserializationSettings);
                 }
                 catch (Exception e)
                 {
@@ -392,7 +400,7 @@ namespace Xlent.Lever.Libraries2.WebApi.RestClientHelper
             if (instance != null)
             {
                 var requestContent =
-                    Microsoft.Rest.Serialization.SafeJsonConvert.SerializeObject(instance, _serializationSettings);
+                    Microsoft.Rest.Serialization.SafeJsonConvert.SerializeObject(instance, SerializationSettings);
                 request.Content = new StringContent(requestContent, System.Text.Encoding.UTF8);
                 request.Content.Headers.ContentType =
                     System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json; charset=utf-8");
