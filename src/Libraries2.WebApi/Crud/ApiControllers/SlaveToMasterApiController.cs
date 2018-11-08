@@ -6,6 +6,7 @@ using Xlent.Lever.Libraries2.Core.Assert;
 using Xlent.Lever.Libraries2.Crud.Interfaces;
 using Xlent.Lever.Libraries2.Core.Crud.Model;
 using Xlent.Lever.Libraries2.Core.Storage.Model;
+using Xlent.Lever.Libraries2.Crud.Model;
 using Xlent.Lever.Libraries2.Crud.PassThrough;
 using Xlent.Lever.Libraries2.WebApi.Annotations;
 
@@ -209,6 +210,24 @@ namespace Xlent.Lever.Libraries2.WebApi.Crud.ApiControllers
         {
             ServiceContract.RequireNotNullOrWhitespace(masterId, nameof(masterId));
             await Logic.DeleteChildrenAsync(masterId, token);
+        }
+
+        /// <inheritdoc />
+        public virtual Task<SlaveLock<string>> ClaimLockAsync(string masterId, string slaveId, CancellationToken token = new CancellationToken())
+        {
+            ServiceContract.RequireNotNullOrWhitespace(masterId, nameof(masterId));
+            ServiceContract.RequireNotNullOrWhitespace(slaveId, nameof(slaveId));
+            return Logic.ClaimLockAsync(masterId, slaveId, token);
+        }
+
+        /// <inheritdoc />
+        public virtual Task ReleaseLockAsync(string masterId, string slaveId, string lockId,
+            CancellationToken token = new CancellationToken())
+        {
+            ServiceContract.RequireNotNullOrWhitespace(masterId, nameof(masterId));
+            ServiceContract.RequireNotNullOrWhitespace(slaveId, nameof(slaveId));
+            ServiceContract.RequireNotNullOrWhitespace(lockId, nameof(lockId));
+            return Logic.ReleaseLockAsync(masterId, slaveId, lockId, token);
         }
     }
 }

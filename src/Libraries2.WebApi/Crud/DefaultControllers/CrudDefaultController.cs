@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using Xlent.Lever.Libraries2.Crud.Interfaces;
 using Xlent.Lever.Libraries2.Core.Storage.Model;
+using Xlent.Lever.Libraries2.Crud.Model;
 using Xlent.Lever.Libraries2.WebApi.Crud.ApiControllers;
 
 namespace Xlent.Lever.Libraries2.WebApi.Crud.DefaultControllers
@@ -76,6 +77,22 @@ namespace Xlent.Lever.Libraries2.WebApi.Crud.DefaultControllers
         public override Task DeleteAllAsync(CancellationToken token = default(CancellationToken))
         {
             return base.DeleteAllAsync(token);
+        }
+
+        /// <inheritdoc cref="ICrudSlaveToMaster{TModel,TId}" />
+        [HttpPost]
+        [Route("{id}/(Locks")]
+        public override Task<Lock<string>> ClaimLockAsync(string id, CancellationToken token = new CancellationToken())
+        {
+            return base.ClaimLockAsync(id, token);
+        }
+
+        /// <inheritdoc cref="ICrudSlaveToMaster{TModel,TId}" />
+        [HttpDelete]
+        [Route("{id}/(Locks")]
+        public override Task ReleaseLockAsync(string id, string lockId, CancellationToken token = new CancellationToken())
+        {
+            return base.ReleaseLockAsync(id, lockId, token);
         }
     }
 }
