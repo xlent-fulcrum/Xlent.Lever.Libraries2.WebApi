@@ -7,6 +7,7 @@ using Xlent.Lever.Libraries2.Core.Crud.Model;
 using Xlent.Lever.Libraries2.Core.Platform.Authentication;
 using Xlent.Lever.Libraries2.Core.Storage.Model;
 using Xlent.Lever.Libraries2.Crud.Interfaces;
+using Xlent.Lever.Libraries2.Crud.Model;
 
 namespace Xlent.Lever.Libraries2.WebApi.Crud.RestClient
 {
@@ -162,6 +163,23 @@ namespace Xlent.Lever.Libraries2.WebApi.Crud.RestClient
         {
             InternalContract.RequireNotDefaultValue(parentId, nameof(parentId));
             return DeleteAsync($"{parentId}/{ChildrenName}", cancellationToken: token);
+        }
+
+        /// <inheritdoc />
+        public Task<SlaveLock<TId>> ClaimLockAsync(TId masterId, TId slaveId, CancellationToken token = new CancellationToken())
+        {
+            InternalContract.RequireNotDefaultValue(masterId, nameof(masterId));
+            InternalContract.RequireNotDefaultValue(slaveId, nameof(slaveId));
+            return PostAsync<SlaveLock<TId>>($"{masterId}/{ChildrenName}/{slaveId}/Locks", cancellationToken: token);
+        }
+
+        /// <inheritdoc />
+        public Task ReleaseLockAsync(TId masterId, TId slaveId, TId lockId, CancellationToken token = new CancellationToken())
+        {
+            InternalContract.RequireNotDefaultValue(masterId, nameof(masterId));
+            InternalContract.RequireNotDefaultValue(slaveId, nameof(slaveId));
+            InternalContract.RequireNotDefaultValue(lockId, nameof(lockId));
+            return DeleteAsync($"{masterId}/{ChildrenName}/{slaveId}/Locks", cancellationToken: token);
         }
     }
 }
